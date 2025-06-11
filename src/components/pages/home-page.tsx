@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "../nav-bar";
 import Hero from "../hero";
 import { Footer } from "../footer";
 import FAQ from "../faq";
+import ClipsPage from "../clips";
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -20,6 +22,32 @@ const viewportSettings = {
 };
 
 function HomePage() {
+  const [showClips, setShowClips] = useState(false);
+
+  const handleSeeClips = () => {
+    setShowClips(true);
+  };
+
+  const handleBackToHome = () => {
+    setShowClips(false);
+  };
+
+  // Show clips page (hides all other sections)
+  if (showClips) {
+    return (
+      <motion.section
+        className="section gradient-right max-w-4xl mx-auto"
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewportSettings}
+        variants={sectionVariants}
+      >
+        <ClipsPage onBack={handleBackToHome} />
+      </motion.section>
+    );
+  }
+
+  // Show normal homepage with all sections
   return (
     <>
       {/* Hero Section */}
@@ -31,7 +59,7 @@ function HomePage() {
         variants={sectionVariants}
       >
         <Navbar />
-        <Hero />
+        <Hero onSeeClips={handleSeeClips} />
       </motion.section>
 
       <motion.section
@@ -51,7 +79,6 @@ function HomePage() {
         viewport={viewportSettings}
         variants={sectionVariants}
       >
-        {" "}
         <Footer />
       </motion.section>
     </>

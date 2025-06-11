@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import Gallery from "../gallery";
-import Navbar from "../nav-bar";
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -28,7 +27,6 @@ function CommunityPage() {
         viewport={viewportSettings}
         variants={sectionVariants}
       >
-        <Navbar />
         <Gallery />
       </motion.section>
     </>

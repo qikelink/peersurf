@@ -5,28 +5,28 @@ import { Plus } from "lucide-react";
 const FAQ = () => {
   const [expandedQuestion, setExpandedQuestion] = useState<number | null>(null);
 
-  const faqData = [
-    {
-      id: 1,
-      question: "How does the AI video generation work?",
-      answer: "Our AI analyzes your clip and adds trending music, captions, and effects to create viral-style videos automatically."
-    },
-    {
-      id: 2,
-      question: "What video formats do you support?",
-      answer: "MP4, MOV, AVI, and WebM formats. Max 10 minutes long and 1GB file size."
-    },
-    {
-      id: 3,
-      question: "Can I customize the generated videos?",
-      answer: "Yes! Unlimited customization including voiceovers, music, captions, filters, effects, and branding."
-    },
-    {
-      id: 4,
-      question: "How long does it take to generate a video?",
-      answer: "2-5 minutes depending on video length and complexity. You'll get notified when ready."
-    }
-  ];
+const faqData = [
+  {
+    id: 1,
+    question: "How does ONYX work?",
+    answer: "Import your daydream clip from daydream.live, then one-click transforms it with AI voices, trending music, captions, and viral effects."
+  },
+  {
+    id: 2,
+    question: "What's a daydream clip?",
+    answer: "A 10-30 second video you create on daydream.live that becomes the foundation for your viral content."
+  },
+  {
+    id: 3,
+    question: "Can I customize the generated videos?",
+    answer: "Yes! Edit voiceovers, swap music, adjust captions, and modify effects after the AI transformation."
+  },
+  {
+    id: 4,
+    question: "What makes videos go viral?",
+    answer: "ONYX adds trending music, engaging AI voiceovers, eye-catching captions, and proven effects that boost engagement."
+  }
+];
 
   const toggleQuestion = (id: number) => {
     setExpandedQuestion(expandedQuestion === id ? null : id);

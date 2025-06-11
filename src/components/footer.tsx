@@ -19,7 +19,7 @@ export const Footer = () => {
             <Button
               variant={"secondary"}
               className="w-full md:w-auto p-6 text-black rounded-full font-semibold cursor-pointer"
-              onClick={() => (window.location.href = "mailto:contact@onyx.com")}
+              onClick={() => (window.location.href = "mailto:hi@hionyx.pages.dev")}
             >
               E-mail
             </Button>
@@ -30,19 +30,19 @@ export const Footer = () => {
             <h3 className="text-gray-400 font-medium">Company</h3>
             <div className="space-y-3">
               <a
-                href="/work"
+                href="#"
                 className="block text-gray-800 font-medium hover:text-gray-900 transition-colors duration-200 cursor-pointer"
               >
                 Work
               </a>
               <a
-                href="/pricing"
+                href="#"
                 className="block text-gray-800 font-medium hover:text-gray-900 transition-colors duration-200 cursor-pointer"
               >
                 Pricing
               </a>
               <a
-                href="/faq"
+                href="#"
                 className="block text-gray-800 font-medium hover:text-gray-900 transition-colors duration-200 cursor-pointer"
               >
                 FAQ
@@ -55,7 +55,7 @@ export const Footer = () => {
             <h3 className="text-gray-400 font-medium">Let's Connect</h3>
             <div className="space-y-3">
               <a
-                href="https://twitter.com"
+                href="https://x.com/onyx_video"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-800 font-medium hover:text-gray-900 transition-colors duration-200 cursor-pointer flex items-end gap-0.5"
@@ -64,7 +64,7 @@ export const Footer = () => {
                 <ArrowUpRight size={16} />
               </a>
               <a
-                href="https://twitter.com"
+                href="https://discord.gg/qVktYgHfZR"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-800 font-medium hover:text-gray-900 transition-colors duration-200 cursor-pointer flex items-end gap-0.5"
@@ -73,7 +73,7 @@ export const Footer = () => {
                 <ArrowUpRight size={16} />
               </a>
               <a
-                href="https://twitter.com"
+                href="https://linktr.ee/onyx_editor"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-800 font-medium hover:text-gray-900 transition-colors duration-200 cursor-pointer flex items-end gap-0.5"
