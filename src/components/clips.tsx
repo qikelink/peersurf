@@ -10,15 +10,15 @@ type Video = {
 const sampleVideos: Video[] = [
   {
     id: "1",
-    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+    url: "https://jnoznbd6y3.ufs.sh/f/PKy8oE1GN2J3SmnPz9RHgldbCZqO68FamQULKyreIx24zPNs",
   },
   {
     id: "2",
-    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+    url: "https://jnoznbd6y3.ufs.sh/f/PKy8oE1GN2J3DiSg814MTEGgiO6oX4QaLukP0RZ8A7DSxUVW",
   },
   {
     id: "3",
-    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+    url: "https://jnoznbd6y3.ufs.sh/f/PKy8oE1GN2J3lTIr9DHZbTIX7esxfEnUPVZvO6kuH2GSdABY",
   },
 ];
 
@@ -39,7 +39,7 @@ const ClipsPage: React.FC<ClipsPageProps> = ({ onBack }) => {
               loop
               muted
               controls
-              className="w-full h-screen object-cover"
+              className="w-full h-[80vh] object-cover"
             />
           </div>
         ))}

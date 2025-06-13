@@ -96,24 +96,24 @@ const Hero = ({ onSeeClips }: HeroProps) => {
             {/* Card 1 - Bottom layer */}
             <div className="absolute inset-0 rounded-lg shadow-lg transform rotate-12 translate-x-3 translate-y-3 overflow-hidden">
               <img
-                src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400&h=300&fit=crop"
+                src="https://jnoznbd6y3.ufs.sh/f/PKy8oE1GN2J3HNtG8iXQIsuOrGyx047ZPgMSbYF5Jc3DpaqX?w=400&h=300&fit=crop"
                 alt="Sample clip 1"
                 className="w-full h-full object-cover"
               />
             </div>
             {/* Card 2 - Middle layer */}
-            <div className="absolute inset-0 rounded-lg shadow-lg transform -rotate-8 translate-x-2 translate-y-1 overflow-hidden">
+            <div className="absolute inset-0 rounded-lg shadow-lg transform rotate-[-12] -translate-x-1 translate-y-2 overflow-hidden">
               <img
-                src="https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=400&h=300&fit=crop"
-                alt="Sample clip 2"
+                src="https://jnoznbd6y3.ufs.sh/f/PKy8oE1GN2J3YmVs2pj2v5fQiBSJGIMzDyA8UjRNs69HrewK?w=400&h=300&fit=crop"
+                alt="Sample clip 3"
                 className="w-full h-full object-cover"
               />
             </div>
             {/* Card 3 - Back layer */}
-            <div className="absolute inset-0 rounded-lg shadow-lg transform rotate-6 -translate-x-1 translate-y-2 overflow-hidden">
+            <div className="absolute inset-0 rounded-lg shadow-lg transform -rotate-8 translate-x-2 translate-y-1 overflow-hidden">
               <img
-                src="https://images.unsplash.com/photo-1536431311719-398b6704d4cc?w=400&h=300&fit=crop"
-                alt="Sample clip 3"
+                src="https://jnoznbd6y3.ufs.sh/f/PKy8oE1GN2J31NoWq5iET2fntwWIyQsrmGjJ6oZROuD7HXek?w=400&h=300&fit=crop"
+                alt="Sample clip 2"
                 className="w-full h-full object-cover"
               />
             </div>
@@ -205,7 +205,7 @@ const Hero = ({ onSeeClips }: HeroProps) => {
                   </div>
 
                   <p className="text-xs text-gray-400 text-center mt-4">
-                    We'll never spam you. Unsubscribe at any time.
+                    We'll never spam you.
                   </p>
                 </>
               ) : (

@@ -5,28 +5,73 @@ import { Plus } from "lucide-react";
 const FAQ = () => {
   const [expandedQuestion, setExpandedQuestion] = useState<number | null>(null);
 
-const faqData = [
-  {
-    id: 1,
-    question: "How does ONYX work?",
-    answer: "Import your daydream clip from daydream.live, then one-click transforms it with AI voices, trending music, captions, and viral effects."
-  },
-  {
-    id: 2,
-    question: "What's a daydream clip?",
-    answer: "A 10-30 second video you create on daydream.live that becomes the foundation for your viral content."
-  },
-  {
-    id: 3,
-    question: "Can I customize the generated videos?",
-    answer: "Yes! Edit voiceovers, swap music, adjust captions, and modify effects after the AI transformation."
-  },
-  {
-    id: 4,
-    question: "What makes videos go viral?",
-    answer: "ONYX adds trending music, engaging AI voiceovers, eye-catching captions, and proven effects that boost engagement."
-  }
-];
+  const renderTextWithLinks = (text: string) => {
+    const markdownLinkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+
+    const parts = [];
+    let lastIndex = 0;
+    let match;
+
+    while ((match = markdownLinkRegex.exec(text)) !== null) {
+      // Add text before the link
+      if (match.index > lastIndex) {
+        parts.push(text.slice(lastIndex, match.index));
+      }
+
+      parts.push(
+        <a
+          key={match.index}
+          href={match[2]}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-500 hover:text-blue-600 underline"
+        >
+          {match[1]}
+        </a>
+      );
+
+      lastIndex = match.index + match[0].length;
+    }
+
+    if (lastIndex < text.length) {
+      parts.push(text.slice(lastIndex));
+    }
+
+    return parts.length > 0 ? parts : text;
+  };
+
+  const faqData = [
+    {
+      id: 1,
+      question: "How does ONYX work?",
+      answer:
+        "Import your daydream clip from daydream.live, then one-click transforms it with AI voices, trending music, captions, and viral effects.",
+    },
+    {
+      id: 2,
+      question: "What's a daydream clip?",
+      answer:
+        "A 10-30 second video you create on daydream.live that becomes the foundation for your viral content.",
+    },
+    {
+      id: 3,
+      question: "Can I customize the generated videos?",
+      answer:
+        "Yes! Edit voiceovers, swap music, adjust captions, and modify effects after the AI transformation.",
+    },
+    {
+      id: 4,
+      question: "What makes videos go viral?",
+      answer:
+        "ONYX adds trending music, engaging AI voiceovers, eye-catching captions, and proven effects that boost engagement.",
+    },
+    {
+      id: 5,
+      question: "I still have questions!",
+      answer:
+        "Send us a message on [twitter](https://x.com/onyx_video) or join our [discord server](https://discord.gg/qVktYgHfZR)",
+    },
+  ];
 
   const toggleQuestion = (id: number) => {
     setExpandedQuestion(expandedQuestion === id ? null : id);
@@ -35,12 +80,9 @@ const faqData = [
   return (
     <div className="flex flex-col items-center justify-center max-w-4xl mx-auto px-6 mt-32 font-inter">
       <div className="text-center mb-12">
-        <h2 className="text-3xl md:text-5xl font-medium mb-4 text-gray-900 px-20">
+        <h2 className="text-3xl md:text-5xl font-medium text-gray-900 px-20">
           Things you might wanna know
         </h2>
-        <p className="text-gray-500">
-          Still have questions? contact us on discord or X
-        </p>
       </div>
 
       <div className="w-full space-y-4 px-10">
@@ -100,7 +142,7 @@ const faqData = [
               `}
             >
               <div className="px-3 pb-4 text-gray-500 text-sm">
-                {faq.answer}
+                {renderTextWithLinks(faq.answer)}
               </div>
             </div>
           </div>
