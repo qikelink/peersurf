@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import ClipsPage from "./clips";
 import { Mail, Check, X } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 type HeroProps = {
   onSeeClips?: () => void;
@@ -50,10 +51,25 @@ const Hero = ({ onSeeClips }: HeroProps) => {
     if (!email || !email.includes("@")) return;
 
     setIsLoading(true);
-    // Simulate API call
-    await new Promise<void>((resolve) => setTimeout(resolve, 1500));
-    setIsLoading(false);
-    setIsSubmitted(true);
+
+    try {
+      const { data, error } = await supabase.from("early_access").insert([
+        {
+          email: email,
+          created_at: new Date().toISOString(),
+        },
+      ]);
+
+      if (error) {
+        throw error;
+      }
+
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error("Error saving email:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Show clips page if active
@@ -214,10 +230,10 @@ const Hero = ({ onSeeClips }: HeroProps) => {
                   <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6">
                     <Check className="text-white" size={32} />
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-3">
+                  <h2 className="text-xl font-bold text-gray-900 mb-3">
                     You're on the list! 🎉
                   </h2>
-                  <p className="text-gray-600 mb-2">
+                  <p className="text-gray-600 text-sm mb-2">
                     Thanks for joining! We've added{" "}
                     <span className="font-semibold text-gray-900">{email}</span>{" "}
                     to the waitlist.

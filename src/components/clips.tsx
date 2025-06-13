@@ -14,11 +14,11 @@ const sampleVideos: Video[] = [
   },
   {
     id: "2",
-    url: "https://jnoznbd6y3.ufs.sh/f/PKy8oE1GN2J3DiSg814MTEGgiO6oX4QaLukP0RZ8A7DSxUVW",
+    url: "https://jnoznbd6y3.ufs.sh/f/PKy8oE1GN2J3lTIr9DHZbTIX7esxfEnUPVZvO6kuH2GSdABY",
   },
   {
     id: "3",
-    url: "https://jnoznbd6y3.ufs.sh/f/PKy8oE1GN2J3lTIr9DHZbTIX7esxfEnUPVZvO6kuH2GSdABY",
+    url: "https://jnoznbd6y3.ufs.sh/f/PKy8oE1GN2J3DiSg814MTEGgiO6oX4QaLukP0RZ8A7DSxUVW",
   },
 ];
 
@@ -48,14 +48,13 @@ const ClipsPage: React.FC<ClipsPageProps> = ({ onBack }) => {
       {/* Back Button - Absolutely positioned at center bottom */}
       <Button
         onClick={onBack}
-        variant={'secondary'}
+        variant={"secondary"}
         className="fixed bottom-4 left-1/2 transform -translate-x-1/2 rounded-full p-4 z-50 h-12 w-12"
-       
       >
         <X className="w-10 h-10" />
       </Button>
     </div>
-  )
-}
+  );
+};
 
 export default ClipsPage;
