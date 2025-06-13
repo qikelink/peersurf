@@ -31,7 +31,7 @@ const ClipsPage: React.FC<ClipsPageProps> = ({ onBack }) => {
     <div className="min-h-screen relative my-12">
       {/* Clips stacked vertically */}
       <div className="flex flex-col w-full gap-10">
-        {sampleVideos.map((video, index) => (
+        {sampleVideos.map((video) => (
           <div key={video.id} className="w-full">
             <video
               src={video.url}

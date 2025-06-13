@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "./ui/button";
 import ClipsPage from "./clips";
-import { Mail, Check, X } from "lucide-react";
+import { Check, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 type HeroProps = {
@@ -38,9 +38,6 @@ const Hero = ({ onSeeClips }: HeroProps) => {
     setIsLoading(false);
   };
 
-  interface SubmitEvent extends React.FormEvent<HTMLFormElement> {
-    key?: string;
-  }
 
   const handleSubmit = async (
     e?: React.FormEvent<HTMLFormElement> | React.KeyboardEvent<HTMLInputElement>
@@ -53,7 +50,7 @@ const Hero = ({ onSeeClips }: HeroProps) => {
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.from("early_access").insert([
+      const { error } = await supabase.from("early_access").insert([
         {
           email: email,
           created_at: new Date().toISOString(),
