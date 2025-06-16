@@ -55,7 +55,7 @@ const FAQ = () => {
     },
     {
       id: 3,
-      question: "Can I customize the generated videos?",
+      question: "Can I edit the generated videos?",
       answer:
         "Yes! Edit voiceovers, swap music, adjust captions, and modify effects after the AI transformation.",
     },
@@ -80,7 +80,7 @@ const FAQ = () => {
   return (
     <div className="flex flex-col items-center justify-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-24 lg:mt-32 font-inter">
       <div className="text-center mb-8 sm:mb-12">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium text-gray-900 px-2 sm:px-8 lg:px-20">
+        <h2 className="text-3xl md:text-4xl font-medium text-gray-900 px-2 sm:px-8 lg:px-20">
           Things you might wanna know
         </h2>
       </div>
@@ -141,7 +141,7 @@ const FAQ = () => {
                 }
               `}
             >
-              <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-gray-500 text-sm sm:text-base leading-relaxed">
+              <div className="px-3 pb-4 sm:pb-6 text-gray-500 text-sm leading-relaxed">
                 {renderTextWithLinks(faq.answer)}
               </div>
             </div>
