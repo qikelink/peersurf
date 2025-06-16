@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "./ui/button";
-import { Plus, ArrowUpRight } from "lucide-react";
+import { Plus } from "lucide-react";
 
 const FAQ = () => {
   const [expandedQuestion, setExpandedQuestion] = useState<number | null>(null);
