@@ -5,17 +5,17 @@ export const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="mx-auto text-gray-900 font-inter text-sm mt-36 mb-16">
+    <footer className="mx-auto text-gray-900 font-inter text-sm sm:mt-36 mt-28 mb-16">
       <div className="container mx-auto px-6">
         {/* Top Image */}
-        <div className="flex justify-center mb-24 px-24">
+        <div className="flex justify-center mb-24 px-4 sm:px-24">
           <img src="/onyx-1.png" />
         </div>
 
         {/* 3 Column Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 max-w-4xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-8 mb-12 max-w-4xl mx-auto">
           {/* Column 1 - Email Button */}
-          <div className="flex flex-col items-center md:items-start">
+          <div className="hidden sm:flex flex-col items-center md:items-start">
             <Button
               variant={"secondary"}
               className="w-full md:w-auto p-6 text-black rounded-full font-semibold cursor-pointer"

@@ -28,7 +28,7 @@ interface ClipsPageProps {
 
 const ClipsPage: React.FC<ClipsPageProps> = ({ onBack }) => {
   return (
-    <div className="min-h-screen relative my-12">
+    <div className="min-h-screen relative my-12 px-4 sm:px-0">
       {/* Clips stacked vertically */}
       <div className="flex flex-col w-full gap-10">
         {sampleVideos.map((video) => (
@@ -39,7 +39,7 @@ const ClipsPage: React.FC<ClipsPageProps> = ({ onBack }) => {
               loop
               muted
               controls
-              className="w-full h-[80vh] object-cover"
+              className="w-full h-[50vh] object-cover"
             />
           </div>
         ))}

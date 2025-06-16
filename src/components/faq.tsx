@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "./ui/button";
-import { Plus } from "lucide-react";
+import { Plus, ArrowUpRight } from "lucide-react";
 
 const FAQ = () => {
   const [expandedQuestion, setExpandedQuestion] = useState<number | null>(null);
@@ -78,14 +78,14 @@ const FAQ = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center max-w-4xl mx-auto px-6 mt-32 font-inter">
-      <div className="text-center mb-12">
-        <h2 className="text-3xl md:text-5xl font-medium text-gray-900 px-20">
+    <div className="flex flex-col items-center justify-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-24 lg:mt-32 font-inter">
+      <div className="text-center mb-8 sm:mb-12">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium text-gray-900 px-2 sm:px-8 lg:px-20">
           Things you might wanna know
         </h2>
       </div>
 
-      <div className="w-full space-y-4 px-10">
+      <div className="w-full space-y-3 sm:space-y-4 px-2 sm:px-6 lg:px-10">
         {faqData.map((faq) => (
           <div
             key={faq.id}
@@ -96,8 +96,8 @@ const FAQ = () => {
               onClick={() => toggleQuestion(faq.id)}
               className={`
                 w-full 
-                px-6 
-                py-7
+                px-4 sm:px-6 
+                py-5 sm:py-7
                 text-left 
                 flex 
                 justify-between 
@@ -112,17 +112,17 @@ const FAQ = () => {
                 text-gray-800
               `}
             >
-              <span className="font-medium text-gray-800 text-sm">
+              <span className="font-medium text-gray-800 text-sm sm:text-base pr-4">
                 {faq.question}
               </span>
               <Plus
                 className={`
-                  w-5 
-                  h-5 
+                  w-4 h-4 sm:w-5 sm:h-5 
                   text-gray-500 
                   transform 
                   transition-transform 
                   duration-200 
+                  flex-shrink-0
                   ${expandedQuestion === faq.id ? "rotate-45" : ""}
                 `}
               />
@@ -141,7 +141,7 @@ const FAQ = () => {
                 }
               `}
             >
-              <div className="px-3 pb-4 text-gray-500 text-sm">
+              <div className="px-4 sm:px-6 pb-4 sm:pb-6 text-gray-500 text-sm sm:text-base leading-relaxed">
                 {renderTextWithLinks(faq.answer)}
               </div>
             </div>
@@ -151,5 +151,6 @@ const FAQ = () => {
     </div>
   );
 };
+
 
 export default FAQ;
