@@ -7,69 +7,68 @@ const FAQ = () => {
 
   const renderTextWithLinks = (text: string) => {
     const markdownLinkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
-
     const parts = [];
     let lastIndex = 0;
     let match;
-
     while ((match = markdownLinkRegex.exec(text)) !== null) {
-      // Add text before the link
       if (match.index > lastIndex) {
         parts.push(text.slice(lastIndex, match.index));
       }
-
       parts.push(
         <a
           key={match.index}
           href={match[2]}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-blue-500 hover:text-blue-600 underline"
+          className="text-indigo-600 hover:text-indigo-700 underline"
         >
           {match[1]}
         </a>
       );
-
       lastIndex = match.index + match[0].length;
     }
-
     if (lastIndex < text.length) {
       parts.push(text.slice(lastIndex));
     }
-
     return parts.length > 0 ? parts : text;
   };
 
   const faqData = [
     {
       id: 1,
-      question: "How does ONYX work?",
+      question: "What is Lisa?",
       answer:
-        "Import your daydream clip from daydream.live, then one-click transforms it with AI voices, trending music, captions, and viral effects.",
+        "Lisa is the easiest way to delegate and earn rewards on the Livepeer network. You can fund your wallet with your local currency and stake to any orchestrator—no need to buy LPT or pay for gas fees yourself.",
     },
     {
       id: 2,
-      question: "What's a daydream clip?",
+      question: "How do I start staking with Lisa?",
       answer:
-        "A 10-30 second video you create on daydream.live that becomes the foundation for your viral content.",
+        "Just connect your wallet, fund it with your local currency, and choose an orchestrator. Lisa handles all the blockchain transactions and fees for you.",
     },
     {
       id: 3,
-      question: "Can I edit the generated videos?",
+      question: "Do I need to buy LPT or ETH?",
       answer:
-        "Yes! Edit voiceovers, swap music, adjust captions, and modify effects after the AI transformation.",
+        "No! Lisa lets you stake on Livepeer without ever buying LPT or ETH. You simply use your local currency, and Lisa takes care of the rest.",
     },
     {
       id: 4,
-      question: "What makes videos go viral?",
+      question: "How are rewards paid out?",
       answer:
-        "ONYX adds trending music, engaging AI voiceovers, eye-catching captions, and proven effects that boost engagement.",
+        "Rewards are automatically added to your Lisa wallet. You can withdraw or restake them at any time.",
     },
     {
       id: 5,
-      question: "I still have questions!",
+      question: "Is Lisa secure?",
       answer:
-        "Send us a message on [twitter](https://x.com/onyx_video) or join our [discord server](https://discord.gg/qVktYgHfZR)",
+        "Yes. Lisa is built on and supported by Livepeer, and your funds are always in your control. For more details, check our [docs](https://livepeer.org/docs).",
+    },
+    {
+      id: 6,
+      question: "Where can I get help?",
+      answer:
+        "Join our [Discord](https://discord.gg/livepeer) or reach out on [Twitter](https://twitter.com/livepeer). We're here to help!",
     },
   ];
 
@@ -78,14 +77,16 @@ const FAQ = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-24 lg:mt-32 font-inter">
+    <section className="flex flex-col items-center justify-center max-w-4xl mx-auto py-14 px-8 sm:px-0">
       <div className="text-center mb-8 sm:mb-12">
-        <h2 className="text-3xl md:text-4xl font-medium text-gray-900 px-2 sm:px-8 lg:px-20">
-          Things you might wanna know
+        <h2 className="text-3xl md:text-4xl font-semibold text-gray-900 px-2 sm:px-8 lg:px-20">
+          Frequently Asked Questions
         </h2>
+        <p className="text-gray-500 mt-2 text-base max-w-2xl mx-auto">
+          Everything you need to know about using Lisa to delegate and earn on Livepeer.
+        </p>
       </div>
-
-      <div className="w-full space-y-3 sm:space-y-4 px-2 sm:px-6 lg:px-10">
+      <div className="w-full space-y-3 sm:space-y-4 sm:px-10 ">
         {faqData.map((faq) => (
           <div
             key={faq.id}
@@ -127,7 +128,6 @@ const FAQ = () => {
                 `}
               />
             </Button>
-
             <div
               className={`
                 overflow-hidden 
@@ -148,9 +148,8 @@ const FAQ = () => {
           </div>
         ))}
       </div>
-    </div>
+    </section>
   );
 };
-
 
 export default FAQ;
