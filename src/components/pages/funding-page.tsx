@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import ActionButtons from "../ui/action-buttons";
-import { ArrowLeft, CreditCard, Building2 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { CreditCard, Building2 } from "lucide-react";
 import { useUser } from "../../contexts/UserContext";
 import { usePaystackPayment } from "react-paystack";
 
@@ -10,7 +9,7 @@ const ACTION_BUTTONS_HEIGHT = 104;
 const PAYSTACK_PUBLIC_KEY = "pk_test_efbd584b89329953a201d1ba286788eb30499e16"; // Replace with real key
 
 const FundingPage: React.FC = () => {
-  const navigate = useNavigate();
+ 
   const { user } = useUser();
   const [amount, setAmount] = useState<number | null>(null);
   const [customAmount, setCustomAmount] = useState<string>("");
@@ -51,12 +50,6 @@ const FundingPage: React.FC = () => {
     <div className="min-h-screen bg-white text-black font-sans flex flex-col">
       {/* Header */}
       <div className="flex items-center gap-3 px-4 pt-8 pb-4">
-        <button
-          onClick={() => navigate("/wallet")}
-          className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
-        >
-          <ArrowLeft className="w-5 h-5 text-gray-600" />
-        </button>
         <div>
           <div className="font-semibold text-base leading-tight">Add Funds</div>
           <div className="text-xs text-gray-500">

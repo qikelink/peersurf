@@ -52,7 +52,7 @@ const ProfilePage: React.FC = () => {
   return (
     <div className="p-4 sm:p-8">
       {/* Header Section */}
-      <div className="flex items-center gap-3 py-6">
+      <div className="flex items-center gap-3 py-4">
         <button
           onClick={() => window.history.back()}
           className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"

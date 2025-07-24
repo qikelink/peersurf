@@ -1,34 +1,38 @@
 import { Card } from "../ui/card";
-import {
-  Zap,
-  TrendingUp,
-  Shield,
-} from "lucide-react";
+import { Zap, TrendingUp, Shield } from "lucide-react";
 import ActionButtons from "../ui/action-buttons";
 import { useUser } from "../../contexts/UserContext";
 
-
+// Constants for currency conversion
 const LIVEPEER_GRADIENT = "linear-gradient(135deg, #006400 0%, #00EB88 100%)";
 
-const LPT_PRICE_USD = 7.22;
 const USD_TO_NAIRA = 1526;
 const USD_TO_EUR = 0.92;
 const USD_TO_GBP = 0.79;
 const getConversionRate = (currency: string) => {
   switch (currency) {
-    case "NGN": return USD_TO_NAIRA;
-    case "EUR": return USD_TO_EUR;
-    case "GBP": return USD_TO_GBP;
-    default: return 1;
+    case "NGN":
+      return USD_TO_NAIRA;
+    case "EUR":
+      return USD_TO_EUR;
+    case "GBP":
+      return USD_TO_GBP;
+    default:
+      return 1;
   }
 };
 
 const CardsPage = () => {
   const { currency } = useUser();
+
+  // Use $5000 as the base, and show its value in LPT and the selected currency
   const conversionRate = getConversionRate(currency);
-  const lptPrice = LPT_PRICE_USD * conversionRate;
-  const exampleAmount = 5000 * lptPrice;
+  const baseUSD = 5000;
+
+  const exampleAmount = baseUSD * conversionRate;
   const exampleAnnual = exampleAmount * 0.653;
+
+  // Format currency based on selected currency
   const formatCurrency = (amount: number) =>
     new Intl.NumberFormat(undefined, {
       style: "currency",
@@ -62,7 +66,6 @@ const CardsPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between px-4 pt-8 pb-4">
         <div className="flex items-center gap-3">
-          
           <div>
             <div className="font-semibold text-lg">Lisa Cards</div>
             <div className="text-xs text-gray-500">
@@ -152,7 +155,8 @@ const CardsPage = () => {
                 </div>
                 <div>
                   <div className="font-medium text-gray-900">
-                    You stake {formatCurrency(50000000)}
+                    {/* Show 5,000 LPT in the selected currency */}
+                    You stake {formatCurrency(exampleAmount)}
                   </div>
                   <div className="text-sm text-gray-600">
                     Your principal stays locked in staking
@@ -168,8 +172,9 @@ const CardsPage = () => {
                     Earn 65.3% APY rewards
                   </div>
                   <div className="text-sm text-gray-600">
-                    {/* Accurate calculation: $5,000 * 0.653 = $3,265 */}
-                    Approximately {formatCurrency(exampleAnnual)} annually in rewards
+                    {/* Accurate calculation: 5,000 LPT * price * 0.653 */}
+                    Approximately {formatCurrency(exampleAnnual)} annually in
+                    rewards
                   </div>
                 </div>
               </div>
@@ -190,8 +195,8 @@ const CardsPage = () => {
           </Card>
         </div>
 
-         {/* Action Buttons - Fixed at bottom */}
-      <ActionButtons />
+        {/* Action Buttons - Fixed at bottom */}
+        <ActionButtons />
       </div>
     </div>
   );

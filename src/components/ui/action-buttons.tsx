@@ -89,15 +89,15 @@ const ActionButtons: React.FC = () => {
                 style={{ height: "88px" }}
               >
                 <Button
-                  className={`group flex flex-col items-center justify-center gap-1.5 px-4 py-4 rounded-2xl w-full transition-all duration-300 relative overflow-visible ${
+                  className={`group flex flex-col items-center justify-center gap-1.5 px-4 pt-4 rounded-2xl w-full transition-all duration-300 relative overflow-visible ${
                     isActive
                       ? "bg-[#006400] text-white scale-[1.01]"
                       : "bg-white text-[#006400] hover:scale-[1.01]"
                   }`}
                   style={{
                     border: "none",
-                    flex: "0 0 85px",
-                    height: "72px",
+                    flex: "0 0 75px",
+                    height: "50px",
                     background: isActive ? LIVEPEER_GRADIENT : "white",
                     color: isActive ? "white" : LIVEPEER_GREEN,
                     boxShadow: "none", // Remove shadow from button
