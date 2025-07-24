@@ -10,12 +10,6 @@ import { useUser } from "../../contexts/UserContext";
 
 const LIVEPEER_GRADIENT = "linear-gradient(135deg, #006400 0%, #00EB88 100%)";
 
-const CURRENCY_SYMBOLS: Record<string, string> = {
-  NGN: "₦",
-  USD: "$",
-  EUR: "€",
-  GBP: "£",
-};
 const LPT_PRICE_USD = 7.22;
 const USD_TO_NAIRA = 1526;
 const USD_TO_EUR = 0.92;
@@ -28,7 +22,6 @@ const getConversionRate = (currency: string) => {
     default: return 1;
   }
 };
-const getCurrencySymbol = (currency: string) => CURRENCY_SYMBOLS[currency] || "$";
 
 const CardsPage = () => {
   const { currency } = useUser();

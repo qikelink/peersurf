@@ -39,7 +39,7 @@ const FundingPage: React.FC = () => {
         ],
       },
     };
-    const onSuccess = (response: any) => {
+    const onSuccess = () => {
       alert("Payment initiated! Awaiting confirmation...");
     };
     const onClose = () => {};

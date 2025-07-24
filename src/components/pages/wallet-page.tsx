@@ -7,19 +7,13 @@ import EmptyState from "../ui/empty-state";
 import { Wallet as WalletIcon, Info, Bell } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../contexts/UserContext";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import orchestrators from "../../data/orchestrators.json";
 
 // Livepeer green: #00EB88
 const LIVEPEER_GREEN = "#006400";
 const LIVEPEER_GRADIENT = "linear-gradient(135deg, #006400 0%, #00EB88 100%)";
 
-const CURRENCY_SYMBOLS: Record<string, string> = {
-  NGN: "₦",
-  USD: "$",
-  EUR: "€",
-  GBP: "£",
-};
 const LPT_PRICE_USD = 7.22;
 const USD_TO_NAIRA = 1526;
 const USD_TO_EUR = 0.92;
@@ -32,14 +26,12 @@ const getConversionRate = (currency: string) => {
     default: return 1;
   }
 };
-const getCurrencySymbol = (currency: string) => CURRENCY_SYMBOLS[currency] || "$";
 
 const ACTION_BUTTONS_HEIGHT = 104;
 
 const WalletDashboard = () => {
   const navigate = useNavigate();
   const { user, loading: userLoading, profile, stakes, currency } = useUser();
-  const [error, setError] = useState<string | null>(null);
   // Remove orchestrator fetch logic and use orchestrators from JSON
   // const [orchestrators, setOrchestrators] = useState<any[]>([]);
   // const [orchLoading, setOrchLoading] = useState(true);
@@ -68,7 +60,6 @@ const WalletDashboard = () => {
   // }, []);
 
   if (userLoading) return <Loader />;
-  if (error) return <div className="p-8 text-red-500">{error}</div>;
   if (!user || !profile) return null;
 
   const conversionRate = getConversionRate(currency);

@@ -9,8 +9,6 @@ import {
 } from "lucide-react";
 import ActionButtons from "../ui/action-buttons";
 import orchestratorsData from "../../data/orchestrators.json";
-import Loader from "../ui/loader";
-import EmptyState from "../ui/empty-state";
 import { useUser } from "../../contexts/UserContext";
 
 // Add a currency conversion utility
@@ -39,7 +37,7 @@ const LIVEPEER_GRADIENT = "linear-gradient(135deg, #006400 0%, #00EB88 100%)";
 const ACTION_BUTTONS_HEIGHT = 104;
 
 // Parse orchestrators for numeric APY and commission
-const orchestratorsList = (orchestratorsData as any[]).map((orch, idx) => ({
+const orchestratorsList = (orchestratorsData as any[]).map((orch) => ({
   id: orch.address,
   name: orch.name,
   apy: parseFloat(orch.apy.replace("%", "")),

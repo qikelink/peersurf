@@ -14,12 +14,6 @@ type PortfolioPageProps = {
   onBack: () => void;
 };
 
-const CURRENCY_SYMBOLS: Record<string, string> = {
-  NGN: "₦",
-  USD: "$",
-  EUR: "€",
-  GBP: "£",
-};
 const LPT_PRICE_USD = 7.22;
 const USD_TO_NAIRA = 1526;
 const USD_TO_EUR = 0.92;
@@ -32,11 +26,10 @@ const getConversionRate = (currency: string) => {
     default: return 1;
   }
 };
-const getCurrencySymbol = (currency: string) => CURRENCY_SYMBOLS[currency] || "$";
 
 export const PortfolioPage: React.FC<PortfolioPageProps> = ({ onBack }) => {
   const { user, loading: userLoading, stakes, currency } = useUser();
-  const [error, setError] = useState<string | null>(null);
+  const [error] = useState<string | null>(null);
 
   if (userLoading) return <Loader />;
   if (error) return <div className="p-8 text-red-500">{error}</div>;
@@ -48,7 +41,6 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({ onBack }) => {
   const totalStaked = stakes.reduce((sum, s) => sum + (Number(s.amount) * lptPrice || 0), 0);
   const projectedEarnings = stakes.reduce((sum, s) => sum + ((Number(s.amount) * lptPrice || 0) * (Number(s.apy) || 0) / 100), 0);
   const lifetimeEarnings = stakes.reduce((sum, s) => sum + (Number(s.earnings) * lptPrice || 0), 0);
-  const withdrawableEarnings = stakes.reduce((sum, s) => sum + (Number(s.earnings) * lptPrice || 0), 0);
   const formatCurrency = (amount: number) =>
     new Intl.NumberFormat(undefined, {
       style: "currency",

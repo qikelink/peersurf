@@ -35,26 +35,20 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>(null);
   const [stakes, setStakes] = useState<any[]>([]);
-  const [profileLoading, setProfileLoading] = useState(false);
-  const [stakesLoading, setStakesLoading] = useState(false);
   const [currency, setCurrency] = useState<string>("NGN");
 
   // Fetch profile
   const refreshProfile = async () => {
     if (user && user.id) {
-      setProfileLoading(true);
       const { data, error } = await getUserProfile(user.id);
       if (!error) setProfile(data);
-      setProfileLoading(false);
     }
   };
   // Fetch stakes
   const refreshStakes = async () => {
     if (user && user.id) {
-      setStakesLoading(true);
       const { data, error } = await getUserStakes(user.id);
       if (!error) setStakes(data || []);
-      setStakesLoading(false);
     }
   };
 

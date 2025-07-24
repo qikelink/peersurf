@@ -6,7 +6,7 @@ import ActionButtons from "../ui/action-buttons";
 import { useNotifications } from "../../contexts/NotificationsContext";
 
 const NotificationsPage: React.FC = () => {
-  const { notifications, loading, refreshNotifications } = useNotifications();
+  const { notifications, loading } = useNotifications();
 
   return (
     <div className="min-h-screen bg-white text-black font-sans flex flex-col">

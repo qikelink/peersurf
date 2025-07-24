@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useUser } from "../../contexts/UserContext";
-import { getUserProfile, updateUserProfile } from "../../lib/auth";
+import { updateUserProfile } from "../../lib/auth";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import Loader from "../ui/loader";
@@ -32,7 +32,7 @@ const ProfilePage: React.FC = () => {
     setError(null);
     setSuccess(null);
     try {
-      const { data, error } = await updateUserProfile(user.id, form);
+      const { error } = await updateUserProfile(user.id, form);
       if (error) setError(error.message);
       else {
         setSuccess("Profile updated successfully!");

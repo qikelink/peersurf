@@ -19,30 +19,7 @@ import ActionButtons from "../ui/action-buttons";
 
 const LIVEPEER_GREEN = "#006400";
 
-const CURRENCY_SYMBOLS: Record<string, string> = {
-  NGN: "₦",
-  USD: "$",
-  EUR: "€",
-  GBP: "£",
-};
 const LPT_PRICE_USD = 7.22;
-const USD_TO_NAIRA = 1526;
-const USD_TO_EUR = 0.92;
-const USD_TO_GBP = 0.79;
-const getConversionRate = (currency: string) => {
-  switch (currency) {
-    case "NGN":
-      return USD_TO_NAIRA;
-    case "EUR":
-      return USD_TO_EUR;
-    case "GBP":
-      return USD_TO_GBP;
-    default:
-      return 1;
-  }
-};
-const getCurrencySymbol = (currency: string) =>
-  CURRENCY_SYMBOLS[currency] || "$";
 
 const DelegatePage = () => {
   const [stakeAmount, setStakeAmount] = useState("");
@@ -63,9 +40,6 @@ const DelegatePage = () => {
       />
     );
   }
-
-  const conversionRate = getConversionRate(currency);
-  const lptPrice = LPT_PRICE_USD * conversionRate;
 
   // Calculate projected earnings
   const calculateEarnings = (amount: string | number) => {
@@ -120,7 +94,7 @@ const DelegatePage = () => {
         status: "active" as const,
         earnings: 0,
       };
-      const { data, error } = await createStake(stakeData);
+      const { error } = await createStake(stakeData);
       if (error) setError(error.message);
       else {
         setSuccess("Stake delegated successfully!");
