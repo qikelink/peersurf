@@ -178,7 +178,7 @@ const CalculatorPage: React.FC = () => {
               <SelectTrigger className="w-full py-6 border rounded border-gray-200 bg-white text-black text-lg font-semibold focus:outline-none">
                 <SelectValue placeholder="Choose an orchestrator" />
               </SelectTrigger>
-              <SelectContent className="py-4 space-y-1">
+              <SelectContent>
                 {orchestratorsList.map((orch) => (
                   <SelectItem key={orch.id} value={orch.id} className="px-2 py-4 rounded">
                     {orch.name} - APY: {orch.apy}%
@@ -197,7 +197,7 @@ const CalculatorPage: React.FC = () => {
               type="number"
               min={0}
               placeholder="Enter amount"
-              className="w-full p-3 rounded border border-gray-200 bg-white text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-300 transition-colors text-lg font-semibold"
+              className="w-full px-3 py-2.5 rounded border border-gray-200 bg-white text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-300 transition-colors text-lg font-semibold"
               value={delegationAmountNaira}
               onChange={(e) => setDelegationAmountNaira(e.target.value)}
             />

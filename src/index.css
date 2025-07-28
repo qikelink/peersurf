@@ -124,9 +124,14 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    background-color: white;
+  }
   body {
     @apply bg-white text-foreground;
     font-family: var(--font-sans);
+    background-color: white;
+    min-height: 100vh;
   }
 
   .font-playfair {
@@ -148,5 +153,17 @@
   .no-scrollbar {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
+  }
+
+  /* Ensure overflow areas are white */
+  #root {
+    background-color: white;
+  }
+  
+  /* Fix for iOS Safari and other mobile browsers */
+  @supports (-webkit-touch-callout: none) {
+    body {
+      background-color: white !important;
+    }
   }
 }

@@ -70,7 +70,7 @@ export const Currencies = () => {
     <footer className="w-full max-w-7xl mx-auto py-12 px-8 flex flex-col items-center">
       <div className="text-[oklch(0.22_0.13_145)] dark:text-[oklch(0.65_0.18_145)] text-base font-medium mb-6 text-center">
         <span className="text-sm text-gray-500 font-normal">
-          Up to 50+ supported currencies for seamless staking and rewards.
+          Up to 50+ supported currencies for seamless staking.
         </span>
       </div>
       <div

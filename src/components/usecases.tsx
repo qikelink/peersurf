@@ -12,7 +12,7 @@ export const UseCasesSection = () => {
       <div className="max-w-7xl w-full mx-auto">
         <div className="mb-16 text-center">
           <h2 className="text-4xl md:text-5xl font-semibold text-black mb-4">
-            Secure Livepeer Network, Earn Rewards
+            Effortless Earning Onchain
           </h2>
           <div className="text-lg text-gray-600 max-w-2xl mx-auto">
             Delegate your stake to Livepeer orchestrators and earn up to 65% APY while helping secure the decentralized video network.
