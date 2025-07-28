@@ -1,19 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from "react";
-
-const dummyNotifications = [
-  {
-    id: 1,
-    title: "Stake Successful",
-    message: "Your stake of N100,000 to Titan Node was successful.",
-    timestamp: "2024-06-01 10:30 AM",
-  },
-  {
-    id: 2,
-    title: "Reward Earned",
-    message: "You earned N25,000 in rewards from StakeSquid.",
-    timestamp: "2024-05-30 08:15 AM",
-  },
-];
+import { supabase } from "../lib/supabase";
 
 const NotificationsContext = createContext<any>(null);
 
@@ -22,13 +8,40 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
   const [loading, setLoading] = useState(true);
   const [loaded, setLoaded] = useState(false);
 
-  const fetchNotifications = useCallback(() => {
+  const fetchNotifications = useCallback(async () => {
     setLoading(true);
-    setTimeout(() => {
-      setNotifications(dummyNotifications); // Replace with real fetch later
+    try {
+      // Try to fetch notifications from the backend
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        // Fetch notifications for the current user
+        const { data, error } = await supabase
+          .from('notifications')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(50);
+
+        if (error) {
+          console.error('Error fetching notifications:', error);
+          // If there's an error or no notifications table, set empty array
+          setNotifications([]);
+        } else {
+          setNotifications(data || []);
+        }
+      } else {
+        // No user logged in, set empty array
+        setNotifications([]);
+      }
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+      // If there's any error, set empty array
+      setNotifications([]);
+    } finally {
       setLoading(false);
       setLoaded(true);
-    }, 800);
+    }
   }, []);
 
   const refreshNotifications = () => {

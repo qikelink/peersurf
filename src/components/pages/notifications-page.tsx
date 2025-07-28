@@ -27,7 +27,14 @@ const NotificationsPage: React.FC = () => {
         {loading ? (
           <Loader />
         ) : notifications.length === 0 ? (
-          <EmptyState message="No notifications yet." icon={<Info />} />
+          <EmptyState 
+            message="No notifications yet." 
+            icon={<Info />} 
+          >
+            <div className="text-sm text-gray-400">
+              You'll see notifications here when you have activity on your account.
+            </div>
+          </EmptyState>
         ) : (
           <div className="space-y-4">
             {notifications.map((n: any) => (

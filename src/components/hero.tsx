@@ -3,13 +3,16 @@ import { useNavigate } from "react-router-dom";
 const Hero = () => {
   const navigate = useNavigate();
   return (
-    <section className="w-full flex flex-col md:flex-row items-center justify-between max-w-7xl mx-auto py-20 px-8 min-h-[70vh]">
+    <section className="w-full flex flex-col md:flex-row items-center justify-between max-w-7xl mx-auto pb-20 pt-18 px-8 min-h-[70vh]">
       {/* Left: Text */}
       <div className="flex-1 flex flex-col items-start justify-center max-w-2xl">
+      <div className="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm font-medium mb-4">
+            ⚡ Up to 65% APY
+          </div>
         <h1 className="text-5xl md:text-6xl font-semibold mb-8 leading-tight text-black">
-          The Easiest Way to
+          Earn Rewards Securing
           <br />
-          Earn Onchain.
+          Livepeer Network.
         </h1>
         <div className="mb-8 text-gray-700 text-lg max-w-md">
           With Lisa, you can delegate and earn rewards using your local
@@ -27,14 +30,7 @@ const Hero = () => {
             Learn more <span className="ml-1">→</span>
           </button>
         </div>
-        <div className="flex items-end gap-2">
-          <span className="text-4xl md:text-5xl font-bold text-green-700">
-            65.3%
-          </span>
-          <span className="text-2xl md:text-3xl font-medium text-black">
-            APY
-          </span>
-        </div>
+        
       </div>
       {/* Right: 3D Card Illustration Placeholder */}
       <div className="flex-1 flex flex-col items-center justify-center relative mt-16 md:mt-0">

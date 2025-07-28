@@ -36,39 +36,39 @@ const FAQ = () => {
   const faqData = [
     {
       id: 1,
-      question: "What is Lisa?",
+      question: "What is Livepeer delegation?",
       answer:
-        "Lisa is the easiest way to delegate and earn rewards on the Livepeer network. You can fund your wallet with your local currency and stake to any orchestrator—no need to buy LPT or pay for gas fees yourself.",
+        "Livepeer delegation lets you earn rewards by staking LPT tokens with orchestrators who secure the decentralized video network. Lisa makes this accessible without needing crypto knowledge.",
     },
     {
       id: 2,
-      question: "How do I start staking with Lisa?",
+      question: "How do I start delegating on Livepeer?",
       answer:
-        "Just connect your wallet, fund it with your local currency, and choose an orchestrator. Lisa handles all the blockchain transactions and fees for you.",
+        "Fund your wallet with local currency, choose a Livepeer orchestrator, and delegate your stake. Lisa handles all the blockchain complexity for you.",
     },
     {
       id: 3,
       question: "Do I need to buy LPT or ETH?",
       answer:
-        "No! Lisa lets you stake on Livepeer without ever buying LPT or ETH. You simply use your local currency, and Lisa takes care of the rest.",
+        "No! Lisa lets you delegate on Livepeer using your local currency. We handle the LPT purchase and gas fees behind the scenes.",
     },
     {
       id: 4,
-      question: "How are rewards paid out?",
+      question: "How are Livepeer rewards calculated?",
       answer:
-        "Rewards are automatically added to your Lisa wallet. You can withdraw or restake them at any time.",
+        "Rewards are based on your orchestrator's APY (up to 65%) minus their fee percentage. You earn LPT tokens automatically.",
     },
     {
       id: 5,
-      question: "Is Lisa secure?",
+      question: "Is Livepeer delegation secure?",
       answer:
-        "Yes. Lisa is built on and supported by Livepeer, and your funds are always in your control. For more details, check our [docs](https://livepeer.org/docs).",
+        "Yes. Livepeer is a battle-tested protocol, and your funds remain in your control. Check [Livepeer docs](https://livepeer.org/docs) for technical details.",
     },
     {
       id: 6,
-      question: "Where can I get help?",
+      question: "Where can I learn more about Livepeer?",
       answer:
-        "Join our [Discord](https://discord.gg/livepeer) or reach out on [Twitter](https://twitter.com/livepeer). We're here to help!",
+        "Join the [Livepeer Discord](https://discord.gg/livepeer) or follow [@livepeer](https://twitter.com/livepeer) for updates and community support.",
     },
   ];
 
@@ -83,7 +83,7 @@ const FAQ = () => {
           Frequently Asked Questions
         </h2>
         <p className="text-gray-500 mt-2 text-base max-w-2xl mx-auto">
-          Everything you need to know about using Lisa to delegate and earn on Livepeer.
+          Everything you need to know about Livepeer delegation and earning rewards.
         </p>
       </div>
       <div className="w-full space-y-3 sm:space-y-4 sm:px-10 ">

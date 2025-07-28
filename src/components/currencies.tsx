@@ -5,10 +5,10 @@ const currencies = [
   { country: "United States", flag: "🇺🇸" },
   { country: "European Union", flag: "🇪🇺" },
   { country: "United Kingdom", flag: "🇬🇧" },
-  { country: "Japan", flag: "🇯🇵" },
   { country: "Nigeria", flag: "🇳🇬" },
   { country: "India", flag: "🇮🇳" },
   { country: "Canada", flag: "🇨🇦" },
+  { country: "Japan", flag: "🇯🇵" },
   { country: "Australia", flag: "🇦🇺" },
   { country: "Brazil", flag: "🇧🇷" },
   { country: "South Korea", flag: "🇰🇷" },
@@ -94,7 +94,7 @@ export const Currencies = () => {
               className="flex flex-col items-center justify-center transition-transform"
               title={c.country}
               style={{
-                flex: "0 0 64px", 
+                flex: "0 0 64px",
                 aspectRatio: "1/1",
                 background: "none",
               }}

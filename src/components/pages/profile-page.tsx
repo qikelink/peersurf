@@ -4,6 +4,13 @@ import { updateUserProfile } from "../../lib/auth";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import Loader from "../ui/loader";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 const ProfilePage: React.FC = () => {
   const { user, loading: userLoading, profile, refreshProfile, currency, setCurrency } = useUser();
@@ -114,17 +121,17 @@ const ProfilePage: React.FC = () => {
         </div>
         <div>
           <label className="block text-sm font-medium mb-2">Preferred Currency</label>
-          <select
-            className="w-full p-3 border rounded-md"
-            value={currency}
-            onChange={e => setCurrency(e.target.value)}
-          >
-            <option value="NGN">Naira (₦)</option>
-            <option value="USD">US Dollar ($)</option>
-            <option value="EUR">Euro (€)</option>
-            <option value="GBP">British Pound (£)</option>
-            {/* Add more currencies as needed */}
-          </select>
+          <Select value={currency} onValueChange={setCurrency}>
+            <SelectTrigger className="w-full py-6 border rounded">
+              <SelectValue placeholder="Select currency" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="NGN">Naira (₦)</SelectItem>
+              <SelectItem value="USD">US Dollar ($)</SelectItem>
+              <SelectItem value="EUR">Euro (€)</SelectItem>
+              <SelectItem value="GBP">British Pound (£)</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
         <button
           type="submit"

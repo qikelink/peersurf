@@ -23,9 +23,9 @@ const Navbar = () => {
       <div>
         <button
           onClick={() => navigate("/wallet")}
-          className="font-medium px-6 py-2 flex "
+          className="font-medium py-2 flex "
         >
-          Get Started
+          Get started
           <span className="ml-2">→</span>
         </button>
       </div>

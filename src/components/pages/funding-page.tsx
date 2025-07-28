@@ -53,7 +53,7 @@ const FundingPage: React.FC = () => {
         <div>
           <div className="font-semibold text-base leading-tight">Add Funds</div>
           <div className="text-xs text-gray-500">
-            Fund your Lisa wallet with local currency
+            Fund your Lisa wallet with fiat
           </div>
         </div>
       </div>

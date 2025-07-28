@@ -20,10 +20,14 @@ const USD_TO_EUR = 0.92;
 const USD_TO_GBP = 0.79;
 const getConversionRate = (currency: string) => {
   switch (currency) {
-    case "NGN": return USD_TO_NAIRA;
-    case "EUR": return USD_TO_EUR;
-    case "GBP": return USD_TO_GBP;
-    default: return 1;
+    case "NGN":
+      return USD_TO_NAIRA;
+    case "EUR":
+      return USD_TO_EUR;
+    case "GBP":
+      return USD_TO_GBP;
+    default:
+      return 1;
   }
 };
 
@@ -65,7 +69,10 @@ const WalletDashboard = () => {
   const conversionRate = getConversionRate(currency);
   const lptPrice = LPT_PRICE_USD * conversionRate;
   // Calculate wallet balance as sum of all stakes (in fiat)
-  const walletBalance = stakes.reduce((sum, s) => sum + (Number(s.amount) * lptPrice || 0), 0);
+  const walletBalance = stakes.reduce(
+    (sum, s) => sum + (Number(s.amount) * lptPrice || 0),
+    0
+  );
   const formatCurrency = (amount: number) =>
     new Intl.NumberFormat(undefined, {
       style: "currency",
@@ -78,20 +85,22 @@ const WalletDashboard = () => {
       {/* Header */}
       <div className="flex items-center justify-between px-4 pt-8 pb-4">
         <div className="flex items-center gap-3">
-          <div onClick={() => navigate("/profile")}
-            className="cursor-pointer">
+          <div onClick={() => navigate("/profile")} className="cursor-pointer">
             <Avatar>
-              <AvatarImage src={profile.avatar_url || "https://github.com/shadcn.png"} />
-              <AvatarFallback>{profile.username?.slice(0, 2)?.toUpperCase() || "U"}</AvatarFallback>
+              <AvatarImage
+                src={profile.avatar_url || "https://github.com/shadcn.png"}
+              />
+              <AvatarFallback>
+                {profile.username?.slice(0, 2)?.toUpperCase() || "U"}
+              </AvatarFallback>
             </Avatar>
           </div>
           <div>
             <div className="font-semibold text-base leading-tight">
-              Welcome, {profile.full_name || profile.username || user.email || "User"}
+              Welcome,{" "}
+              {profile.full_name || profile.username || user.email || "User"}
             </div>
-            <div className="text-xs text-gray-500">
-              How bullish on livepeer are you?
-            </div>
+            <div className="text-xs text-gray-500">Good to have you here!</div>
           </div>
         </div>
         <button
@@ -180,10 +189,11 @@ const WalletDashboard = () => {
                 <div className="flex justify-between items-center">
                   <div>
                     <div className="font-semibold text-black text-base">
-                      {orc.name || orc.address.slice(0, 6) + "..." + orc.address.slice(-4)}
+                      {orc.name ||
+                        orc.address.slice(0, 6) + "..." + orc.address.slice(-4)}
                     </div>
                     <div className="text-xs text-gray-600">
-                      APY: {" "}
+                      APY:{" "}
                       <span
                         className="font-medium"
                         style={{ color: LIVEPEER_GREEN }}
@@ -198,17 +208,24 @@ const WalletDashboard = () => {
                       background: LIVEPEER_GREEN,
                       color: "#fff",
                     }}
-                    onClick={() => navigate("/delegate", { state: { orchestrator: orc } })}
+                    onClick={() =>
+                      navigate("/delegate", { state: { orchestrator: orc } })
+                    }
                   >
                     Delegate
                   </Button>
                 </div>
                 <div className="flex gap-4 text-xs text-gray-600 mt-1">
                   <div>
-                    Staked: <span className="text-black">{formatCurrency(Number(orc.totalStake.replace(/[^\d.]/g, "")) * lptPrice)}</span>
+                    Total Stake:{" "}
+                    <span className="text-black">
+                      {formatCurrency(
+                        Number(orc.totalStake.replace(/[^\d.]/g, "")) * lptPrice
+                      )}
+                    </span>
                   </div>
                   <div>
-                    Performance: {" "}
+                    Transcoding Score:{" "}
                     <span className="text-black">{orc.performance}</span>
                   </div>
                 </div>

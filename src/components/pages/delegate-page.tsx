@@ -21,6 +21,9 @@ const LIVEPEER_GREEN = "#006400";
 
 const LPT_PRICE_USD = 7.22;
 
+// Livepeer staking docs URL
+const LIVEPEER_STAKING_URL = "https://www.livepeer.org/delegate";
+
 const DelegatePage = () => {
   const [stakeAmount, setStakeAmount] = useState("");
   const [loading, setLoading] = useState(false);
@@ -168,7 +171,7 @@ const DelegatePage = () => {
                 <span className="text-gray-500">Fee cut</span>
               </div>
               <div className="font-semibold text-gray-900">
-                {orchestrator.uptime}
+                {orchestrator.fee}
               </div>
             </div>
             <div className="text-center">
@@ -177,7 +180,7 @@ const DelegatePage = () => {
                 <span className="text-gray-500">Reward cut</span>
               </div>
               <div className="font-semibold text-gray-900">
-                {orchestrator.commission}
+                {orchestrator.reward}
               </div>
             </div>
           </div>
@@ -293,7 +296,7 @@ const DelegatePage = () => {
               <div className="text-orange-800 space-y-1">
                 <div>• Rewards are distributed every round</div>
                 <div>• Unstaking has a 7-day unbonding period</div>
-                <div>• Slashing risk applies for orchestrator misbehavior</div>
+                <div>• Rewards begin from next round after you delegate</div>
               </div>
             </div>
           </div>
@@ -322,9 +325,16 @@ const DelegatePage = () => {
           {success && <div className="text-green-600 mt-2">{success}</div>}
 
           <div className="text-center">
-            <Button variant="ghost" className="text-sm text-gray-600">
-              Learn more about staking <InfoIcon />
-            </Button>
+            <a
+              href={LIVEPEER_STAKING_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              tabIndex={0}
+              className="inline-flex items-center justify-center text-sm text-gray-600 hover:text-green-700 transition focus:outline-none"
+              style={{ textDecoration: "none" }}
+            >
+              Learn more about staking <InfoIcon className="ml-1" />
+            </a>
           </div>
         </div>
       </div>

@@ -10,6 +10,13 @@ import {
 import ActionButtons from "../ui/action-buttons";
 import orchestratorsData from "../../data/orchestrators.json";
 import { useUser } from "../../contexts/UserContext";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 // Add a currency conversion utility
 const CURRENCY_SYMBOLS: Record<string, string> = {
@@ -18,7 +25,7 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
   EUR: "€",
   GBP: "£",
 };
-const LPT_PRICE_USD = 7.22;
+const LPT_PRICE_USD = 7.32;
 const USD_TO_NAIRA = 1526;
 const USD_TO_EUR = 0.92;
 const USD_TO_GBP = 0.79;
@@ -41,7 +48,7 @@ const orchestratorsList = (orchestratorsData as any[]).map((orch) => ({
   id: orch.address,
   name: orch.name,
   apy: parseFloat(orch.apy.replace("%", "")),
-  fee: parseFloat(orch.commission.replace("%", "")) / 100,
+  fee: parseFloat(orch.fee.replace("%", "")) / 100,
   address: orch.address,
 }));
 
@@ -119,7 +126,7 @@ const CalculatorPage: React.FC = () => {
             Yield Calculator
           </div>
           <div className="text-xs text-gray-500">
-            Calculate your delegation rewards in Naira
+            Calculate your potential rewards
           </div>
         </div>
       </div>
@@ -146,7 +153,7 @@ const CalculatorPage: React.FC = () => {
                 Earnings Calculator
               </div>
               <div className="text-xl font-bold tracking-tight mt-1">
-                Plan Your Earnings
+                Forecast Your Earnings
               </div>
             </div>
           </div>
@@ -159,22 +166,26 @@ const CalculatorPage: React.FC = () => {
             <label className="block text-sm font-medium text-gray-700 mb-3">
               Select Orchestrator
             </label>
-            <select
-              className="w-full p-4 rounded-xl border border-gray-200 bg-white text-black focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-300 transition-colors text-lg font-semibold"
+            <Select
               value={selectedOrchestrator.id}
-              onChange={(e) => {
+              onValueChange={(value) => {
                 const selected = orchestratorsList.find(
-                  (orch) => orch.id === e.target.value
+                  (orch) => orch.id === value
                 );
                 if (selected) setSelectedOrchestrator(selected);
               }}
             >
-              {orchestratorsList.map((orch) => (
-                <option key={orch.id} value={orch.id}>
-                  {orch.name} - APY: {orch.apy}% 
-                </option>
-              ))}
-            </select>
+              <SelectTrigger className="w-full py-6 border rounded border-gray-200 bg-white text-black text-lg font-semibold focus:outline-none">
+                <SelectValue placeholder="Choose an orchestrator" />
+              </SelectTrigger>
+              <SelectContent className="py-4 space-y-1">
+                {orchestratorsList.map((orch) => (
+                  <SelectItem key={orch.id} value={orch.id} className="px-2 py-4 rounded">
+                    {orch.name} - APY: {orch.apy}%
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Delegation Amount */}
@@ -186,7 +197,7 @@ const CalculatorPage: React.FC = () => {
               type="number"
               min={0}
               placeholder="Enter amount"
-              className="w-full p-4 rounded-xl border border-gray-200 bg-white text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-300 transition-colors text-lg font-semibold"
+              className="w-full p-3 rounded border border-gray-200 bg-white text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-300 transition-colors text-lg font-semibold"
               value={delegationAmountNaira}
               onChange={(e) => setDelegationAmountNaira(e.target.value)}
             />

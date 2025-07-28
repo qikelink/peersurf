@@ -12,11 +12,10 @@ export const UseCasesSection = () => {
       <div className="max-w-7xl w-full mx-auto">
         <div className="mb-16 text-center">
           <h2 className="text-4xl md:text-5xl font-semibold text-black mb-4">
-            Effortless Earning Onchain
+            Secure Livepeer Network, Earn Rewards
           </h2>
           <div className="text-lg text-gray-600 max-w-2xl mx-auto">
-            We handle the hard parts of crypto so you can start earning rewards
-            onchain in minutes.
+            Delegate your stake to Livepeer orchestrators and earn up to 65% APY while helping secure the decentralized video network.
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
@@ -24,11 +23,10 @@ export const UseCasesSection = () => {
           <Card className="bg-white border border-gray-200 rounded-2xl shadow-sm flex flex-col justify-between">
             <CardHeader>
               <CardTitle className="text-2xl text-gray-900 mb-2">
-                Fund with Fiat
+                Fund with Local Currency
               </CardTitle>
               <CardDescription className="text-gray-600 mb-4">
-                No need to go through exchanges. Connect your bank account or
-                card and fund your wallet directly with your local currency.
+                Skip the crypto exchanges. Fund your Livepeer delegation directly with your local currency—no LPT or ETH needed.
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col items-start justify-end h-full">
@@ -40,12 +38,10 @@ export const UseCasesSection = () => {
           <Card className="bg-white border border-gray-200 rounded-2xl shadow-sm flex flex-col justify-between">
             <CardHeader>
               <CardTitle className="text-2xl text-gray-900 mb-2">
-                One-Click Staking
+                Delegate to Top Orchestrators
               </CardTitle>
               <CardDescription className="text-gray-600 mb-4">
-                Browse all available Livepeer orchestrators, see their
-                performance, and delegate your stake with a single click right
-                from our dashboard.
+                Choose from verified Livepeer orchestrators with proven track records. See real-time APY, performance, and fee structures.
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col items-start justify-end h-full">
@@ -57,11 +53,10 @@ export const UseCasesSection = () => {
           <Card className="bg-white border border-gray-200 rounded-2xl shadow-sm flex flex-col justify-between">
             <CardHeader>
               <CardTitle className="text-2xl text-gray-900 mb-2">
-                Earn on Autopilot
+                Earn Livepeer Rewards
               </CardTitle>
               <CardDescription className="text-gray-600 mb-4">
-                Sit back and watch your rewards grow. No manual actions or
-                monitoring required. Withdraw whenever you want to.
+                Earn up to 65% APY in LPT rewards while helping secure the decentralized video infrastructure. Withdraw anytime.
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col items-start justify-end h-full">
