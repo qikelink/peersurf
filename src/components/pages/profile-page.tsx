@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useUser } from "../../contexts/UserContext";
+import { usePrivyContext } from "../../contexts/PrivyContext";
 import { updateUserProfile } from "../../lib/auth";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
@@ -13,7 +13,7 @@ import {
 } from "../ui/select";
 
 const ProfilePage: React.FC = () => {
-  const { user, loading: userLoading, profile, refreshProfile, currency, setCurrency } = useUser();
+  const { user, loading: userLoading, profile, refreshProfile, currency, setCurrency } = usePrivyContext();
   const [form, setForm] = useState<any>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

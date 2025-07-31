@@ -1,7 +1,7 @@
 import { Card } from "../ui/card";
 import { Zap, TrendingUp, Shield } from "lucide-react";
 import ActionButtons from "../ui/action-buttons";
-import { useUser } from "../../contexts/UserContext";
+import { usePrivyContext } from "../../contexts/PrivyContext";
 
 // Constants for currency conversion
 const LIVEPEER_GRADIENT = "linear-gradient(135deg, #006400 0%, #00EB88 100%)";
@@ -23,7 +23,7 @@ const getConversionRate = (currency: string) => {
 };
 
 const CardsPage = () => {
-  const { currency } = useUser();
+  const { currency } = usePrivyContext();
 
   // Use $5000 as the base, and show its value in LPT and the selected currency
   const conversionRate = getConversionRate(currency);

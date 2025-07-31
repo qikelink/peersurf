@@ -1,21 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   ArrowLeft,
   Info,
   Shield,
-  Calculator,
   InfoIcon,
   CircleDollarSign,
   HandCoins,
+  TrendingUp,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
-import { useUser } from "../../contexts/UserContext";
+import { usePrivyContext } from "../../contexts/PrivyContext";
+import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { createStake } from "../../lib/auth";
 import { useNavigate, useLocation } from "react-router-dom";
 import Loader from "../ui/loader";
 import EmptyState from "../ui/empty-state";
 import ActionButtons from "../ui/action-buttons";
+import { delegateTokens } from "../../lib/livepeer";
+import { ethers } from "ethers";
 
 const LIVEPEER_GREEN = "#006400";
 
@@ -29,10 +32,38 @@ const DelegatePage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const { user, loading: userLoading, refreshStakes, currency } = useUser();
+  const [signer, setSigner] = useState<any>(null);
+
+  const {
+    user,
+    loading: userLoading,
+    refreshStakes,
+    currency,
+  } = usePrivyContext();
+  const { wallets } = useWallets();
+  const { authenticated } = usePrivy();
   const navigate = useNavigate();
   const location = useLocation();
   const orchestrator = location.state?.orchestrator;
+
+  // Initialize wallet connection in background
+  useEffect(() => {
+    const initializeWallet = async () => {
+      if (authenticated && wallets.length > 0) {
+        try {
+          const wallet = wallets[0];
+          const provider = await wallet.getEthereumProvider();
+          const ethersProvider = new ethers.BrowserProvider(provider);
+          const signer = await ethersProvider.getSigner();
+          setSigner(signer);
+        } catch (error) {
+          console.error("Error initializing wallet:", error);
+        }
+      }
+    };
+
+    initializeWallet();
+  }, [authenticated, wallets]);
 
   if (userLoading || loading) return <Loader />;
   if (!orchestrator) {
@@ -82,31 +113,47 @@ const DelegatePage = () => {
     setError(null);
     setSuccess(null);
     setLoading(true);
-    if (!user) {
-      setError("You must be logged in to delegate.");
+
+    if (!authenticated || !signer) {
+      setError("Please sign in to continue.");
       setLoading(false);
       return;
     }
+
     try {
-      const stakeData = {
-        user_id: user.id,
-        orchestrator_id: orchestrator.address,
-        orchestrator_name: orchestrator.name,
-        amount: parseFloat(stakeAmount),
-        apy: parseFloat(orchestrator.apy),
-        status: "active" as const,
-        earnings: 0,
-      };
-      const { error } = await createStake(stakeData);
-      if (error) setError(error.message);
-      else {
+      // Convert fiat amount to LPT tokens (assuming 1 LPT = $7.22)
+      const lptAmount = (parseFloat(stakeAmount) / LPT_PRICE_USD).toString();
+
+      // Delegate tokens using Livepeer SDK
+      const result = await delegateTokens(
+        orchestrator.address,
+        lptAmount,
+        signer
+      );
+
+      if (result.success) {
+        // Also save to local database for tracking
+        const stakeData = {
+          user_id: user.id,
+          orchestrator_id: orchestrator.address,
+          orchestrator_name: orchestrator.name,
+          amount: parseFloat(stakeAmount),
+          apy: parseFloat(orchestrator.apy),
+          status: "active" as const,
+          earnings: 0,
+        };
+        await createStake(stakeData);
+
         setSuccess("Stake delegated successfully!");
         setStakeAmount("");
         await refreshStakes();
+
         setTimeout(() => navigate("/dashboard"), 1500);
+      } else {
+        setError(result.error || "Failed to delegate investment");
       }
     } catch (err: any) {
-      setError(err.message || "Delegation failed");
+      setError(err.message || "Failed to delegate investment");
     } finally {
       setLoading(false);
     }
@@ -190,7 +237,7 @@ const DelegatePage = () => {
         <div className="mt-6">
           <div className="flex items-center gap-2 mb-3">
             <span className="text-sm font-semibold text-gray-700">
-              Stake Amount
+              Delegate Amount
             </span>
             <Info className="h-4 w-4 text-gray-400" />
           </div>
@@ -203,36 +250,16 @@ const DelegatePage = () => {
                   value={stakeAmount}
                   onChange={(e) => setStakeAmount(e.target.value)}
                   placeholder="Enter amount"
-                  className="w-full text-2xl font-bold border-0 outline-none bg-transparent"
+                  className="w-full text-xl font-bold border-0 outline-none bg-transparent"
                   style={{ color: LIVEPEER_GREEN }}
                 />
               </div>
             </div>
 
-            {/* Quick Amount Buttons */}
-            {/* <div className="flex gap-2">
-              {quickAmounts.map((amount, idx) => (
-                <Button
-                  key={amount}
-                  variant="outline"
-                  className="flex-1 text-xs rounded-full"
-                  onClick={() =>
-                    setStakeAmount(
-                      amount === maxStake
-                        ? maxStake.toString()
-                        : amount.toString()
-                    )
-                  }
-                >
-                  {formatCurrency(amount)}
-                </Button>
-              ))}
-            </div> */}
-
             {/* Projected Earnings (always visible, but grayed out if not valid) */}
             <div className="mt-2">
               <div className="flex items-center gap-2 mb-2">
-                <Calculator
+                <TrendingUp
                   className="h-4 w-4"
                   style={{ color: LIVEPEER_GREEN }}
                 />
@@ -304,25 +331,33 @@ const DelegatePage = () => {
 
         {/* Action Buttons */}
         <div className="my-8 space-y-3">
+          {/* Delegate Button */}
           <Button
             className="w-full h-12 rounded-xl font-semibold text-base"
             style={{
               background: isValidAmount ? LIVEPEER_GREEN : "#9CA3AF",
               color: "#fff",
             }}
-            disabled={!isValidAmount || loading}
+            disabled={!isValidAmount || loading || !authenticated}
             onClick={handleDelegate}
           >
             {loading
               ? "Delegating..."
+              : !authenticated
+              ? "Please Sign In to Continue"
               : !stakeAmount
               ? "Enter Amount to Continue"
               : !isValidAmount
               ? `Minimum ${formatCurrency(0)} Required`
               : `Delegate ${formatCurrency(parseFloat(stakeAmount))}`}
           </Button>
-          {error && <div className="text-red-600 mt-2">{error}</div>}
-          {success && <div className="text-green-600 mt-2">{success}</div>}
+
+          {error && (
+            <div className="text-red-600 mb-4 text-xs mx-auto">{error}</div>
+          )}
+          {success && (
+            <div className="text-green-600 mb-4 text-xs mx-auto">{success}</div>
+          )}
 
           <div className="text-center">
             <a
@@ -333,7 +368,7 @@ const DelegatePage = () => {
               className="inline-flex items-center justify-center text-sm text-gray-600 hover:text-green-700 transition focus:outline-none"
               style={{ textDecoration: "none" }}
             >
-              Learn more about staking <InfoIcon className="ml-1" />
+              Learn more about staking <InfoIcon className="ml-1 w-4 h-4" />
             </a>
           </div>
         </div>

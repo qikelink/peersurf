@@ -5,10 +5,11 @@ import ActionButtons from "../ui/action-buttons";
 import Loader from "../ui/loader";
 import EmptyState from "../ui/empty-state";
 import { Wallet as WalletIcon, Info, Bell } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { useUser } from "../../contexts/UserContext";
+import { useNavigate, useLocation } from "react-router-dom";
+import { usePrivyContext } from "../../contexts/PrivyContext";
+import { useWallets } from "@privy-io/react-auth";
 import { useEffect } from "react";
-import orchestrators from "../../data/orchestrators.json";
+import { useOrchestratorsContext } from "../../contexts/OrchestratorsContext";
 
 // Livepeer green: #00EB88
 const LIVEPEER_GREEN = "#006400";
@@ -35,35 +36,28 @@ const ACTION_BUTTONS_HEIGHT = 104;
 
 const WalletDashboard = () => {
   const navigate = useNavigate();
-  const { user, loading: userLoading, profile, stakes, currency } = useUser();
-  // Remove orchestrator fetch logic and use orchestrators from JSON
-  // const [orchestrators, setOrchestrators] = useState<any[]>([]);
-  // const [orchLoading, setOrchLoading] = useState(true);
-  // const [orchError, setOrchError] = useState<string | null>(null);
+  const location = useLocation();
+  const {
+    user,
+    loading: userLoading,
+    profile,
+    stakes,
+    currency,
+  } = usePrivyContext();
+  const { wallets } = useWallets();
+  const {
+    orchestrators,
+    loading: orchLoading,
+    error: orchError,
+  } = useOrchestratorsContext();
 
   useEffect(() => {
-    if (!userLoading && !user) {
+    if (!userLoading && !user && location.pathname !== "/auth") {
       navigate("/auth");
     }
-  }, [user, userLoading, navigate]);
+  }, [userLoading]); 
 
-  // Remove orchestrator fetch logic and use orchestrators from JSON
-  // useEffect(() => {
-  //   setOrchLoading(true);
-  //   setOrchError(null);
-  //   fetch("https://orchestrator.livepeer.org/api/leaderboard?limit=15")
-  //     .then((res) => {
-  //       if (!res.ok) throw new Error("Failed to fetch orchestrators");
-  //       return res.json();
-  //     })
-  //     .then((data) => {
-  //       setOrchestrators(data || []);
-  //     })
-  //     .catch((err) => setOrchError(err.message || "Failed to fetch orchestrators"))
-  //     .finally(() => setOrchLoading(false));
-  // }, []);
-
-  if (userLoading) return <Loader />;
+  if (userLoading || orchLoading) return <Loader />;
   if (!user || !profile) return null;
 
   const conversionRate = getConversionRate(currency);
@@ -98,7 +92,7 @@ const WalletDashboard = () => {
           <div>
             <div className="font-semibold text-base leading-tight">
               Welcome,{" "}
-              {profile.full_name || profile.username || user.email || "User"}
+              {profile.username || profile.full_name || user.email || "User"}
             </div>
             <div className="text-xs text-gray-500">Good to have you here!</div>
           </div>
@@ -134,19 +128,15 @@ const WalletDashboard = () => {
 
           <div className="flex justify-between items-center text-sm">
             <div>
-              <div className="opacity-80">User ID</div>
+              <div className="opacity-80">Wallet Address</div>
               <div className="font-medium text-white">
                 {(() => {
-                  const id = profile.username || user.email || "";
-                  if (!id) return "";
-                  // If it's an email, show first 3 + ... + domain
-                  if (id.includes("@")) {
-                    const [name, domain] = id.split("@");
-                    return `${name.slice(0, 3)}...@${domain}`;
-                  }
-                  // If it's a username or address, show first 4 + ... + last 4
-                  if (id.length <= 8) return id;
-                  return `${id.slice(0, 4)}...${id.slice(-4)}`;
+                  const walletAddress =
+                    wallets[0]?.address || profile.wallet_address || "";
+                  if (!walletAddress) return "Setting up your wallet...";
+                  return `${walletAddress.slice(0, 6)}...${walletAddress.slice(
+                    -4
+                  )}`;
                 })()}
               </div>
             </div>
@@ -170,11 +160,26 @@ const WalletDashboard = () => {
           marginBottom: `${ACTION_BUTTONS_HEIGHT}px`,
         }}
       >
-        <div className="text-sm text-gray-700 font-semibold mb-2 mt-2">
-          Available Offers
+        <div className="flex justify-between items-center mb-2 mt-2">
+          <div className="text-gray-600 text-sm font-semibold">
+            Available Offers
+          </div>
         </div>
+
+        {orchError && (
+          <div className="mb-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+            <div className="text-sm text-red-700">
+              Error loading orchestrators: {orchError}
+            </div>
+          </div>
+        )}
+
         <div className="space-y-3 pb-8">
-          {orchestrators.length === 0 ? (
+          {orchLoading ? (
+            <div className="flex justify-center py-8">
+              <Loader />
+            </div>
+          ) : orchestrators.length === 0 ? (
             <EmptyState message="No orchestrators available." icon={<Info />} />
           ) : (
             orchestrators.map((orc: any) => (

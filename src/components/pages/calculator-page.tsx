@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import ActionButtons from "../ui/action-buttons";
 import orchestratorsData from "../../data/orchestrators.json";
-import { useUser } from "../../contexts/UserContext";
+import { usePrivyContext } from "../../contexts/PrivyContext";
 import {
   Select,
   SelectContent,
@@ -53,7 +53,7 @@ const orchestratorsList = (orchestratorsData as any[]).map((orch) => ({
 }));
 
 const CalculatorPage: React.FC = () => {
-  const { currency } = useUser();
+  const { currency } = usePrivyContext();
   // Amount in naira
   const [delegationAmountNaira, setDelegationAmountNaira] = useState("");
   const [selectedOrchestrator, setSelectedOrchestrator] = useState(
@@ -122,7 +122,7 @@ const CalculatorPage: React.FC = () => {
       {/* Header */}
       <div className="flex items-center gap-3 px-4 pt-8 pb-4">
         <div>
-          <div className="font-semibold text-base leading-tight">
+          <div className="font-semibold text-lg">
             Yield Calculator
           </div>
           <div className="text-xs text-gray-500">

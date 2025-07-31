@@ -1,14 +1,17 @@
 import HomePage from "@/components/pages/home-page";
 import WalletDashboard from "@/components/pages/wallet-page";
-import FundingPage from "@/components/pages/funding-page";
+// import FundingPage from "@/components/pages/funding-page"; // Commented out Paystack funding
+import PrivyFundingPage from "@/components/pages/privy-funding-page";
 import CalculatorPage from "@/components/pages/calculator-page";
 import CardsPage from "@/components/pages/cards-page";
 import { PortfolioPage } from "@/components/pages/dashboard-page";
 import { useNavigate } from "react-router-dom";
 import DelegatePage from "@/components/pages/delegate-page";
-import AuthPage from "@/components/pages/auth-page";
+// import AuthPage from "@/components/pages/auth-page"; // Commented out old auth
+import PrivyAuthPage from "@/components/pages/privy-auth-page";
 import ProfilePage from "@/components/pages/profile-page";
 import NotificationsPage from "../components/pages/notifications-page";
+import PrivyAuthGuard from "../components/PrivyAuthGuard";
 
 function PortfolioPageWrapper() {
   const navigate = useNavigate();
@@ -22,39 +25,71 @@ const routes = [
   },
   {
     path: "/wallet",
-    element: <WalletDashboard />,
+    element: (
+      <PrivyAuthGuard>
+        <WalletDashboard />
+      </PrivyAuthGuard>
+    ),
   },
   {
     path: "/funding",
-    element: <FundingPage />,
+    element: (
+      <PrivyAuthGuard>
+        <PrivyFundingPage />
+      </PrivyAuthGuard>
+    ),
   },
   {
     path: "/calculator",
-    element: <CalculatorPage />,
+    element: (
+      <PrivyAuthGuard>
+        <CalculatorPage />
+      </PrivyAuthGuard>
+    ),
   },
   {
     path: "/cards",
-    element: <CardsPage />,
+    element: (
+      <PrivyAuthGuard>
+        <CardsPage />
+      </PrivyAuthGuard>
+    ),
   },
   {
     path: "/dashboard",
-    element: <PortfolioPageWrapper />,
+    element: (
+      <PrivyAuthGuard>
+        <PortfolioPageWrapper />
+      </PrivyAuthGuard>
+    ),
   },
   {
     path: "/delegate",
-    element: <DelegatePage />,
+    element: (
+      <PrivyAuthGuard>
+        <DelegatePage />
+      </PrivyAuthGuard>
+    ),
   },
   {
     path: "/auth",
-    element: <AuthPage />,
+    element: <PrivyAuthPage />,
   },
   {
     path: "/profile",
-    element: <ProfilePage />,
+    element: (
+      <PrivyAuthGuard>
+        <ProfilePage />
+      </PrivyAuthGuard>
+    ),
   },
   {
     path: "/notifications",
-    element: <NotificationsPage />,
+    element: (
+      <PrivyAuthGuard>
+        <NotificationsPage />
+      </PrivyAuthGuard>
+    ),
   },
   {
     path: "*",

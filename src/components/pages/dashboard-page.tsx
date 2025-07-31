@@ -1,11 +1,19 @@
-import { ArrowLeft, TrendingUp, Clock, Wallet as WalletIcon } from "lucide-react";
+import { ArrowLeft, TrendingUp, Clock, Wallet as WalletIcon, RefreshCw } from "lucide-react";
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import ActionButtons from "../ui/action-buttons";
-import { useUser } from "../../contexts/UserContext";
-import { useState } from "react";
+import { usePrivyContext } from "../../contexts/PrivyContext";
+import { usePrivy, useWallets } from "@privy-io/react-auth";
+import { useState, useEffect } from "react";
 import Loader from "../ui/loader";
 import EmptyState from "../ui/empty-state";
+import {
+  undelegateTokens,
+  withdrawRewards,
+  getDelegationInfo,
+  getPendingRewards,
+} from "../../lib/livepeer";
+import { ethers } from "ethers";
 
 // Livepeer green colors
 const LIVEPEER_GREEN = "#006400";
@@ -28,8 +36,70 @@ const getConversionRate = (currency: string) => {
 };
 
 export const PortfolioPage: React.FC<PortfolioPageProps> = ({ onBack }) => {
-  const { user, loading: userLoading, stakes, currency } = useUser();
-  const [error] = useState<string | null>(null);
+  const { user, loading: userLoading, stakes, currency, refreshStakes } = usePrivyContext();
+  const { wallets } = useWallets();
+  const { authenticated } = usePrivy();
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [signer, setSigner] = useState<any>(null);
+  const [delegationData, setDelegationData] = useState<{[key: string]: any}>({});
+
+  // Initialize wallet connection in background
+  useEffect(() => {
+    const initializeWallet = async () => {
+      if (authenticated && wallets.length > 0) {
+        try {
+          const wallet = wallets[0];
+          const provider = await wallet.getEthereumProvider();
+          const ethersProvider = new ethers.BrowserProvider(provider);
+          const signer = await ethersProvider.getSigner();
+          setSigner(signer);
+          
+          // Fetch delegation data for all stakes
+          await fetchAllDelegationData(signer);
+        } catch (error) {
+          console.error('Error initializing wallet:', error);
+        }
+      }
+    };
+
+    initializeWallet();
+  }, [authenticated, wallets, stakes]);
+
+  // Fetch delegation data for all stakes
+  const fetchAllDelegationData = async (signer: any) => {
+    if (!signer || !wallets[0]?.address) return;
+    
+    const userAddress = wallets[0].address;
+    const newDelegationData: {[key: string]: any} = {};
+    
+    for (const stake of stakes) {
+      try {
+        // Get delegation info
+        const delegationResult = await getDelegationInfo(userAddress, stake.orchestrator_id, signer);
+        if (delegationResult.success) {
+          newDelegationData[stake.orchestrator_id] = {
+            ...delegationResult.delegation,
+            stakeId: stake.id
+          };
+        }
+
+        // Get pending rewards
+        const rewardsResult = await getPendingRewards(userAddress, stake.orchestrator_id, signer);
+        if (rewardsResult.success) {
+          newDelegationData[stake.orchestrator_id] = {
+            ...newDelegationData[stake.orchestrator_id],
+            pendingRewards: rewardsResult.rewards
+          };
+        }
+      } catch (error) {
+        console.error('Error fetching delegation data for stake:', stake.id, error);
+      }
+    }
+    
+    setDelegationData(newDelegationData);
+  };
 
   if (userLoading) return <Loader />;
   if (error) return <div className="p-8 text-red-500">{error}</div>;
@@ -47,6 +117,71 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({ onBack }) => {
       currency,
       maximumFractionDigits: 0,
     }).format(amount);
+
+  const formatLPT = (amount: string | number) => {
+    const numAmount = typeof amount === "string" ? parseFloat(amount) : amount;
+    return `${numAmount.toFixed(4)} LPT`;
+  };
+
+  // Handle undelegation
+  const handleUndelegate = async (orchestratorAddress: string) => {
+    setError(null);
+    setSuccess(null);
+    setLoading(true);
+    
+    if (!authenticated || !signer) {
+      setError("Please sign in to continue.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const delegationInfo = delegationData[orchestratorAddress];
+      const bondedAmount = delegationInfo?.bondedAmount || "0";
+      
+      const result = await undelegateTokens(orchestratorAddress, bondedAmount, signer);
+      
+      if (result.success) {
+        setSuccess("Investment undelegated successfully! 7-day unbonding period started.");
+        await refreshStakes();
+        await fetchAllDelegationData(signer);
+      } else {
+        setError(result.error || "Failed to undelegate investment");
+      }
+    } catch (err: any) {
+      setError(err.message || "Failed to undelegate investment");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle withdrawal
+  const handleWithdraw = async (orchestratorAddress: string) => {
+    setError(null);
+    setSuccess(null);
+    setLoading(true);
+    
+    if (!authenticated || !signer) {
+      setError("Please sign in to continue.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const result = await withdrawRewards(orchestratorAddress, signer);
+      
+      if (result.success) {
+        setSuccess("Rewards withdrawn successfully!");
+        await fetchAllDelegationData(signer);
+      } else {
+        setError(result.error || "Failed to withdraw rewards");
+      }
+    } catch (err: any) {
+      setError(err.message || "Failed to withdraw rewards");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white text-black font-sans">
@@ -122,8 +257,24 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({ onBack }) => {
           </div>
         </div>
         {/* Current Stakes */}
-        <div className="text-sm text-gray-700 font-semibold mb-3">
-          Your Current Stakes
+        <div className="flex justify-between items-center mb-3 px-2">
+          <div className="text-sm text-gray-700 font-semibold">
+            Your Current Stakes
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              if (signer) {
+                fetchAllDelegationData(signer);
+              }
+            }}
+            disabled={loading}
+            className="text-xs"
+          >
+            <RefreshCw className="h-3 w-3 mr-1" />
+            Refresh
+          </Button>
         </div>
         <div className="space-y-3 pb-10">
           {stakes.length === 0 ? (
@@ -180,27 +331,95 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({ onBack }) => {
                     </div>
                   </div>
                 </div>
-                <div className="mt-3 pt-3 border-t border-gray-200">
-                  <div className="flex gap-2">
-                    <Button
-                      className="flex-1 text-xs rounded-full"
-                      style={{ background: LIVEPEER_GREEN, color: "#fff" }}
-                    >
-                      Add Stake
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="flex-1 text-xs rounded-full border-gray-300"
-                    >
-                      Unstake
-                    </Button>
+                
+                {/* Real delegation data */}
+                {delegationData[stake.orchestrator_id] && (
+                  <div className="mt-3 pt-3 border-t border-gray-200">
+                    <div className="grid grid-cols-2 gap-3 text-xs mb-3">
+                      <div>
+                        <div className="text-gray-600">Invested Amount</div>
+                        <div className="font-semibold text-black">
+                          {formatLPT(delegationData[stake.orchestrator_id].bondedAmount || "0")}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-gray-600">Pending Rewards</div>
+                        <div className="font-semibold text-green-600">
+                          {formatLPT(delegationData[stake.orchestrator_id].pendingRewards || "0")}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        className="flex-1 text-xs rounded-full"
+                        style={{ background: LIVEPEER_GREEN, color: "#fff" }}
+                        onClick={() => window.location.href = '/delegate'}
+                      >
+                        Add More
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="flex-1 text-xs rounded-full border-red-300 text-red-600"
+                        disabled={loading}
+                        onClick={() => handleUndelegate(stake.orchestrator_id)}
+                      >
+                        {loading ? "Processing..." : "Undelegate"}
+                      </Button>
+                    </div>
+                    
+                    {/* Withdraw Rewards Button */}
+                    {parseFloat(delegationData[stake.orchestrator_id].pendingRewards || "0") > 0 && (
+                      <Button
+                        onClick={() => handleWithdraw(stake.orchestrator_id)}
+                        disabled={loading}
+                        className="mt-2 w-full text-xs rounded-full"
+                        style={{ background: LIVEPEER_GREEN, color: "#fff" }}
+                      >
+                        {loading ? "Withdrawing..." : "Withdraw Rewards"}
+                      </Button>
+                    )}
                   </div>
-                </div>
+                )}
+                
+                {/* Fallback for when delegation data is not available */}
+                {!delegationData[stake.orchestrator_id] && (
+                  <div className="mt-3 pt-3 border-t border-gray-200">
+                    <div className="flex gap-2">
+                      <Button
+                        className="flex-1 text-xs rounded-full"
+                        style={{ background: LIVEPEER_GREEN, color: "#fff" }}
+                        onClick={() => window.location.href = '/delegate'}
+                      >
+                        Add More
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="flex-1 text-xs rounded-full border-gray-300"
+                        disabled={true}
+                      >
+                        Loading...
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </Card>
             ))
           )}
         </div>
       </div>
+      
+      {/* Error and Success Messages */}
+      {error && (
+        <div className="fixed bottom-20 left-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg z-50">
+          {error}
+        </div>
+      )}
+      {success && (
+        <div className="fixed bottom-20 left-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg z-50">
+          {success}
+        </div>
+      )}
+      
       {/* Action Buttons - Fixed at bottom */}
       <ActionButtons />
     </div>

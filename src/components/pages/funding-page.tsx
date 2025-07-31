@@ -6,7 +6,8 @@ import { usePaystackPayment } from "react-paystack";
 
 const LIVEPEER_GREEN = "#006400";
 const ACTION_BUTTONS_HEIGHT = 104;
-const PAYSTACK_PUBLIC_KEY = "pk_live_290f2e7cb7fd5ce28fcca4c2944d6bf80fccf2c5"; 
+const PAYSTACK_PUBLIC_KEY = "pk_live_290f2e7cb7fd5ce28fcca4c2944d6bf80fccf2c5"; // Replace with real key
+// const PAYSTACK_PUBLIC_KEY = "pk_test_efbd584b89329953a201d1ba286788eb30499e16"; // Replace with real key
 
 const FundingPage: React.FC = () => {
  

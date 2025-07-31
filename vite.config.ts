@@ -11,11 +11,15 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  server: {
-    // historyApiFallback is not a valid option for Vite's server config.
-    // If you want to enable SPA fallback, use the middleware in configureServer or set up a proxy.
-    // For most React apps, Vite enables HTML5 history fallback by default.
-  },
+  // server: {
+  //   proxy: {
+  //     '/': {
+  //       target: 'https://localhost:5173',
+  //       changeOrigin: true,
+  //       secure: false
+  //     }
+  //   }
+  // },
   preview: {
     // historyApiFallback is not a valid option for Vite's preview config.
     // No changes needed here.
