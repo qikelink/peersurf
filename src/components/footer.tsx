@@ -1,16 +1,33 @@
-export const Footer = () => {
+const Footer = () => {
   return (
-    <footer className="w-full max-w-7xl mx-auto py-8 px-8 gap-4 flex flex-col md:flex-row justify-between items-center border-t border-gray-200 mt-8">
-      <div className=" md:flex-row items-center gap-2 hidden sm:flex">
-        <span className="text-gray-500 text-sm text-center">
-          Built on Livepeer
-        </span>
-        <span className="flex flex-wrap items-center justify-center ">
-          <img src="/livepeer.webp" alt="Livepeer Logo" className="h-5" />
-        </span>
-      </div>
-      <div className="text-gray-500 text-sm text-center mt-2 md:mt-0 ">
-        &copy; {new Date().getFullYear()} Lisa Labs. All rights reserved.
+    <footer className="w-full  bg-black">
+      <div className="max-w-7xl mx-auto py-12 px-8">
+        {/* Bottom: Copyright */}
+        <div className="flex flex-col md:flex-row justify-between items-center">
+          <p className="text-gray-400 text-sm">
+            &copy; {new Date().getFullYear()} PeerSurf. All rights reserved.
+          </p>
+          <div className="flex gap-6 mt-4 md:mt-0">
+            <a
+              href="#"
+              className="text-gray-400 hover:text-white transition text-sm"
+            >
+              Privacy
+            </a>
+            <a
+              href="#"
+              className="text-gray-400 hover:text-white transition text-sm"
+            >
+              Terms
+            </a>
+            <a
+              href="#"
+              className="text-gray-400 hover:text-white transition text-sm"
+            >
+              Cookies
+            </a>
+          </div>
+        </div>
       </div>
     </footer>
   );

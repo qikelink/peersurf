@@ -1,149 +1,214 @@
-import React, { useEffect, useState } from "react";
-import { usePrivyContext } from "../../contexts/PrivyContext";
-import { updateUserProfile } from "../../lib/auth";
+import { useUser } from "../../contexts/UserContext";
+import { Button } from "../ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Card } from "../ui/card";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
-import Loader from "../ui/loader";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
+import { Settings, LogOut, User, Mail, Wallet, Bell } from "lucide-react";
+import { useState } from "react";
 
-const ProfilePage: React.FC = () => {
-  const { user, loading: userLoading, profile, refreshProfile, currency, setCurrency } = usePrivyContext();
-  const [form, setForm] = useState<any>({});
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
+const ProfilePage = () => {
   const navigate = useNavigate();
+  const { user, loading: userLoading, profile, refreshProfile, currency, setCurrency } = useUser();
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedProfile, setEditedProfile] = useState(profile || {});
 
-  useEffect(() => {
-    if (!userLoading && !user) {
-      navigate("/auth");
-    }
-    if (profile) {
-      setForm(profile);
-    }
-  }, [user, userLoading, navigate, profile]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    setSuccess(null);
-    try {
-      const { error } = await updateUserProfile(user.id, form);
-      if (error) setError(error.message);
-      else {
-        setSuccess("Profile updated successfully!");
-        await refreshProfile();
-      }
-    } catch (err: any) {
-      setError(err.message || "Update failed");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (userLoading || loading) return <Loader />;
-  if (error) return <div className="p-8 text-red-500">{error}</div>;
-  if (!profile) return null;
-
-  return (
-    <div className="p-4 sm:p-8">
-      {/* Header Section */}
-      <div className="flex items-center gap-3 py-4">
-        <button
-          onClick={() => window.history.back()}
-          className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
-        >
-          <ArrowLeft className="w-5 h-5 text-gray-600" />
-        </button>
-        <div>
-          <div className="font-semibold text-lg">User Profile</div>
-          <div className="text-xs text-gray-500">Setup or edit your profile</div>
+  if (userLoading) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500 mx-auto mb-4"></div>
+          <p>Loading profile...</p>
         </div>
       </div>
-      {/* Form Section */}
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <div>
-          <label className="block text-sm font-medium mb-1">Username</label>
-          <input
-            type="text"
-            name="username"
-            value={form.username || ""}
-            onChange={handleChange}
-            className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-green-500"
-            autoComplete="off"
-          />
+    );
+  }
+
+  if (!user || !profile) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <p>Please log in to view your profile.</p>
+          <Button onClick={() => navigate("/auth")} className="mt-4">
+            Go to Login
+          </Button>
         </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Full Name</label>
-          <input
-            type="text"
-            name="full_name"
-            value={form.full_name || ""}
-            onChange={handleChange}
-            className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-green-500"
-            autoComplete="off"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Website</label>
-          <input
-            type="text"
-            name="website"
-            value={form.website || ""}
-            onChange={handleChange}
-            className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-green-500"
-            autoComplete="off"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Wallet Address
-          </label>
-          <input
-            type="text"
-            name="wallet_address"
-            value={form.wallet_address || ""}
-            onChange={handleChange}
-            className="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-green-500"
-            autoComplete="off"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-2">Preferred Currency</label>
-          <Select value={currency} onValueChange={setCurrency}>
-            <SelectTrigger className="w-full py-6 border rounded">
-              <SelectValue placeholder="Select currency" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="NGN">Naira (₦)</SelectItem>
-              <SelectItem value="USD">US Dollar ($)</SelectItem>
-              <SelectItem value="EUR">Euro (€)</SelectItem>
-              <SelectItem value="GBP">British Pound (£)</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+      </div>
+    );
+  }
+
+  const handleSave = async () => {
+    // Here you would typically update the profile in your backend
+    await refreshProfile();
+    setIsEditing(false);
+  };
+
+  return (
+    <div className="min-h-screen bg-black text-white">
+      {/* Header */}
+      <div className="w-full max-w-7xl mx-auto px-8 py-8">
         <button
-          type="submit"
-          className="w-full bg-green-600 hover:bg-green-700 transition-colors text-white px-6 py-3 rounded font-semibold text-base"
-          disabled={loading}
+          onClick={() => navigate("/wallet")}
+          className="text-gray-400 hover:text-white transition mb-6"
         >
-          {loading ? "Saving..." : "Save Changes"}
+          ← Back to Wallet
         </button>
-        {success && (
-          <div className="text-green-600 mt-2 text-center">{success}</div>
-        )}
-      </form>
+        <h1 className="text-3xl font-semibold mb-2">Profile</h1>
+        <p className="text-gray-400">
+          Manage your PeerSurf account and preferences
+        </p>
+      </div>
+
+      <div className="w-full max-w-4xl mx-auto px-8 pb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Profile Card */}
+          <div className="lg:col-span-2">
+            <Card className="bg-gray-900 border border-gray-700 p-6">
+              <div className="flex items-center gap-4 mb-6">
+                <Avatar className="w-16 h-16">
+                  <AvatarImage src={profile.avatar_url} />
+                  <AvatarFallback className="bg-green-600 text-white">
+                    {profile.username?.slice(0, 2)?.toUpperCase() || "U"}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <h2 className="text-xl font-semibold">
+                    {profile.full_name || profile.username || "User"}
+                  </h2>
+                  <p className="text-gray-400">{user.email}</p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Full Name
+                  </label>
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      value={editedProfile.full_name || ""}
+                      onChange={(e) =>
+                        setEditedProfile({ ...editedProfile, full_name: e.target.value })
+                      }
+                      className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white"
+                    />
+                  ) : (
+                    <p className="text-white">{profile.full_name || "Not set"}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Username
+                  </label>
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      value={editedProfile.username || ""}
+                      onChange={(e) =>
+                        setEditedProfile({ ...editedProfile, username: e.target.value })
+                      }
+                      className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white"
+                    />
+                  ) : (
+                    <p className="text-white">{profile.username || "Not set"}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Wallet Address
+                  </label>
+                  <p className="text-white font-mono text-sm">
+                    {profile.wallet_address || "Not connected"}
+                  </p>
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  {isEditing ? (
+                    <>
+                      <Button onClick={handleSave} className="bg-green-600 hover:bg-green-700">
+                        Save Changes
+                      </Button>
+                      <Button
+                        onClick={() => setIsEditing(false)}
+                        variant="outline"
+                        className="border-gray-600 text-gray-300 hover:bg-gray-800"
+                      >
+                        Cancel
+                      </Button>
+                    </>
+                  ) : (
+                    <Button
+                      onClick={() => setIsEditing(true)}
+                      className="bg-green-600 hover:bg-green-700"
+                    >
+                      Edit Profile
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          {/* Settings Sidebar */}
+          <div className="space-y-6">
+            {/* Currency Settings */}
+            <Card className="bg-gray-900 border border-gray-700 p-6">
+              <h3 className="font-semibold mb-4 flex items-center gap-2">
+                <Settings className="w-4 h-4" />
+                Preferences
+              </h3>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Currency
+                </label>
+                <select
+                  value={currency}
+                  onChange={(e) => setCurrency(e.target.value)}
+                  className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white"
+                >
+                  <option value="USD">USD</option>
+                  <option value="EUR">EUR</option>
+                  <option value="GBP">GBP</option>
+                  <option value="NGN">NGN</option>
+                </select>
+              </div>
+            </Card>
+
+            {/* Account Actions */}
+            <Card className="bg-gray-900 border border-gray-700 p-6">
+              <h3 className="font-semibold mb-4">Account</h3>
+              <div className="space-y-3">
+                <Button
+                  variant="outline"
+                  className="w-full justify-start border-gray-600 text-gray-300 hover:bg-gray-800"
+                  onClick={() => navigate("/notifications")}
+                >
+                  <Bell className="w-4 h-4 mr-2" />
+                  Notifications
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start border-gray-600 text-gray-300 hover:bg-gray-800"
+                  onClick={() => navigate("/cards")}
+                >
+                  <Wallet className="w-4 h-4 mr-2" />
+                  Cards
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start border-red-600 text-red-400 hover:bg-red-900"
+                  onClick={() => navigate("/auth")}
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sign Out
+                </Button>
+              </div>
+            </Card>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

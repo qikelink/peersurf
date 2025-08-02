@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import Loader from "../ui/loader";
 
 // Livepeer green colors
-const LIVEPEER_GREEN = "#006400";
+const LIVEPEER_GREEN = "#00EB88";
 
 type SocialProvider = {
   name: string;
@@ -48,10 +48,6 @@ const socialProviders: SocialProvider[] = [
   {
     name: "X",
     id: "twitter",
-    // The issue: The "fill-current" class on the SVG expects a parent with a text color (e.g. text-gray-700) to set the fill color.
-    // However, the parent Button uses "text-gray-700", but the SVG itself does not have an explicit fill color.
-    // If the Button's text color is overridden (e.g. by a child span), the SVG may inherit an unexpected color or none at all.
-    // To ensure the icon is visible, set the fill color directly on the <svg> or <path>.
     icon: (
       <svg className="w-5 h-5" viewBox="0 0 24 24" fill="#1D9BF0">
         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -83,7 +79,7 @@ const Button = ({
     "inline-flex items-center justify-center rounded-xl text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background";
   const variantClasses =
     variant === "outline"
-      ? "border border-gray-300 bg-background hover:bg-gray-50"
+      ? "border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white"
       : "text-white hover:opacity-90";
 
   return (
@@ -111,7 +107,7 @@ const AuthPage = () => {
 
   // Redirect if already logged in
   useEffect(() => {
-    if (user) navigate("/wallet");
+    if (user) navigate("/home");
   }, [user, navigate]);
 
   const handleSubmit = async (
@@ -132,7 +128,7 @@ const AuthPage = () => {
         setLoading(false);
       } else {
         setLoading(false);
-        navigate("/wallet");
+        navigate("/home");
       }
     } catch (err: any) {
       setError(err.message || "Authentication error");
@@ -154,21 +150,15 @@ const AuthPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-black flex flex-col">
       <div className="flex-1 px-6 flex flex-col justify-center items-center">
         {/* Auth Card */}
-        <div
-          className="bg-white rounded-2xl shadow-lg border-0 p-6 -mt-6 relative z-10"
-          style={{
-            background: "#F6FFF9",
-            border: "1px solid #C6F7E2",
-          }}
-        >
-          <div className="text-center mb-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-1">
+        <div className="bg-gray-950 rounded-2xl shadow-lg border border-gray-700 p-8 -mt-6 relative z-10 max-w-md w-full">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-white mb-2">
               {isSignUp ? "Create Account" : "Sign In"}
             </h2>
-            <p className="text-sm text-gray-600">
+            <p className="text-gray-400">
               {isSignUp
                 ? "Join the decentralized video network"
                 : "Welcome back, let's get started"}
@@ -180,21 +170,21 @@ const AuthPage = () => {
             {socialProviders.map((provider) => (
               <Button
                 key={provider.id}
-                className="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50"
+                className="w-full flex items-center justify-center gap-3 bg-gray-900 border border-gray-600 text-white hover:bg-gray-700"
                 onClick={() => handleSocial(provider.id)}
                 type="button"
               >
                 {provider.icon}
-                <span className="text-gray-600">Continue with {provider.name}</span>
+                <span className="text-gray-300">Continue with {provider.name}</span>
               </Button>
             ))}
           </div>
 
           {/* Divider */}
           <div className="flex items-center mb-6">
-            <div className="flex-1 border-t border-gray-200" />
+            <div className="flex-1 border-t border-gray-600" />
             <span className="mx-3 text-gray-500 text-sm">or</span>
-            <div className="flex-1 border-t border-gray-200" />
+            <div className="flex-1 border-t border-gray-600" />
           </div>
 
           {/* Email/Password Form */}
@@ -209,10 +199,7 @@ const AuthPage = () => {
                 placeholder="Email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[--livepeer-green] focus:border-transparent bg-white text-gray-900"
-                style={
-                  { "--livepeer-green": LIVEPEER_GREEN } as React.CSSProperties
-                }
+                className="w-full p-4 border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-gray-900 text-white placeholder-gray-400"
                 required
               />
             </div>
@@ -222,16 +209,13 @@ const AuthPage = () => {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full p-4 pr-12 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[--livepeer-green] focus:border-transparent bg-white text-gray-900"
-                style={
-                  { "--livepeer-green": LIVEPEER_GREEN } as React.CSSProperties
-                }
+                className="w-full p-4 pr-12 border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-gray-900 text-white placeholder-gray-400"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300"
                 tabIndex={-1}
               >
                 {showPassword ? (
@@ -243,8 +227,8 @@ const AuthPage = () => {
             </div>
 
             {error && (
-              <div className="p-3 rounded-xl bg-red-50 border border-red-200">
-                <p className="text-red-600 text-sm">{error}</p>
+              <div className="p-3 rounded-xl bg-red-900/50 border border-red-700">
+                <p className="text-red-300 text-sm">{error}</p>
               </div>
             )}
 
@@ -252,8 +236,7 @@ const AuthPage = () => {
               onClick={
                 handleSubmit as (e: MouseEvent<HTMLButtonElement>) => void
               }
-              className="w-full font-semibold"
-              style={{ background: LIVEPEER_GREEN }}
+              className="w-full font-semibold bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600"
               disabled={loading}
               type="submit"
             >
@@ -270,7 +253,7 @@ const AuthPage = () => {
           {/* Toggle Sign Up/In */}
           <div className="mt-6 text-center">
             <button
-              className="text-sm text-gray-600 hover:underline"
+              className="text-sm text-gray-400 hover:text-green-400 transition-colors"
               onClick={() => {
                 setIsSignUp(!isSignUp);
                 setError(null);
@@ -288,11 +271,11 @@ const AuthPage = () => {
         <div className="text-center mt-8 pb-8">
           <p className="text-xs text-gray-500">
             By continuing, you agree to our{" "}
-            <a href="#" className="underline hover:no-underline">
+            <a href="#" className="underline hover:no-underline text-gray-400 hover:text-green-400">
               Terms of Service
             </a>{" "}
             and{" "}
-            <a href="#" className="underline hover:no-underline">
+            <a href="#" className="underline hover:no-underline text-gray-400 hover:text-green-400">
               Privacy Policy
             </a>
           </p>

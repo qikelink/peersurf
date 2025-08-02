@@ -3,46 +3,73 @@ import { useNavigate } from "react-router-dom";
 const Hero = () => {
   const navigate = useNavigate();
   return (
-    <section className="w-full flex flex-col md:flex-row items-center justify-between max-w-7xl mx-auto pb-20 pt-18 px-8 min-h-[70vh]">
-      {/* Left: Text */}
-      <div className="flex-1 flex flex-col items-start justify-center max-w-2xl">
-      <div className="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm font-medium mb-4">
-            ⚡ Up to 65% APY
-          </div>
-        <h1 className="text-5xl md:text-6xl font-semibold mb-8 leading-tight text-black">
-          Earn Rewards Securing
-          <br />
-          Livepeer Network.
-        </h1>
-        <div className="mb-8 text-gray-700 text-lg max-w-md">
-          With Lisa, you can delegate and earn rewards using your local
-          currency. No need to buy crypto, pay for gas, or navigate complex
-          platforms.
+    <section className="relative w-full min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Cosmic Background */}
+      <div className="absolute inset-0 bg-black">
+        {/* Stars */}
+        <div className="absolute inset-0">
+          {[...Array(100)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-1 h-1 bg-white rounded-full animate-pulse"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 3}s`,
+                animationDuration: `${2 + Math.random() * 2}s`,
+              }}
+            />
+          ))}
         </div>
-        <div className="flex items-center gap-4 mb-10">
-          <button
-            className="bg-green-700 hover:bg-green-600 text-white cursor-pointer font-semibold px-7 py-3 rounded-full transition"
-            onClick={() => navigate("/wallet")}
-          >
-            Get Started
-          </button>
-          <button className="text-gray-700 hover:text-black text-sm cursor-pointer font-medium px-4 py-3 rounded-full transition flex items-center gap-1">
-            Learn more <span className="ml-1">→</span>
-          </button>
+
+        {/* Cosmic Rays */}
+        <div className="absolute inset-0">
+          {[...Array(8)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-px h-full bg-gradient-to-b from-transparent via-green-700 to-transparent opacity-20"
+              style={{
+                left: `${i * 12.5 + Math.random() * 10}%`,
+                transform: `rotate(${Math.random() * 360}deg)`,
+              }}
+            />
+          ))}
         </div>
-        
       </div>
-      {/* Right: 3D Card Illustration Placeholder */}
-      <div className="flex-1 flex flex-col items-center justify-center relative mt-16 md:mt-0">
-        {/* 3D Card Placeholder */}
-        <div className="relative w-[320px] h-[220px]">
-          {/* Simulate stacked cards with gradients */}
-          <div className="absolute top-8 left-8 w-full h-full rounded-3xl bg-gradient-to-br from-green-200 to-green-400 opacity-60 blur-sm"></div>
-          <div className="absolute top-4 left-4 w-full h-full rounded-3xl bg-gradient-to-br from-green-300 to-green-600 opacity-80 blur-[2px]"></div>
-          <div className="relative w-full h-full rounded-3xl bg-gradient-to-br from-green-400 to-green-800 shadow-2xl border-2 border-white"></div>
-          {/* <img src="/hero.png" className="h-full w-full" /> */}
+
+      {/* Main Content */}
+      <div className="relative z-10 max-w-7xl mx-auto px-8 text-center">
+        {/* Main Heading */}
+        <h1 className="text-4xl md:text-6xl font-bold mb-8 leading-tight text-white">
+          Discover
+          <br />
+          <span>Opportunities on</span>
+          <br />
+          <span className="inline-block relative">
+            Livepeer Ecosystem
+            <span
+              className="absolute left-0 right-0 -bottom-1 h-1 bg-green-500 rounded"
+              style={{ zIndex: -1 }}
+            ></span>
+          </span>
+        </h1>
+
+        {/* Subtitle */}
+        <p className="text-lg md:text-xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
+          Join the talent layer of
+          livepeer. Contribute as a developer, creator, artist or writer. Earn rewards and
+          help shape the future of decentralized video.
+        </p>
+
+        {/* CTA Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
+          <button
+            className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-semibold px-6 py-3 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg  cursor-pointer hover:shadow-green-500/25"
+            onClick={() => navigate("/home")}
+          >
+            Start Building
+          </button>
         </div>
-        {/* <span className="mt-6 text-gray-400 text-base">Powered by Livepeer</span> */}
       </div>
     </section>
   );

@@ -1,152 +1,96 @@
 import { useState } from "react";
-import { Button } from "./ui/button";
-import { Plus } from "lucide-react";
 
 const FAQ = () => {
-  const [expandedQuestion, setExpandedQuestion] = useState<number | null>(null);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-  const renderTextWithLinks = (text: string) => {
-    const markdownLinkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
-    const parts = [];
-    let lastIndex = 0;
-    let match;
-    while ((match = markdownLinkRegex.exec(text)) !== null) {
-      if (match.index > lastIndex) {
-        parts.push(text.slice(lastIndex, match.index));
-      }
-      parts.push(
-        <a
-          key={match.index}
-          href={match[2]}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-indigo-600 hover:text-indigo-700 underline"
-        >
-          {match[1]}
-        </a>
-      );
-      lastIndex = match.index + match[0].length;
-    }
-    if (lastIndex < text.length) {
-      parts.push(text.slice(lastIndex));
-    }
-    return parts.length > 0 ? parts : text;
-  };
-
-  const faqData = [
+  const faqs = [
     {
-      id: 1,
+      question: "What is PeerSurf?",
+      answer: "PeerSurf is a platform that helps developers, builders, and creators discover opportunities in the Livepeer ecosystem. We connect you with orchestrators, delegation opportunities, and rewards in the decentralized video network."
+    },
+    {
       question: "What is Livepeer delegation?",
-      answer:
-        "Livepeer delegation lets you earn rewards by staking LPT tokens with orchestrators who secure the decentralized video network. Lisa makes this accessible without needing crypto knowledge.",
+      answer: "Livepeer delegation lets you earn rewards by staking LPT tokens with orchestrators who secure the decentralized video network. PeerSurf makes this accessible and helps you discover the best opportunities.",
     },
     {
-      id: 2,
-      question: "How do I start delegating on Livepeer?",
-      answer:
-        "Fund your wallet with local currency, choose a Livepeer orchestrator, and delegate your stake. Lisa handles all the blockchain complexity for you.",
+      question: "How do I get started with PeerSurf?",
+      answer: "Create an account, explore orchestrators and opportunities, choose your preferred delegation strategy, and start earning rewards. PeerSurf handles the complexity while you focus on building.",
     },
     {
-      id: 3,
-      question: "Do I need to buy LPT or ETH?",
-      answer:
-        "No! Lisa lets you delegate on Livepeer using your local currency. We handle the LPT purchase and gas fees behind the scenes.",
+      question: "Do I need crypto knowledge to use PeerSurf?",
+      answer: "No! PeerSurf is designed to be accessible to everyone. We provide a user-friendly interface that abstracts away the blockchain complexity while still giving you access to all the opportunities.",
     },
     {
-      id: 4,
-      question: "How are Livepeer rewards calculated?",
-      answer:
-        "Rewards are based on your orchestrator's APY (up to 65%) minus their fee percentage. You earn LPT tokens automatically.",
+      question: "What opportunities can I discover on PeerSurf?",
+      answer: "PeerSurf helps you discover orchestrators, delegation opportunities, rewards programs, and building opportunities within the Livepeer ecosystem. Whether you're a developer, creator, or investor, there are opportunities for everyone.",
     },
     {
-      id: 5,
-      question: "Is Livepeer delegation secure?",
-      answer:
-        "Yes. Livepeer is a battle-tested protocol, and your funds remain in your control. Check [Livepeer docs](https://livepeer.org/docs) for technical details.",
-    },
-    {
-      id: 6,
-      question: "Where can I learn more about Livepeer?",
-      answer:
-        "Join the [Livepeer Discord](https://discord.gg/livepeer) or follow [@livepeer](https://twitter.com/livepeer) for updates and community support.",
-    },
+      question: "Is PeerSurf secure?",
+      answer: "Yes, PeerSurf uses industry-standard security practices and integrates with secure wallet providers. Your funds and data are protected with enterprise-grade security measures.",
+    }
   ];
 
-  const toggleQuestion = (id: number) => {
-    setExpandedQuestion(expandedQuestion === id ? null : id);
-  };
-
   return (
-    <section className="flex flex-col items-center justify-center max-w-4xl mx-auto py-14 px-8 sm:px-0">
-      <div className="text-center mb-8 sm:mb-12">
-        <h2 className="text-3xl md:text-4xl font-semibold text-gray-900 px-2 sm:px-8 lg:px-20">
-          Frequently Asked Questions
-        </h2>
-        <p className="text-gray-500 mt-2 text-base max-w-2xl mx-auto">
-          Everything you need to know about Livepeer delegation and earning rewards.
-        </p>
+    <section className="w-full py-20 bg-black relative overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute inset-0">
+        <div className="absolute top-10 right-10 w-64 h-64 bg-green-500/5 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-10 left-10 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl"></div>
       </div>
-      <div className="w-full space-y-3 sm:space-y-4 sm:px-10 ">
-        {faqData.map((faq) => (
-          <div
-            key={faq.id}
-            className="border border-gray-200 rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow duration-200"
-          >
-            <Button
-              variant="ghost"
-              onClick={() => toggleQuestion(faq.id)}
-              className={`
-                w-full 
-                px-4 sm:px-6 
-                py-5 sm:py-7
-                text-left 
-                flex 
-                justify-between 
-                items-center 
-                bg-transparent 
-                focus:outline-none 
-                focus:ring-0 
-                active:bg-transparent 
-                rounded-lg
-                hover:bg-transparent
-                cursor-pointer
-                text-gray-800
-              `}
-            >
-              <span className="font-medium text-gray-800 text-sm sm:text-base pr-4">
-                {faq.question}
-              </span>
-              <Plus
-                className={`
-                  w-4 h-4 sm:w-5 sm:h-5 
-                  text-gray-500 
-                  transform 
-                  transition-transform 
-                  duration-200 
-                  flex-shrink-0
-                  ${expandedQuestion === faq.id ? "rotate-45" : ""}
-                `}
-              />
-            </Button>
+
+      <div className="relative z-10 max-w-4xl mx-auto px-8">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            <span className="bg-gradient-to-r from-white to-green-400 bg-clip-text text-transparent">
+              Frequently Asked Questions
+            </span>
+          </h2>
+          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+            Everything you need to know about discovering opportunities on PeerSurf
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          {faqs.map((faq, index) => (
             <div
-              className={`
-                overflow-hidden 
-                transition-all 
-                duration-300 
-                ease-in-out 
-                ${
-                  expandedQuestion === faq.id
-                    ? "max-h-96 opacity-100"
-                    : "max-h-0 opacity-0"
-                }
-              `}
+              key={index}
+              className="group bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-2xl overflow-hidden hover:border-green-500/30 transition-all duration-300"
             >
-              <div className="px-3 pb-4 sm:pb-6 text-gray-500 text-sm leading-relaxed">
-                {renderTextWithLinks(faq.answer)}
+              <button
+                className="w-full p-6 text-left flex items-center justify-between hover:bg-gray-800/50 transition-all duration-300"
+                onClick={() => setOpenIndex(openIndex === index ? null : index)}
+              >
+                <span className="text-lg font-semibold text-white group-hover:text-green-400 transition-colors duration-300">
+                  {faq.question}
+                </span>
+                <span className="text-green-400 text-2xl transition-transform duration-300">
+                  {openIndex === index ? "−" : "+"}
+                </span>
+              </button>
+              <div
+                className={`overflow-hidden transition-all duration-500 ease-in-out ${
+                  openIndex === index ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                }`}
+              >
+                <div className="px-6 pb-6">
+                  <p className="text-gray-300 leading-relaxed">
+                    {faq.answer}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+
+        {/* Bottom CTA */}
+        <div className="text-center mt-16">
+          <p className="text-gray-400 mb-6">
+            Still have questions? We're here to help.
+          </p>
+          <button className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-semibold px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-green-500/25">
+            Get in Touch
+          </button>
+        </div>
       </div>
     </section>
   );

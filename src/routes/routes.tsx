@@ -1,21 +1,45 @@
 import HomePage from "@/components/pages/home-page";
-import WalletDashboard from "@/components/pages/wallet-page";
-// import FundingPage from "@/components/pages/funding-page"; // Commented out Paystack funding
-import PrivyFundingPage from "@/components/pages/privy-funding-page";
-import CalculatorPage from "@/components/pages/calculator-page";
-import CardsPage from "@/components/pages/cards-page";
-import { PortfolioPage } from "@/components/pages/dashboard-page";
-import { useNavigate } from "react-router-dom";
-import DelegatePage from "@/components/pages/delegate-page";
-// import AuthPage from "@/components/pages/auth-page"; // Commented out old auth
-import PrivyAuthPage from "@/components/pages/privy-auth-page";
+import OpportuniesPage from "@/components/pages/opportunities-page";
+import AuthPage from "@/components/pages/auth-page";
 import ProfilePage from "@/components/pages/profile-page";
 import NotificationsPage from "../components/pages/notifications-page";
-import PrivyAuthGuard from "../components/PrivyAuthGuard";
+import { useUser } from "../contexts/UserContext";
 
-function PortfolioPageWrapper() {
-  const navigate = useNavigate();
-  return <PortfolioPage onBack={() => navigate("/wallet")} />;
+// Simple auth guard component
+function AuthGuard({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useUser();
+
+  // Check if Supabase is configured
+  const isSupabaseConfigured = import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+  if (!isSupabaseConfigured) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-black text-white">
+        <div className="text-center">
+          <h2 className="text-xl font-bold mb-4">Configuration Error</h2>
+          <p className="text-gray-400 mb-4">Supabase environment variables are not configured.</p>
+          <p className="text-sm text-gray-500">Please check your .env file</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-black text-white">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500 mx-auto mb-4"></div>
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <AuthPage />;
+  }
+
+  return <>{children}</>;
 }
 
 const routes = [
@@ -24,77 +48,37 @@ const routes = [
     element: <HomePage />,
   },
   {
-    path: "/wallet",
-    element: (
-      <PrivyAuthGuard>
-        <WalletDashboard />
-      </PrivyAuthGuard>
-    ),
+    path: "/home",
+    element: <OpportuniesPage />, // Temporarily bypass AuthGuard
   },
-  {
-    path: "/funding",
-    element: (
-      <PrivyAuthGuard>
-        <PrivyFundingPage />
-      </PrivyAuthGuard>
-    ),
-  },
-  {
-    path: "/calculator",
-    element: (
-      <PrivyAuthGuard>
-        <CalculatorPage />
-      </PrivyAuthGuard>
-    ),
-  },
-  {
-    path: "/cards",
-    element: (
-      <PrivyAuthGuard>
-        <CardsPage />
-      </PrivyAuthGuard>
-    ),
-  },
-  {
-    path: "/dashboard",
-    element: (
-      <PrivyAuthGuard>
-        <PortfolioPageWrapper />
-      </PrivyAuthGuard>
-    ),
-  },
-  {
-    path: "/delegate",
-    element: (
-      <PrivyAuthGuard>
-        <DelegatePage />
-      </PrivyAuthGuard>
-    ),
-  },
+
+ 
   {
     path: "/auth",
-    element: <PrivyAuthPage />,
+    element: <AuthPage />,
   },
   {
     path: "/profile",
     element: (
-      <PrivyAuthGuard>
+      <AuthGuard>
         <ProfilePage />
-      </PrivyAuthGuard>
+      </AuthGuard>
     ),
   },
   {
     path: "/notifications",
     element: (
-      <PrivyAuthGuard>
+      <AuthGuard>
         <NotificationsPage />
-      </PrivyAuthGuard>
+      </AuthGuard>
     ),
   },
   {
     path: "*",
     element: (
-      <div className="text-center text-red-500">404 - Page Not Found</div>
+      <div className="text-center text-red-500 bg-black min-h-screen flex items-center justify-center">
+        404 - Page Not Found
+      </div>
     ),
   },
 ];

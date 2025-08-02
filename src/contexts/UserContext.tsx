@@ -64,12 +64,30 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [user]);
 
   useEffect(() => {
-    getUser()
-      .then(setUser)
-      .finally(() => setLoading(false));
+    const initializeAuth = async () => {
+      try {
+        // Check if Supabase is configured
+        if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
+          console.error("Supabase environment variables are not configured");
+          setLoading(false);
+          return;
+        }
+
+        const user = await getUser();
+        setUser(user);
+      } catch (error) {
+        console.error("Error initializing auth:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    initializeAuth();
+
     const { data: listener } = onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
+    
     return () => {
       listener?.subscription.unsubscribe();
     };
