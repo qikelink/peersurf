@@ -8,7 +8,7 @@ import {
 } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useUser } from "../../contexts/UserContext";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Loader from "../ui/loader";
 
 // Livepeer green colors
@@ -96,14 +96,28 @@ const Button = ({
 };
 
 const AuthPage = () => {
-  const [isSignUp, setIsSignUp] = useState<boolean>(false);
+  const location = useLocation();
+  const initialMode = new URLSearchParams(location.search).get("mode");
+  const [isSignUp, setIsSignUp] = useState<boolean>(initialMode === "signup");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [role, setRole] = useState<"sponsor" | "talent" | "">(() => {
+    const r = new URLSearchParams(location.search).get("role");
+    return r === "sponsor" || r === "talent" ? r : "";
+  });
   const [loading, setLoading] = useState<boolean>(false);
   const { signIn, signUp, signInWithProvider, user } = useUser();
   const navigate = useNavigate();
+
+  // Update mode from query string when it changes
+  useEffect(() => {
+    const mode = new URLSearchParams(location.search).get("mode");
+    setIsSignUp(mode === "signup");
+    const r = new URLSearchParams(location.search).get("role");
+    if (r === "sponsor" || r === "talent") setRole(r);
+  }, [location.search]);
 
   // Redirect if already logged in
   useEffect(() => {
@@ -119,7 +133,7 @@ const AuthPage = () => {
     try {
       let result;
       if (isSignUp) {
-        result = await signUp(email, password);
+        result = await signUp(email, password, role || undefined);
       } else {
         result = await signIn(email, password);
       }
@@ -193,6 +207,24 @@ const AuthPage = () => {
             onSubmit={handleSubmit}
             autoComplete="off"
           >
+            {isSignUp && (
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setRole("talent")}
+                  className={`p-3 rounded-xl border text-sm ${role === "talent" ? "border-green-500 bg-green-500/10 text-green-300" : "border-gray-600 bg-gray-900 text-gray-300"}`}
+                >
+                  I’m a Talent
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRole("sponsor")}
+                  className={`p-3 rounded-xl border text-sm ${role === "sponsor" ? "border-green-500 bg-green-500/10 text-green-300" : "border-gray-600 bg-gray-900 text-gray-300"}`}
+                >
+                  I’m a Sponsor
+                </button>
+              </div>
+            )}
             <div>
               <input
                 type="email"
@@ -271,11 +303,11 @@ const AuthPage = () => {
         <div className="text-center mt-8 pb-8">
           <p className="text-xs text-gray-500">
             By continuing, you agree to our{" "}
-            <a href="#" className="underline hover:no-underline text-gray-400 hover:text-green-400">
+            <a href="/privacy" className="underline hover:no-underline text-gray-400 hover:text-green-400">
               Terms of Service
             </a>{" "}
             and{" "}
-            <a href="#" className="underline hover:no-underline text-gray-400 hover:text-green-400">
+            <a href="/privacy" className="underline hover:no-underline text-gray-400 hover:text-green-400">
               Privacy Policy
             </a>
           </p>

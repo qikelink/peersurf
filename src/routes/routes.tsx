@@ -2,6 +2,7 @@ import HomePage from "@/components/pages/home-page";
 import OpportuniesPage from "@/components/pages/opportunities-page";
 import AuthPage from "@/components/pages/auth-page";
 import ProfilePage from "@/components/pages/profile-page";
+import SponsorDashboard from "@/components/pages/sponsor-dashboard";
 import NotificationsPage from "../components/pages/notifications-page";
 import { useUser } from "../contexts/UserContext";
 
@@ -62,6 +63,14 @@ const routes = [
     element: (
       <AuthGuard>
         <ProfilePage />
+      </AuthGuard>
+    ),
+  },
+  {
+    path: "/sponsor",
+    element: (
+      <AuthGuard>
+        <SponsorDashboard />
       </AuthGuard>
     ),
   },

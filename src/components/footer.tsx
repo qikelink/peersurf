@@ -9,19 +9,19 @@ const Footer = () => {
           </p>
           <div className="flex gap-6 mt-4 md:mt-0">
             <a
-              href="#"
+              href="/privacy"
               className="text-gray-400 hover:text-white transition text-sm"
             >
               Privacy
             </a>
             <a
-              href="#"
+              href="/terms"
               className="text-gray-400 hover:text-white transition text-sm"
             >
               Terms
             </a>
             <a
-              href="#"
+              href="/cookies"
               className="text-gray-400 hover:text-white transition text-sm"
             >
               Cookies

@@ -15,7 +15,11 @@ interface UserContextType {
   user: any;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<any>;
-  signUp: (email: string, password: string) => Promise<any>;
+  signUp: (
+    email: string,
+    password: string,
+    role?: "sponsor" | "talent"
+  ) => Promise<any>;
   signOut: () => Promise<any>;
   signInWithProvider: (
     provider: "google" | "github" | "twitter" | "discord"
@@ -94,12 +98,17 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   // Wrap signUp to also create a profile
-  const signUp = async (email: string, password: string) => {
-    const { data, error } = await supabaseSignUp(email, password);
+  const signUp = async (
+    email: string,
+    password: string,
+    role?: "sponsor" | "talent"
+  ) => {
+    const { data, error } = await supabaseSignUp(email, password, { role });
     if (!error && data?.user) {
       // Create profile row
       await createUserProfile({
         id: data.user.id,
+        role: role ?? null,
         // Optionally add username: data.user.user_metadata?.username
       });
     }

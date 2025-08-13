@@ -3,14 +3,16 @@ import { Button } from "../ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Card } from "../ui/card";
 import { useNavigate } from "react-router-dom";
+import { updateUserProfile, createUserProfile } from "../../lib/auth";
+import Navbar from "../nav-bar";
 import { Settings, LogOut, User, Mail, Wallet, Bell } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
-  const { user, loading: userLoading, profile, refreshProfile, currency, setCurrency } = useUser();
+  const { user, loading: userLoading, profile, refreshProfile, currency, setCurrency, signOut } = useUser();
   const [isEditing, setIsEditing] = useState(false);
-  const [editedProfile, setEditedProfile] = useState(profile || {});
+  const [editedProfile, setEditedProfile] = useState<any>(profile || {});
 
   if (userLoading) {
     return (
@@ -23,12 +25,12 @@ const ProfilePage = () => {
     );
   }
 
-  if (!user || !profile) {
+  if (!user) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
         <div className="text-center">
           <p>Please log in to view your profile.</p>
-          <Button onClick={() => navigate("/auth")} className="mt-4">
+          <Button onClick={() => navigate("/auth?mode=login")} className="mt-4">
             Go to Login
           </Button>
         </div>
@@ -36,14 +38,47 @@ const ProfilePage = () => {
     );
   }
 
+  // Ensure a profile row exists for logged-in users (first-time login or missing profile)
+ useEffect(() => {
+    const ensureProfile = async () => {
+      if (user && !profile) {
+        try {
+          await createUserProfile({ id: user.id });
+          await refreshProfile();
+        } catch (e) {
+          // ignore and let refresh try again later
+        }
+      }
+    };
+    ensureProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id, profile]);
+
+  if (user && !profile) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500 mx-auto mb-4"></div>
+          <p>Setting up your profile...</p>
+        </div>
+      </div>
+    );
+  }
+
   const handleSave = async () => {
-    // Here you would typically update the profile in your backend
+    if (!user?.id) return;
+    await updateUserProfile(user.id, {
+      // Only role is editable
+      role: editedProfile.role || null,
+    });
     await refreshProfile();
     setIsEditing(false);
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <>
+      <Navbar />
+      <div className="min-h-screen bg-black text-white">
       {/* Header */}
       <div className="w-full max-w-7xl mx-auto px-8 py-8">
         <button
@@ -83,35 +118,41 @@ const ProfilePage = () => {
                   <label className="block text-sm font-medium text-gray-300 mb-2">
                     Full Name
                   </label>
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      value={editedProfile.full_name || ""}
-                      onChange={(e) =>
-                        setEditedProfile({ ...editedProfile, full_name: e.target.value })
-                      }
-                      className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white"
-                    />
-                  ) : (
-                    <p className="text-white">{profile.full_name || "Not set"}</p>
-                  )}
+                  <p className="text-white">
+                    {profile.full_name || (user as any)?.user_metadata?.full_name || (user as any)?.user_metadata?.name || profile.username || user.email}
+                  </p>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
                     Username
                   </label>
+                  <p className="text-white">{profile.username || "Not set"}</p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Role
+                  </label>
                   {isEditing ? (
-                    <input
-                      type="text"
-                      value={editedProfile.username || ""}
-                      onChange={(e) =>
-                        setEditedProfile({ ...editedProfile, username: e.target.value })
-                      }
-                      className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white"
-                    />
+                    <div className="flex gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setEditedProfile({ ...editedProfile, role: "talent" })}
+                        className={`px-3 py-2 rounded-lg border text-sm ${editedProfile.role === "talent" ? "border-green-500 bg-green-500/10 text-green-300" : "border-gray-600 bg-gray-800 text-gray-300"}`}
+                      >
+                        Talent
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setEditedProfile({ ...editedProfile, role: "sponsor" })}
+                        className={`px-3 py-2 rounded-lg border text-sm ${editedProfile.role === "sponsor" ? "border-green-500 bg-green-500/10 text-green-300" : "border-gray-600 bg-gray-800 text-gray-300"}`}
+                      >
+                        Sponsor
+                      </button>
+                    </div>
                   ) : (
-                    <p className="text-white">{profile.username || "Not set"}</p>
+                    <p className="text-white capitalize">{profile.role || "Not set"}</p>
                   )}
                 </div>
 
@@ -199,7 +240,7 @@ const ProfilePage = () => {
                 <Button
                   variant="outline"
                   className="w-full justify-start border-red-600 text-red-400 hover:bg-red-900"
-                  onClick={() => navigate("/auth")}
+                  onClick={async () => { await signOut(); navigate("/auth?mode=login"); }}
                 >
                   <LogOut className="w-4 h-4 mr-2" />
                   Sign Out
@@ -207,9 +248,10 @@ const ProfilePage = () => {
               </div>
             </Card>
           </div>
-        </div>
       </div>
-    </div>
+      </div>
+      </div>
+    </>
   );
 };
 

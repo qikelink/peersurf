@@ -26,6 +26,7 @@ export const signUp = async (
         full_name: userData?.full_name || email.split("@")[0],
         avatar_url: userData?.avatar_url || "",
         username: userData?.username || email.split("@")[0],
+        role: (userData as any)?.role || null,
       },
     },
   });

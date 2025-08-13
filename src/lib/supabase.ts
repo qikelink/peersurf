@@ -13,6 +13,7 @@ export interface Profile {
   avatar_url: string | null
   website: string | null
   wallet_address: string | null
+  role?: 'sponsor' | 'talent' | null
   total_staked: number
   total_earned: number
   updated_at: string
