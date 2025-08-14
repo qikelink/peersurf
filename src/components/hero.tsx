@@ -5,7 +5,7 @@ const Hero = () => {
   return (
     <section className="relative w-full min-h-screen flex items-center justify-center overflow-hidden">
       {/* Cosmic Background */}
-      <div className="absolute inset-0 bg-black">
+      <div className="absolute inset-0 bg-background">
         {/* Stars */}
         <div className="absolute inset-0">
           {[...Array(100)].map((_, i) => (
@@ -74,7 +74,7 @@ const Hero = () => {
       {/* Main Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-8 text-center">
         {/* Main Heading */}
-        <h1 className="text-4xl md:text-6xl font-bold mb-8 leading-tight text-white">
+        <h1 className="text-4xl md:text-6xl font-bold mb-8 leading-tight text-foreground">
           Discover
           <br />
           <span>Opportunities on</span>

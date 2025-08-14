@@ -52,6 +52,15 @@ export const listOpportunities = async (filters?: {
   return { data, error };
 };
 
+export const getOpportunityById = async (id: string) => {
+  const { data, error } = await supabase
+    .from("opportunities")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+  return { data, error };
+};
+
 export const deleteOpportunity = async (id: string, sponsorId: string) => {
   const { data, error } = await supabase
     .from("opportunities")

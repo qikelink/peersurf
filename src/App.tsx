@@ -2,15 +2,18 @@ import { useRoutes } from "react-router-dom";
 import routes from "./routes/routes";
 import { UserProvider } from "./contexts/UserContext";
 import { NotificationsProvider } from "./contexts/NotificationsContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
 
 function App() {
   const routing = useRoutes(routes);
   return (
-    <UserProvider>
-      <NotificationsProvider>
-        <main>{routing}</main>
-      </NotificationsProvider>
-    </UserProvider>
+    <ThemeProvider>
+      <UserProvider>
+        <NotificationsProvider>
+          <main>{routing}</main>
+        </NotificationsProvider>
+      </UserProvider>
+    </ThemeProvider>
   );
 }
 

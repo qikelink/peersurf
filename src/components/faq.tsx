@@ -31,7 +31,7 @@ const FAQ = () => {
   ];
 
   return (
-    <section className="w-full py-20 bg-black relative overflow-hidden">
+  <section className="w-full py-20 bg-background relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0">
         <div className="absolute top-10 right-10 w-64 h-64 bg-green-500/5 rounded-full blur-3xl"></div>
@@ -41,11 +41,11 @@ const FAQ = () => {
       <div className="relative z-10 max-w-4xl mx-auto px-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-white to-green-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-foreground to-green-400 bg-clip-text text-transparent">
               Frequently Asked Questions
             </span>
           </h2>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Everything you need to know about discovering opportunities on PeerSurf
           </p>
         </div>
@@ -54,13 +54,13 @@ const FAQ = () => {
           {faqs.map((faq, index) => (
             <div
               key={index}
-              className="group bg-gray-900/50 backdrop-blur-sm border border-gray-800 rounded-2xl overflow-hidden hover:border-green-500/30 transition-all duration-300"
+              className="group bg-card/60 backdrop-blur-sm border border-border rounded-2xl overflow-hidden hover:border-green-500/30 transition-all duration-300"
             >
               <button
-                className="w-full p-6 text-left flex items-center justify-between hover:bg-gray-800/50 transition-all duration-300"
+                className="w-full p-6 text-left flex items-center justify-between hover:bg-muted/50 transition-all duration-300"
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
               >
-                <span className="text-lg font-semibold text-white group-hover:text-green-400 transition-colors duration-300">
+                <span className="text-lg font-semibold text-foreground group-hover:text-green-400 transition-colors duration-300">
                   {faq.question}
                 </span>
                 <span className="text-green-400 text-2xl transition-transform duration-300">
@@ -73,7 +73,7 @@ const FAQ = () => {
                 }`}
               >
                 <div className="px-6 pb-6">
-                  <p className="text-gray-300 leading-relaxed">
+                  <p className="text-foreground leading-relaxed">
                     {faq.answer}
                   </p>
                 </div>
@@ -84,7 +84,7 @@ const FAQ = () => {
 
         {/* Bottom CTA */}
         <div className="text-center mt-16">
-          <p className="text-gray-400 mb-6">
+          <p className="text-muted-foreground mb-6">
             Still have questions? We're here to help.
           </p>
           <button className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-semibold px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-green-500/25">

@@ -11,8 +11,6 @@ import { useUser } from "../../contexts/UserContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import Loader from "../ui/loader";
 
-// Livepeer green colors
-const LIVEPEER_GREEN = "#00EB88";
 
 type SocialProvider = {
   name: string;
@@ -164,15 +162,15 @@ const AuthPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black flex flex-col">
+    <div className="min-h-screen bg-background text-foreground flex flex-col">
       <div className="flex-1 px-6 flex flex-col justify-center items-center">
         {/* Auth Card */}
         <div className="bg-gray-950 rounded-2xl shadow-lg border border-gray-700 p-8 -mt-6 relative z-10 max-w-md w-full">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-white mb-2">
+            <h2 className="text-2xl font-bold mb-2">
               {isSignUp ? "Create Account" : "Sign In"}
             </h2>
-            <p className="text-gray-400">
+            <p className="text-muted-foreground">
               {isSignUp
                 ? "Join the decentralized video network"
                 : "Welcome back, let's get started"}
@@ -184,7 +182,7 @@ const AuthPage = () => {
             {socialProviders.map((provider) => (
               <Button
                 key={provider.id}
-                className="w-full flex items-center justify-center gap-3 bg-gray-900 border border-gray-600 text-white hover:bg-gray-700"
+                className="w-full flex items-center justify-center gap-3 bg-card border border-border hover:bg-muted text-foreground"
                 onClick={() => handleSocial(provider.id)}
                 type="button"
               >
@@ -195,10 +193,10 @@ const AuthPage = () => {
           </div>
 
           {/* Divider */}
-          <div className="flex items-center mb-6">
-            <div className="flex-1 border-t border-gray-600" />
-            <span className="mx-3 text-gray-500 text-sm">or</span>
-            <div className="flex-1 border-t border-gray-600" />
+            <div className="flex items-center mb-6">
+              <div className="flex-1 border-t border-border" />
+              <span className="mx-3 text-muted-foreground text-sm">or</span>
+              <div className="flex-1 border-t border-border" />
           </div>
 
           {/* Email/Password Form */}
@@ -212,14 +210,14 @@ const AuthPage = () => {
                 <button
                   type="button"
                   onClick={() => setRole("talent")}
-                  className={`p-3 rounded-xl border text-sm ${role === "talent" ? "border-green-500 bg-green-500/10 text-green-300" : "border-gray-600 bg-gray-900 text-gray-300"}`}
+                  className={`p-3 rounded-xl border text-sm ${role === "talent" ? "border-green-500 bg-green-500/10 text-green-300" : "border-border bg-card text-foreground"}`}
                 >
                   I’m a Talent
                 </button>
                 <button
                   type="button"
                   onClick={() => setRole("sponsor")}
-                  className={`p-3 rounded-xl border text-sm ${role === "sponsor" ? "border-green-500 bg-green-500/10 text-green-300" : "border-gray-600 bg-gray-900 text-gray-300"}`}
+                  className={`p-3 rounded-xl border text-sm ${role === "sponsor" ? "border-green-500 bg-green-500/10 text-green-300" : "border-border bg-card text-foreground"}`}
                 >
                   I’m a Sponsor
                 </button>
@@ -231,7 +229,7 @@ const AuthPage = () => {
                 placeholder="Email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full p-4 border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-gray-900 text-white placeholder-gray-400"
+                className="w-full p-4 border border-border rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background bg-background text-foreground placeholder:text-muted-foreground/70"
                 required
               />
             </div>
@@ -241,7 +239,7 @@ const AuthPage = () => {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full p-4 pr-12 border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-gray-900 text-white placeholder-gray-400"
+                className="w-full p-4 pr-12 border border-border rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background bg-background text-foreground placeholder:text-muted-foreground/70"
                 required
               />
               <button
@@ -259,8 +257,8 @@ const AuthPage = () => {
             </div>
 
             {error && (
-              <div className="p-3 rounded-xl bg-red-900/50 border border-red-700">
-                <p className="text-red-300 text-sm">{error}</p>
+              <div className="p-3 rounded-xl bg-red-500/10 border border-red-700">
+                <p className="text-red-400 text-sm">{error}</p>
               </div>
             )}
 
@@ -285,7 +283,7 @@ const AuthPage = () => {
           {/* Toggle Sign Up/In */}
           <div className="mt-6 text-center">
             <button
-              className="text-sm text-gray-400 hover:text-green-400 transition-colors"
+              className="text-sm text-muted-foreground hover:text-primary transition-colors"
               onClick={() => {
                 setIsSignUp(!isSignUp);
                 setError(null);

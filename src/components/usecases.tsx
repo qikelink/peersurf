@@ -56,7 +56,7 @@ const UseCasesSection = () => {
   ];
 
   return (
-    <section className="w-full py-20 bg-black relative overflow-hidden">
+  <section className="w-full py-20 bg-background relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0">
         <div className="absolute top-20 left-20 w-64 h-64 bg-green-500/10 rounded-full blur-3xl"></div>
@@ -72,7 +72,7 @@ const UseCasesSection = () => {
               Discover Opportunities
             </span>
           </h2>
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Join the talent layer of decentralized video. Choose your path and start building your future.
           </p>
         </div>
@@ -100,7 +100,7 @@ const UseCasesSection = () => {
                 </h3>
                 
                 {/* Description */}
-                <p className="text-gray-400 mb-6 leading-relaxed">
+                <p className="text-muted-foreground mb-6 leading-relaxed">
                   {opportunity.description}
                 </p>
                 

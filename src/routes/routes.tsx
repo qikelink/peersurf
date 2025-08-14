@@ -4,6 +4,7 @@ import AuthPage from "@/components/pages/auth-page";
 import ProfilePage from "@/components/pages/profile-page";
 import SponsorDashboard from "@/components/pages/sponsor-dashboard";
 import NotificationsPage from "../components/pages/notifications-page";
+import OpportunityDetailPage from "../components/pages/opportunity-detail";
 import { useUser } from "../contexts/UserContext";
 
 // Simple auth guard component
@@ -15,11 +16,11 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
 
   if (!isSupabaseConfigured) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-black text-white">
+      <div className="flex items-center justify-center min-h-screen bg-background text-foreground">
         <div className="text-center">
           <h2 className="text-xl font-bold mb-4">Configuration Error</h2>
-          <p className="text-gray-400 mb-4">Supabase environment variables are not configured.</p>
-          <p className="text-sm text-gray-500">Please check your .env file</p>
+          <p className="text-muted-foreground mb-4">Supabase environment variables are not configured.</p>
+          <p className="text-sm text-muted-foreground">Please check your .env file</p>
         </div>
       </div>
     );
@@ -27,7 +28,7 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-black text-white">
+      <div className="flex items-center justify-center min-h-screen bg-background text-foreground">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500 mx-auto mb-4"></div>
           <p>Loading...</p>
@@ -51,6 +52,11 @@ const routes = [
   {
     path: "/home",
     element: <OpportuniesPage />, // Temporarily bypass AuthGuard
+  },
+
+  {
+    path: "/opportunity/:id",
+    element: <OpportunityDetailPage />,
   },
 
  
@@ -85,7 +91,7 @@ const routes = [
   {
     path: "*",
     element: (
-      <div className="text-center text-red-500 bg-black min-h-screen flex items-center justify-center">
+      <div className="text-center text-red-500 bg-background min-h-screen flex items-center justify-center">
         404 - Page Not Found
       </div>
     ),
