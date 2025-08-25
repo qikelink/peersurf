@@ -33,81 +33,41 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-6">
-            {user ? (
-              <>
-                <Link 
-                  to="/home" 
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  Opportunities
-                </Link>
-                <Link 
-                  to="/home#how-it-works" 
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  How It Works
-                </Link>
-                <Link 
-                  to="/home#faq" 
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  FAQ
-                </Link>
-                {profile?.role === 'sponsor' ? (
-                  <Link 
-                    to="/sponsor" 
-                    className="text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    Sponsor Dashboard
-                  </Link>
-                ) : (
-                  <Link 
-                    to="/auth?mode=signup&role=sponsor" 
-                    className="text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    Become a Sponsor
-                  </Link>
-                )}
-              </>
-            ) : (
-              <>
-                <Link 
-                  to="/home" 
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  Opportunities
-                </Link>
-                <Link 
-                  to="/home#how-it-works" 
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  How It Works
-                </Link>
-                <Link 
-                  to="/home#faq" 
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  FAQ
-                </Link>
-                <Link 
-                  to="/sponsor" 
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  Sponsor
-                </Link>
-              </>
-            )}
+            <Link 
+              to="/" 
+              className="text-primary font-semibold transition-colors"
+            >
+              Home
+            </Link>
+            <Link 
+              to="/home" 
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              Opportunities Hub
+            </Link>
+            <Link 
+              to="/talent" 
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              Talent Hub
+            </Link>
+            <Link 
+              to="/community" 
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              Community
+            </Link>
           </div>
 
           {/* Desktop Auth Section */}
           <div className="hidden md:flex items-center gap-4">
-          <button
-                onClick={toggleTheme}
-                className="p-2 rounded-lg text-gray-300 hover:text-green-400 transition-colors"
-                title={isDark ? "Switch to light mode" : "Switch to dark mode"}
-              >
-                {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-              </button>
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg text-gray-300 hover:text-green-400 transition-colors"
+              title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+            >
+              {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
             {user ? (
               <div className="relative">
                 <button
@@ -153,19 +113,12 @@ const Navbar = () => {
                 )}
               </div>
             ) : (
-              <>
-                <Link 
-                  to="/auth?mode=login" 
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  Login
-                </Link>
-                <Link to="/auth?mode=signup">
-                  <Button className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white px-4 py-2 rounded-lg">
-                    Sign Up
-                  </Button>
-                </Link>
-              </>
+              <Button 
+                onClick={() => navigate("/auth?mode=signup")}
+                className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white px-4 py-2 rounded-lg"
+              >
+                Launch App
+              </Button>
             )}
           </div>
 
@@ -190,47 +143,37 @@ const Navbar = () => {
       {mobileMenuOpen && (
         <div className="md:hidden bg-card border-t border-border">
           <div className="px-2 pt-2 pb-3 space-y-1">
+            <Link
+              to="/"
+              className="block px-3 py-2 text-primary font-semibold hover:bg-muted rounded-md"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Home
+            </Link>
+            <Link
+              to="/opportunities"
+              className="block px-3 py-2 text-muted-foreground hover:text-primary hover:bg-muted rounded-md"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Opportunities Hub
+            </Link>
+            <Link
+              to="/talent"
+              className="block px-3 py-2 text-muted-foreground hover:text-primary hover:bg-muted rounded-md"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Talent Hub
+            </Link>
+            <Link
+              to="/community"
+              className="block px-3 py-2 text-muted-foreground hover:text-primary hover:bg-muted rounded-md"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Community
+            </Link>
+            <hr className="border-gray-700 my-2" />
             {user ? (
               <>
-                <Link
-                  to="/home"
-                  className="block px-3 py-2 text-muted-foreground hover:text-primary hover:bg-muted rounded-md"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Opportunities
-                </Link>
-                <Link
-                  to="/home#how-it-works"
-                  className="block px-3 py-2 text-muted-foreground hover:text-primary hover:bg-muted rounded-md"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  How It Works
-                </Link>
-                <Link
-                  to="/home#faq"
-                  className="block px-3 py-2 text-muted-foreground hover:text-primary hover:bg-muted rounded-md"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  FAQ
-                </Link>
-                {profile?.role === 'sponsor' ? (
-                  <Link
-                    to="/sponsor"
-                    className="block px-3 py-2 text-muted-foreground hover:text-primary hover:bg-muted rounded-md"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Sponsor Dashboard
-                  </Link>
-                ) : (
-                  <Link
-                    to="/auth?mode=signup&role=sponsor"
-                    className="block px-3 py-2 text-muted-foreground hover:text-primary hover:bg-muted rounded-md"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Become a Sponsor
-                  </Link>
-                )}
-                <hr className="border-gray-700 my-2" />
                 <Link
                   to="/profile"
                   className="block px-3 py-2 text-muted-foreground hover:text-primary hover:bg-muted rounded-md"
@@ -256,51 +199,15 @@ const Navbar = () => {
                 </button>
               </>
             ) : (
-              <>
-                <Link
-                  to="/home"
-                  className="block px-3 py-2 text-muted-foreground hover:text-primary hover:bg-muted rounded-md"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Opportunities
-                </Link>
-                <Link
-                  to="/home#how-it-works"
-                  className="block px-3 py-2 text-muted-foreground hover:text-primary hover:bg-muted rounded-md"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  How It Works
-                </Link>
-                <Link
-                  to="/home#faq"
-                  className="block px-3 py-2 text-muted-foreground hover:text-primary hover:bg-muted rounded-md"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  FAQ
-                </Link>
-                <Link
-                  to="/sponsor"
-                  className="block px-3 py-2 text-muted-foreground hover:text-primary hover:bg-muted rounded-md"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Sponsor
-                </Link>
-                <hr className="border-gray-700 my-2" />
-                <Link
-                  to="/auth?mode=login"
-                  className="block px-3 py-2 text-muted-foreground hover:text-primary hover:bg-muted rounded-md"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Login
-                </Link>
-                <Link
-                  to="/auth?mode=signup"
-                  className="block px-3 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-md mx-3 mt-2 text-center"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Sign Up
-                </Link>
-              </>
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  navigate("/auth?mode=signup");
+                }}
+                className="block w-full px-3 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-md text-center"
+              >
+                Launch App
+              </button>
             )}
           </div>
         </div>

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 const Hero = () => {
   const navigate = useNavigate();
   return (
-    <section className="relative w-full min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative w-full min-h-[85vh] flex items-center justify-center overflow-hidden">
       {/* Cosmic Background */}
       <div className="absolute inset-0 bg-background">
         {/* Stars */}
@@ -74,7 +74,7 @@ const Hero = () => {
       {/* Main Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-8 text-center">
         {/* Main Heading */}
-        <h1 className="text-4xl md:text-6xl font-bold mb-8 leading-tight text-foreground">
+        <h1 className="text-3xl md:text-6xl font-bold mb-8 leading-tight text-foreground">
           Discover
           <br />
           <span>Opportunities on</span>
@@ -89,7 +89,7 @@ const Hero = () => {
         </h1>
 
         {/* Subtitle */}
-        <p className="text-lg md:text-xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
+        <p className="text-lg md:text-lg text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
           Join the talent layer of
           livepeer. Contribute as a developer, creator, artist or writer. Earn rewards and
           help shape the future of decentralized video.
@@ -99,7 +99,7 @@ const Hero = () => {
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
           <button
             className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-semibold px-6 py-3 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg  cursor-pointer hover:shadow-green-500/25"
-            onClick={() => navigate("/home")}
+            onClick={() => navigate("/auth?mode=login")}
           >
             Start Building
           </button>
