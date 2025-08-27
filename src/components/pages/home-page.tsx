@@ -57,7 +57,7 @@ const HomePage = () => {
       id: 1,
       name: "Cloud SPE",
       description: "Decentralized video NFT marketplace",
-      logo: "https://cryptologos.cc/logos/tellor-trb-logo.png?v=040",
+      logo: "https://picsum.photos/60/60?random=1",
       status: "Funded",
       amount: "$25,000",
       contributors: 12
@@ -66,7 +66,7 @@ const HomePage = () => {
       id: 2,
       name: "Stream.place",
       description: "Community-governed streaming platform",
-      logo: "https://via.placeholder.com/60x60/0088ff/ffffff?text=SD",
+      logo: "https://picsum.photos/60/60?random=2",
       status: "Active",
       amount: "$18,500",
       contributors: 8
@@ -75,32 +75,36 @@ const HomePage = () => {
       id: 3,
       name: "Lisarstake",
       description: "Professional live streaming toolkit",
-      logo: "https://via.placeholder.com/60x60/ff8800/ffffff?text=LC",
+      logo: "https://picsum.photos/60/60?random=3",
       status: "Completed",
       amount: "$32,000",
       contributors: 15
     },
     {
       id: 4,
-      name: "wid.io",
+      name: "Gwid.io",
       description: "DeFi integration for video creators",
-      logo: "https://via.placeholder.com/60x60/8800ff/ffffff?text=VD",
+      logo: "https://picsum.photos/60/60?random=4",
       status: "Funded",
       amount: "$28,500",
       contributors: 11
     }
   ];
 
-  // Logo carousel data
+  // Logo carousel data - using real crypto project logos
   const projectLogos = [
-    { id: 1, src: "https://placehold.co/64x64/00ff88/000000?text=VN", alt: "VideoNFT Hub", name: "VideoNFT Hub" },
-    { id: 2, src: "https://placehold.co/64x64/0088ff/ffffff?text=SD", alt: "StreamDAO", name: "StreamDAO" },
-    { id: 3, src: "https://placehold.co/64x64/ff8800/ffffff?text=LC", alt: "LiveCast Pro", name: "LiveCast Pro" },
-    { id: 4, src: "https://placehold.co/64x64/8800ff/ffffff?text=VD", alt: "VideoDeFi", name: "VideoDeFi" },
-    { id: 5, src: "https://placehold.co/64x64/ff0088/ffffff?text=VS", alt: "VideoStream", name: "VideoStream" },
-    { id: 6, src: "https://placehold.co/64x64/00ffff/000000?text=LP", alt: "LivePeer", name: "LivePeer" },
-    { id: 7, src: "https://placehold.co/64x64/ffff00/000000?text=DC", alt: "DecentralCast", name: "DecentralCast" },
-    { id: 8, src: "https://placehold.co/64x64/ff00ff/ffffff?text=VM", alt: "VideoMarket", name: "VideoMarket" },
+    { id: 1, src: "https://cryptologos.cc/logos/stellar-xlm-logo.png?v=040", alt: "Stellar", name: "Stellar" },
+    { id: 2, src: "https://cryptologos.cc/logos/internet-computer-icp-logo.png?v=040", alt: "Internet Computer", name: "Internet Computer" },
+    { id: 3, src: "https://cryptologos.cc/logos/unus-sed-leo-leo-logo.png?v=040", alt: "UNUS SED LEO", name: "UNUS SED LEO" },
+    { id: 4, src: "https://cryptologos.cc/logos/the-graph-grt-logo.png?v=040", alt: "The Graph", name: "The Graph" },
+    { id: 5, src: "https://cryptologos.cc/logos/jupiter-ag-jup-logo.png?v=040", alt: "Jupiter", name: "Jupiter" },
+    { id: 6, src: "https://cryptologos.cc/logos/reserve-rights-rsr-logo.png?v=040", alt: "Reserve Rights", name: "Reserve Rights" },
+    { id: 7, src: "https://cryptologos.cc/logos/harmony-one-logo.png?v=040", alt: "Harmony", name: "Harmony" },
+    { id: 8, src: "https://cryptologos.cc/logos/grin-grin-logo.png?v=040", alt: "Grin", name: "Grin" },
+    { id: 9, src: "https://cryptologos.cc/logos/tellor-trb-logo.png?v=040", alt: "Tellor", name: "Tellor" },
+    { id: 10, src: "https://cryptologos.cc/logos/arweave-ar-logo.png?v=040", alt: "Arweave", name: "Arweave" },
+    { id: 11, src: "https://cryptologos.cc/logos/audius-audio-logo.png?v=040", alt: "Audius", name: "Audius" },
+    { id: 12, src: "https://cryptologos.cc/logos/basic-attention-token-bat-logo.png?v=040", alt: "Basic Attention Token", name: "BAT" },
   ];
 
   // Mock data for ecosystem needs

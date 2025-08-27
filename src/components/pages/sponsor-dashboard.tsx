@@ -66,7 +66,7 @@ const SponsorDashboard = () => {
     await refresh();
   };
 
-  const isSponsor = (profile?.role === "sponsor");
+  const isSponsor = (profile?.role === "SPE");
 
   return (
     <>

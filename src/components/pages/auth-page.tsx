@@ -101,9 +101,9 @@ const AuthPage = () => {
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [role, setRole] = useState<"sponsor" | "talent" | "">(() => {
+  const [role, setRole] = useState<"talent" | "SPE" | "admin" | "">(() => {
     const r = new URLSearchParams(location.search).get("role");
-    return r === "sponsor" || r === "talent" ? r : "";
+    return r === "talent" || r === "SPE" || r === "admin" ? r : "";
   });
   const [loading, setLoading] = useState<boolean>(false);
   const { signIn, signUp, signInWithProvider, user } = useUser();
@@ -114,7 +114,7 @@ const AuthPage = () => {
     const mode = new URLSearchParams(location.search).get("mode");
     setIsSignUp(mode === "signup");
     const r = new URLSearchParams(location.search).get("role");
-    if (r === "sponsor" || r === "talent") setRole(r);
+    if (r === "talent" || r === "SPE" || r === "admin") setRole(r as "talent" | "SPE" | "admin");
   }, [location.search]);
 
   // Redirect if already logged in
@@ -131,7 +131,9 @@ const AuthPage = () => {
     try {
       let result;
       if (isSignUp) {
-        result = await signUp(email, password, role || undefined);
+        // Map role to the expected format
+        const mappedRole = role === "SPE" ? "SPE" : role === "admin" ? "admin" : role === "talent" ? "talent" : undefined;
+        result = await signUp(email, password, mappedRole);
       } else {
         result = await signIn(email, password);
       }
@@ -206,20 +208,27 @@ const AuthPage = () => {
             autoComplete="off"
           >
             {isSignUp && (
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-3 gap-3">
                 <button
                   type="button"
                   onClick={() => setRole("talent")}
                   className={`p-3 rounded-xl border text-sm ${role === "talent" ? "border-green-500 bg-green-500/10 text-green-300" : "border-border bg-card text-foreground"}`}
                 >
-                  I’m a Talent
+                  Talent
                 </button>
                 <button
                   type="button"
-                  onClick={() => setRole("sponsor")}
-                  className={`p-3 rounded-xl border text-sm ${role === "sponsor" ? "border-green-500 bg-green-500/10 text-green-300" : "border-border bg-card text-foreground"}`}
+                  onClick={() => setRole("SPE")}
+                  className={`p-3 rounded-xl border text-sm ${role === "SPE" ? "border-green-500 bg-green-500/10 text-green-300" : "border-border bg-card text-foreground"}`}
                 >
-                  I’m a Sponsor
+                  SPE
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRole("admin")}
+                  className={`p-3 rounded-xl border text-sm ${role === "admin" ? "border-green-500 bg-green-500/10 text-green-300" : "border-border bg-card text-foreground"}`}
+                >
+                  Admin
                 </button>
               </div>
             )}

@@ -150,7 +150,7 @@ const OpportuniesPage = () => {
         {/* Main Content */}
         <div className="flex-1 p-4 sm:p-6">
           {/* Hero Section - Conditional based on role */}
-          {(!profile?.role || profile?.role === 'sponsor') ? (
+          {(!profile?.role || profile?.role === 'SPE') ? (
             <div className="relative overflow-hidden bg-gradient-to-r from-green-600 to-green-700 rounded-2xl p-6 sm:p-8 mb-6 sm:mb-8">
               <div className="absolute -top-8 -right-8 w-40 h-40 bg-white/10 rounded-full blur-2xl animate-float" />
             <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-foreground/5 rounded-full blur-2xl animate-float" />
@@ -158,13 +158,13 @@ const OpportuniesPage = () => {
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-4">
                     <Briefcase className="w-6 h-6 sm:w-8 sm:h-8 text-white animate-float" />
-                    <h2 className="text-xl sm:text-2xl font-bold text-white">{profile?.role === 'sponsor' ? 'Sponsorship' : 'Become a Sponsor'}</h2>
+                    <h2 className="text-xl sm:text-2xl font-bold text-white">{profile?.role === 'SPE' ? 'Sponsorship' : 'Become a Sponsor'}</h2>
                   </div>
                   <p className="text-green-100 mb-6 max-w-2xl text-sm sm:text-base">
                     Reach 50,000+ top-tier talent in under 5 clicks. Get high-quality work done across content, development, and design.
                   </p>
                   <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                    <Link to={profile?.role === 'sponsor' ? '/sponsor' : '/auth?mode=signup&role=sponsor'} className="w-full sm:w-auto">
+                    <Link to={profile?.role === 'SPE' ? '/sponsor' : '/auth?mode=signup&role=SPE'} className="w-full sm:w-auto">
                       <Button className="bg-foreground text-background hover:opacity-90 px-6 py-3 rounded-lg w-full sm:w-auto">
                         Get Started
                       </Button>
@@ -298,7 +298,7 @@ const OpportuniesPage = () => {
             {/* Grants Section */}
             <div className="mt-8 sm:mt-12">
               <h3 className="text-lg sm:text-xl font-bold mb-6">Grants</h3>
-              <div className="space-y-4">
+              <div className="space-y-4 flex flex-col">
                 {loading ? (
                   Array.from({ length: 3 }).map((_, i) => (
                     <Card key={`grant-skel-${i}`} className="bg-card border border-border p-4 sm:p-6">
@@ -306,49 +306,60 @@ const OpportuniesPage = () => {
                         <div className="flex items-start gap-4 flex-1">
                           <Skeleton className="w-12 h-12 rounded-lg" />
                           <div className="flex-1 min-w-0 space-y-2">
-                            <Skeleton className="h-4 w-2/3" />
-                            <Skeleton className="h-3 w-1/4" />
+                            <Skeleton className="h-4 w-3/4" />
+                            <Skeleton className="h-3 w-1/3" />
                             <div className="flex gap-3">
+                              <Skeleton className="h-3 w-14" />
+                              <Skeleton className="h-3 w-10" />
                               <Skeleton className="h-3 w-16" />
-                              <Skeleton className="h-3 w-20" />
                             </div>
                           </div>
                         </div>
-                        <Skeleton className="h-5 w-24" />
+                        <Skeleton className="h-5 w-20" />
                       </div>
                     </Card>
                   ))
                 ) : (
-                (dynGrants.length ? dynGrants : mockGrants).map((grant: any) => (
-                  <Link key={grant.id} to={`/opportunity/${grant.id}`} state={{ opportunity: { ...grant, type: grant.type || "Grant", status: grant.status || "Active" } }}>
-                  <Card className="bg-gray-900 border border-gray-700 p-4 sm:p-6 hover:border-green-500/50 transition-colors">
-                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                      <div className="flex items-start gap-4 flex-1">
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-600 to-purple-800 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <Award className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            <h3 className="font-semibold text-white text-sm sm:text-base truncate">{grant.title}</h3>
-                            {grant.verified && <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />}
+                  (dynGrants.length ? dynGrants : mockGrants).map((grant: any) => (
+                    <Link key={grant.id} to={`/opportunity/${grant.id}`} state={{ opportunity: { ...grant, type: grant.type || "Grant", status: grant.status || "Active" } }}>
+                      <Card className="bg-gray-900 border border-gray-700 p-4 sm:p-6 hover:border-green-500/50 transition-colors">
+                        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                          <div className="flex items-start gap-4 flex-1">
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-600 to-purple-800 rounded-lg flex items-center justify-center flex-shrink-0">
+                              <Award className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 mb-1">
+                                <h3 className="font-semibold text-white text-sm sm:text-base truncate">
+                                  {grant.title}
+                                </h3>
+                                {grant.verified && (
+                                  <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
+                                )}
+                              </div>
+                              <p className="text-muted-foreground text-xs sm:text-sm mb-2">
+                                {grant.team || "Community Sponsor"}
+                              </p>
+                              <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm">
+                                <span className="flex items-center gap-1 text-muted-foreground">
+                                  <Award className="w-3 h-3 sm:w-4 sm:h-4" />
+                                  {grant.type}
+                                </span>
+                                <span className="text-green-400">
+                                  {grant.avgAmount || ""} {grant.avgAmount ? "Avg. Grant" : ""}
+                                </span>
+                              </div>
+                            </div>
                           </div>
-                          <p className="text-muted-foreground text-xs sm:text-sm mb-2">{grant.team || "Community Sponsor"}</p>
-                          <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm">
-                            <span className="text-muted-foreground">{grant.type}</span>
-                            <span className="text-green-400">{grant.avgAmount || ""} {grant.avgAmount ? "Avg. Grant" : ""}</span>
+                          <div className="text-right sm:text-left">
+                            <div className="text-base sm:text-lg font-bold text-green-400">
+                              {grant.maxAmount || grant.max_amount || ""}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="text-right sm:text-left">
-                        <div className="flex items-center gap-1 text-base sm:text-lg font-bold text-green-400">
-                          <DollarSign className="w-3 h-3 sm:w-4 sm:h-4" />
-                          {grant.maxAmount || grant.max_amount || ""}
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
-                  </Link>
-                ))
+                      </Card>
+                    </Link>
+                  ))
                 )}
               </div>
             </div>
@@ -390,12 +401,12 @@ const OpportuniesPage = () => {
               <Card className="bg-gray-900 border border-gray-700 p-4 sm:p-6 mb-6">
                 <div className="flex items-center gap-3 mb-4">
                   <Briefcase className="w-5 h-5 sm:w-6 sm:h-6 text-green-400" />
-                  <h3 className="font-semibold text-white text-sm sm:text-base">{profile?.role === 'sponsor' ? 'Sponsorship' : 'Become a Sponsor'}</h3>
+                  <h3 className="font-semibold text-white text-sm sm:text-base">{profile?.role === 'SPE' ? 'Sponsorship' : 'Become a Sponsor'}</h3>
                 </div>
                 <p className="text-muted-foreground text-xs sm:text-sm mb-4">
                   Reach 50,000+ crypto talent from one single dashboard.
                 </p>
-                <Button onClick={() => navigate(profile?.role === 'sponsor' ? '/sponsor' : '/auth?mode=signup&role=sponsor')} className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white text-sm">
+                <Button onClick={() => navigate(profile?.role === 'SPE' ? '/sponsor' : '/auth?mode=signup&role=SPE')} className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white text-sm">
                   Get Started
                 </Button>
               </Card>

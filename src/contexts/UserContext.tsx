@@ -18,7 +18,7 @@ interface UserContextType {
   signUp: (
     email: string,
     password: string,
-    role?: "sponsor" | "talent"
+    role?: "talent" | "SPE" | "admin"
   ) => Promise<any>;
   signOut: () => Promise<any>;
   signInWithProvider: (
@@ -101,7 +101,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signUp = async (
     email: string,
     password: string,
-    role?: "sponsor" | "talent"
+    role?: "talent" | "SPE" | "admin"
   ) => {
     const { data, error } = await supabaseSignUp(email, password, { role });
     if (!error && data?.user) {

@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useUser } from "../contexts/UserContext";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
@@ -12,6 +12,29 @@ const Navbar = () => {
   const { user, profile, signOut } = useUser();
   const { isDark, toggleTheme } = useTheme();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
+
+  const getActiveStyles = (isActiveLink: boolean) => {
+    if (isActiveLink) {
+      return isDark 
+        ? "text-white font-semibold" 
+        : "text-primary font-semibold";
+    }
+    return "text-muted-foreground hover:text-primary";
+  };
+
+  const getMobileActiveStyles = (isActiveLink: boolean) => {
+    if (isActiveLink) {
+      return isDark 
+        ? "text-white font-semibold bg-gray-800" 
+        : "text-primary font-semibold bg-gray-100";
+    }
+    return "text-muted-foreground hover:text-primary hover:bg-muted";
+  };
 
   const handleSignOut = async () => {
     setUserMenuOpen(false);
@@ -26,34 +49,35 @@ const Navbar = () => {
           {/* Logo */}
           <div className="flex items-center">
             <Link to="/" className="flex items-center gap-3">
-              <img src="https://altcoinsbox.com/wp-content/uploads/2023/04/livepeer-logo.png" alt="PeerSurf" className="w-8 h-8" />
+              <img src="/onyx.png" alt="PeerSurf" className="w-8 h-8" />
               <span className="font-bold text-lg sm:text-xl text-foreground tracking-tight">PeerSurf</span>
             </Link>
           </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-6">
-            <Link 
-              to="/" 
-              className="text-primary font-semibold transition-colors"
-            >
-              Home
-            </Link>
+            
             <Link 
               to="/home" 
-              className="text-muted-foreground hover:text-primary transition-colors"
+              className={`transition-colors ${getActiveStyles(isActive("/home"))}`}
+            >
+              Home
+            </Link> 
+            <Link 
+              to="/opportunities" 
+              className={`transition-colors ${getActiveStyles(isActive("/opportunities"))}`}
             >
               Opportunities Hub
             </Link>
             <Link 
               to="/talent" 
-              className="text-muted-foreground hover:text-primary transition-colors"
+              className={`transition-colors ${getActiveStyles(isActive("/talent"))}`}
             >
               Talent Hub
             </Link>
             <Link 
               to="/community" 
-              className="text-muted-foreground hover:text-primary transition-colors"
+              className={`transition-colors ${getActiveStyles(isActive("/community"))}`}
             >
               Community
             </Link>
@@ -145,28 +169,35 @@ const Navbar = () => {
           <div className="px-2 pt-2 pb-3 space-y-1">
             <Link
               to="/"
-              className="block px-3 py-2 text-primary font-semibold hover:bg-muted rounded-md"
+              className={`block px-3 py-2 rounded-md transition-colors ${getMobileActiveStyles(isActive("/"))}`}
               onClick={() => setMobileMenuOpen(false)}
             >
               Home
             </Link>
             <Link
+              to="/home"
+              className={`block px-3 py-2 rounded-md transition-colors ${getMobileActiveStyles(isActive("/home"))}`}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              App
+            </Link>
+            <Link
               to="/opportunities"
-              className="block px-3 py-2 text-muted-foreground hover:text-primary hover:bg-muted rounded-md"
+              className={`block px-3 py-2 rounded-md transition-colors ${getMobileActiveStyles(isActive("/opportunities"))}`}
               onClick={() => setMobileMenuOpen(false)}
             >
               Opportunities Hub
             </Link>
             <Link
               to="/talent"
-              className="block px-3 py-2 text-muted-foreground hover:text-primary hover:bg-muted rounded-md"
+              className={`block px-3 py-2 rounded-md transition-colors ${getMobileActiveStyles(isActive("/talent"))}`}
               onClick={() => setMobileMenuOpen(false)}
             >
               Talent Hub
             </Link>
             <Link
               to="/community"
-              className="block px-3 py-2 text-muted-foreground hover:text-primary hover:bg-muted rounded-md"
+              className={`block px-3 py-2 rounded-md transition-colors ${getMobileActiveStyles(isActive("/community"))}`}
               onClick={() => setMobileMenuOpen(false)}
             >
               Community
