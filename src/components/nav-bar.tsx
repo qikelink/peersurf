@@ -58,8 +58,8 @@ const Navbar = () => {
           <div className="hidden md:flex items-center gap-6">
             
             <Link 
-              to="/home" 
-              className={`transition-colors ${getActiveStyles(isActive("/home"))}`}
+              to="/" 
+              className={`transition-colors ${getActiveStyles(isActive("/"))}`}
             >
               Home
             </Link> 
@@ -173,13 +173,6 @@ const Navbar = () => {
               onClick={() => setMobileMenuOpen(false)}
             >
               Home
-            </Link>
-            <Link
-              to="/home"
-              className={`block px-3 py-2 rounded-sm transition-colors ${getMobileActiveStyles(isActive("/home"))}`}
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              App
             </Link>
             <Link
               to="/opportunities"

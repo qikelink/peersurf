@@ -597,7 +597,7 @@ const OpportuniesPage = () => {
             <div>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-white text-sm sm:text-base">RECENT EARNERS</h3>
-                <Link to="/home#leaderboard" className="text-green-400 text-xs sm:text-sm hover:underline">Leaderboard</Link>
+                <Link to="/opportunities#leaderboard" className="text-green-400 text-xs sm:text-sm hover:underline">Leaderboard</Link>
               </div>
               {loading ? (
                 <div className="space-y-3">

@@ -48,7 +48,7 @@ export const signInWithProvider = async (provider: "google" | "twitter") => {
   return supabase.auth.signInWithOAuth({
     provider,
     options: {
-      redirectTo: `${window.location.origin}/home`,
+      redirectTo: `${window.location.origin}/opportunities`,
     },
   });
 };

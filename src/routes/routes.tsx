@@ -50,7 +50,7 @@ const routes = [
     element: <HomePage />,
   },
   {
-    path: "/home",
+    path: "/opportunities",
     element: <OpportuniesPage />, // Temporarily bypass AuthGuard
   },
 

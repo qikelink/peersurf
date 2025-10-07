@@ -111,7 +111,7 @@ const AuthPage = () => {
 
   // Redirect if already logged in
   useEffect(() => {
-    if (user) navigate("/home");
+    if (user) navigate("/opportunities");
   }, [user, navigate]);
 
   const handleSubmit = async (
@@ -134,7 +134,7 @@ const AuthPage = () => {
         setLoading(false);
       } else {
         setLoading(false);
-        navigate("/home");
+        navigate("/opportunities");
       }
     } catch (err: any) {
       setError(err.message || "Authentication error");
