@@ -43,8 +43,8 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="w-full bg-background border-b border-border text-foreground relative z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className="w-full bg-background border-b border-border text-foreground sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto sm:px-6 lg:px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center">
@@ -169,35 +169,35 @@ const Navbar = () => {
           <div className="px-2 pt-2 pb-3 space-y-1">
             <Link
               to="/"
-              className={`block px-3 py-2 rounded-md transition-colors ${getMobileActiveStyles(isActive("/"))}`}
+              className={`block px-3 py-2 rounded-sm transition-colors ${getMobileActiveStyles(isActive("/"))}`}
               onClick={() => setMobileMenuOpen(false)}
             >
               Home
             </Link>
             <Link
               to="/home"
-              className={`block px-3 py-2 rounded-md transition-colors ${getMobileActiveStyles(isActive("/home"))}`}
+              className={`block px-3 py-2 rounded-sm transition-colors ${getMobileActiveStyles(isActive("/home"))}`}
               onClick={() => setMobileMenuOpen(false)}
             >
               App
             </Link>
             <Link
               to="/opportunities"
-              className={`block px-3 py-2 rounded-md transition-colors ${getMobileActiveStyles(isActive("/opportunities"))}`}
+              className={`block px-3 py-2 rounded-sm transition-colors ${getMobileActiveStyles(isActive("/opportunities"))}`}
               onClick={() => setMobileMenuOpen(false)}
             >
               Opportunities Hub
             </Link>
             <Link
               to="/talent"
-              className={`block px-3 py-2 rounded-md transition-colors ${getMobileActiveStyles(isActive("/talent"))}`}
+              className={`block px-3 py-2 rounded-sm transition-colors ${getMobileActiveStyles(isActive("/talent"))}`}
               onClick={() => setMobileMenuOpen(false)}
             >
               Talent Hub
             </Link>
             <Link
               to="/community"
-              className={`block px-3 py-2 rounded-md transition-colors ${getMobileActiveStyles(isActive("/community"))}`}
+              className={`block px-3 py-2 rounded-sm transition-colors ${getMobileActiveStyles(isActive("/community"))}`}
               onClick={() => setMobileMenuOpen(false)}
             >
               Community
@@ -207,14 +207,14 @@ const Navbar = () => {
               <>
                 <Link
                   to="/profile"
-                  className="block px-3 py-2 text-muted-foreground hover:text-primary hover:bg-muted rounded-md"
+                  className="block px-3 py-2 text-muted-foreground hover:text-primary hover:bg-muted rounded-sm"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Profile
                 </Link>
                 <Link
                   to="/notifications"
-                  className="block px-3 py-2 text-muted-foreground hover:text-primary hover:bg-muted rounded-md"
+                  className="block px-3 py-2 text-muted-foreground hover:text-primary hover:bg-muted rounded-sm"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Notifications
@@ -224,7 +224,7 @@ const Navbar = () => {
                     setMobileMenuOpen(false);
                     handleSignOut();
                   }}
-                  className="block w-full text-left px-3 py-2 text-red-400 hover:text-red-300 hover:bg-muted rounded-md"
+                  className="block w-full text-left px-3 py-2 text-red-400 hover:text-red-300 hover:bg-muted rounded-sm"
                 >
                   Sign Out
                 </button>
@@ -235,7 +235,7 @@ const Navbar = () => {
                   setMobileMenuOpen(false);
                   navigate("/auth?mode=signup");
                 }}
-                className="block w-full px-3 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-md text-center"
+                className="block w-full px-3 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-sm text-center"
               >
                 Launch App
               </button>

@@ -81,7 +81,7 @@ const NotificationsPage: React.FC = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     {/* Placeholder for dismiss action if supported */}
-                    <button title="Dismiss" className="p-2 rounded-md hover:bg-muted">
+                    <button title="Dismiss" className="p-2 rounded-sm hover:bg-muted">
                       <Trash2 className="w-4 h-4 text-muted-foreground" />
                     </button>
                   </div>

@@ -43,15 +43,7 @@ const socialProviders: SocialProvider[] = [
       </svg>
     ),
   },
-  {
-    name: "X",
-    id: "twitter",
-    icon: (
-      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="#1D9BF0">
-        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-      </svg>
-    ),
-  },
+  
 ];
 
 type ButtonProps = {
@@ -167,7 +159,7 @@ const AuthPage = () => {
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <div className="flex-1 px-6 flex flex-col justify-center items-center">
         {/* Auth Card */}
-        <div className="bg-gray-950 rounded-2xl shadow-lg border border-gray-700 p-8 -mt-6 relative z-10 max-w-md w-full">
+        <div className="bg-gray-950 rounded-2xl shadow-lg border border-gray-700 p-8 relative z-10 max-w-md w-full mt-1">
           <div className="text-center mb-8">
             <h2 className="text-2xl font-bold mb-2">
               {isSignUp ? "Create Account" : "Sign In"}

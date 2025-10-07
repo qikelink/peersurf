@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { ArrowRight, TrendingUp, Users, DollarSign, Zap, Star, Calendar, ExternalLink } from "lucide-react";
+import { ArrowRight, TrendingUp, Users, DollarSign, Zap, ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import LogoCarousel from "../ui/logo-carousel";
 

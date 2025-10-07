@@ -3,9 +3,10 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import Navbar from "../nav-bar";
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
-import { Award, Calendar, CheckCircle, Clock, DollarSign, Mail, MessageCircle, Zap } from "lucide-react";
+import { Award, Calendar, CheckCircle, Clock, DollarSign, Mail, MessageCircle, Zap, FileText } from "lucide-react";
 import { getOpportunityById, listOpportunities, Opportunity } from "../../lib/opportunities";
 import { useUser } from "../../contexts/UserContext";
+import { useTheme } from "../../contexts/ThemeContext";
 import { createSubmission, listSubmissionsForOpportunity } from "../../lib/submissions";
 import { createCommentForOpportunity, listCommentsForOpportunity, OpportunityComment } from "../../lib/comments";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -15,6 +16,7 @@ const OpportunityDetailPage = () => {
   const location = useLocation() as any;
   const navigate = useNavigate();
   const { user } = useUser();
+  const { isDark } = useTheme();
 
   const initialFromState: Partial<Opportunity> | undefined = location?.state?.opportunity;
 
@@ -31,6 +33,7 @@ const OpportunityDetailPage = () => {
   const [commentText, setCommentText] = useState<string>("");
   const [posting, setPosting] = useState<boolean>(false);
   const [timeLeft, setTimeLeft] = useState<string>("");
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   const isSupabaseConfigured = useMemo(() => {
     return Boolean(import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY);
@@ -201,7 +204,7 @@ const OpportunityDetailPage = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-          <Card className="bg-gray-900 border border-gray-700 p-4 sm:p-6 mb-6">
+          <Card className="bg-card border border-border p-4 sm:p-6 mb-6">
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2">
@@ -211,7 +214,9 @@ const OpportunityDetailPage = () => {
               <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
                 {opportunity.type && (
                   <span className="flex items-center gap-1">
-                    {opportunity.type === "Bounty" ? <Zap className="w-4 h-4" /> : <Award className="w-4 h-4" />}
+                    {opportunity.type === "Bounty" ? <Zap className="w-4 h-4" /> : 
+                     opportunity.type === "RFP" ? <FileText className="w-4 h-4" /> : 
+                     <Award className="w-4 h-4" />}
                     {opportunity.type}
                   </span>
                 )}
@@ -237,7 +242,19 @@ const OpportunityDetailPage = () => {
           </div>
 
           <div className="mt-4 text-muted-foreground text-sm sm:text-base whitespace-pre-wrap">
-            {opportunity.description || "No description provided."}
+            {opportunity.type === "RFP" && (opportunity as any)?.fullDescription ? (
+              <>
+                {isExpanded ? (opportunity as any).fullDescription : opportunity.description}
+                <button
+                  onClick={() => setIsExpanded(!isExpanded)}
+                  className="ml-2 text-green-400 hover:text-green-300 text-sm font-medium"
+                >
+                  {isExpanded ? "Read Less" : "Read More"}
+                </button>
+              </>
+            ) : (
+              opportunity.description || "No description provided."
+            )}
           </div>
 
           {/* Skills Needed */}
@@ -252,6 +269,7 @@ const OpportunityDetailPage = () => {
                   design: ["Figma", "UI/UX", "Prototyping"],
                   content: ["Technical Writing", "SEO", "Editing"],
                   research: ["Data Analysis", "Literature Review", "Documentation"],
+                  events: ["Event Planning", "Logistics", "Coordination"],
                 };
                 const fallback = ["Communication", "Time management"];
                 const skills = provided && provided.length
@@ -264,7 +282,7 @@ const OpportunityDetailPage = () => {
             </div>
           </div>
         </Card>
-            <Card className="bg-gray-900 border border-gray-700 p-4 sm:p-6">
+            <Card className="bg-card border border-border p-4 sm:p-6">
               <h2 className="text-lg font-semibold mb-4">Submit your proposal</h2>
               {!user && (
                 <div className="mb-4 text-sm text-muted-foreground">
@@ -277,7 +295,7 @@ const OpportunityDetailPage = () => {
                   <textarea
                     value={proposal}
                     onChange={(e) => setProposal(e.target.value)}
-                    className="w-full bg-background text-foreground border border-gray-700 rounded-lg p-3 min-h-[120px]"
+                    className="w-full bg-background text-foreground border border-border rounded-lg p-3 min-h-[120px] focus:ring-2 focus:ring-ring focus:border-transparent"
                     placeholder="Describe how you plan to deliver. Include milestones and timelines."
                   />
                 </div>
@@ -286,7 +304,7 @@ const OpportunityDetailPage = () => {
                   <input
                     value={links}
                     onChange={(e) => setLinks(e.target.value)}
-                    className="w-full bg-background text-foreground border border-gray-700 rounded-lg p-3"
+                    className="w-full bg-background text-foreground border border-border rounded-lg p-3 focus:ring-2 focus:ring-ring focus:border-transparent"
                     placeholder="GitHub, portfolio, demo links (comma separated)"
                   />
                 </div>
@@ -301,7 +319,7 @@ const OpportunityDetailPage = () => {
             </Card>
 
             {/* Comments Section */}
-            <Card className="bg-gray-900 border border-gray-700 p-4 sm:p-6">
+            <Card className="bg-card border border-border p-4 sm:p-6">
               <h3 className="font-semibold mb-4">Comments</h3>
               {user ? (
                 <div className="flex items-start gap-3 mb-4">
@@ -315,7 +333,7 @@ const OpportunityDetailPage = () => {
                     <textarea
                       value={commentText}
                       onChange={(e) => setCommentText(e.target.value)}
-                      className="w-full bg-background text-foreground border border-gray-700 rounded-lg p-3 min-h-[80px]"
+                      className="w-full bg-background text-foreground border border-border rounded-lg p-3 min-h-[80px] focus:ring-2 focus:ring-ring focus:border-transparent"
                       placeholder="Share feedback, ask questions, or drop your submission link"
                     />
                     <div className="flex justify-end mt-2">
@@ -336,7 +354,7 @@ const OpportunityDetailPage = () => {
                   comments.map((c) => (
                     <div key={c.id} className="flex items-start gap-3">
                       <Avatar className="w-8 h-8">
-                        <AvatarFallback className="bg-gray-700 text-white">U</AvatarFallback>
+                        <AvatarFallback className="bg-muted text-foreground">U</AvatarFallback>
                       </Avatar>
                       <div>
                         <div className="text-sm text-foreground whitespace-pre-wrap">{c.content}</div>
@@ -350,19 +368,19 @@ const OpportunityDetailPage = () => {
 
             {/* Related Listings (shown below on mobile, sidebar on desktop) */}
             <div className="lg:hidden">
-              <Card className="bg-gray-900 border border-gray-700 p-4 sm:p-6">
+              <Card className="bg-card border border-border p-4 sm:p-6">
                 <h3 className="font-semibold mb-4">Related Live listings</h3>
                 {related.length === 0 ? (
-                  <div className="text-sm text-gray-400">No related listings yet.</div>
+                  <div className="text-sm text-muted-foreground">No related listings yet.</div>
                 ) : (
                   <div className="space-y-3">
                     {related.map((r) => (
                       <Link key={String(r.id)} to={`/opportunity/${r.id}`} state={{ opportunity: r }} className="block">
-                        <div className="p-3 rounded-lg bg-gray-800/60 border border-gray-700 hover:border-green-600 transition-colors">
+                        <div className="p-3 rounded-lg bg-muted/60 border border-border hover:border-green-600 transition-colors">
                           <div className="flex items-center justify-between gap-3">
                             <div className="min-w-0">
-                              <div className="text-sm text-white truncate">{r.title}</div>
-                              <div className="text-xs text-gray-400 truncate">{r.type}{r.category ? ` • ${r.category}` : ""}</div>
+                              <div className="text-sm text-foreground truncate">{r.title}</div>
+                              <div className="text-xs text-muted-foreground truncate">{r.type}{r.category ? ` • ${r.category}` : ""}</div>
                             </div>
                             {r.reward && <div className="text-xs text-green-400 whitespace-nowrap">{r.reward}</div>}
                             {!r.reward && r.max_amount && (
@@ -379,7 +397,7 @@ const OpportunityDetailPage = () => {
           </div>
 
           <div className="space-y-6">
-            <Card className="bg-gray-900 border border-gray-700 p-4 sm:p-6">
+            <Card className="bg-card border border-border p-4 sm:p-6">
               <h3 className="font-semibold mb-2">Opportunity details</h3>
               <div className="text-sm text-muted-foreground space-y-2">
                 <div className="flex items-center justify-between">
@@ -407,7 +425,7 @@ const OpportunityDetailPage = () => {
             </Card>
 
             {/* Prizes Card */}
-            <Card className="bg-gray-900 border border-gray-700 p-4 sm:p-6">
+            <Card className="bg-card border border-border p-4 sm:p-6">
               <h3 className="font-semibold mb-2">Prizes</h3>
               <div className="text-sm text-muted-foreground space-y-2">
                 <span className="flex items-center gap-1"><h3>Total: {opportunity.reward}</h3></span>
@@ -436,7 +454,7 @@ const OpportunityDetailPage = () => {
               </div>
             </Card>
 
-            <Card className="bg-gray-900 border border-gray-700 p-4 sm:p-6">
+            <Card className="bg-card border border-border p-4 sm:p-6">
               <h3 className="font-semibold mb-2">Contact organizers</h3>
               <div className="text-sm text-muted-foreground mb-4">Have questions or need clarification? Reach out to the organizers.</div>
               <Button
@@ -453,7 +471,7 @@ const OpportunityDetailPage = () => {
             </Card>
 
             <div className="hidden lg:block">
-              <Card className="bg-gray-900 border border-gray-700 p-4 sm:p-6">
+              <Card className="bg-card border border-border p-4 sm:p-6">
                 <h3 className="font-semibold mb-4">Related Live listings</h3>
                 {related.length === 0 ? (
                   <div className="text-sm text-muted-foreground">No related listings yet.</div>
@@ -461,10 +479,10 @@ const OpportunityDetailPage = () => {
                   <div className="space-y-3">
                     {related.map((r) => (
                       <Link key={String(r.id)} to={`/opportunity/${r.id}`} state={{ opportunity: r }} className="block">
-                        <div className="p-3 rounded-lg bg-gray-800/60 border border-gray-700 hover:border-green-600 transition-colors">
+                        <div className="p-3 rounded-lg bg-muted/60 border border-border hover:border-green-600 transition-colors">
                           <div className="flex items-center justify-between gap-3">
                             <div className="min-w-0">
-                              <div className="text-sm text-white truncate">{r.title}</div>
+                              <div className="text-sm text-foreground truncate">{r.title}</div>
                               <div className="text-xs text-muted-foreground truncate">{r.type}{r.category ? ` • ${r.category}` : ""}</div>
                             </div>
                             {r.reward && <div className="text-xs text-green-400 whitespace-nowrap">{r.reward}</div>}

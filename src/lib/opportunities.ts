@@ -1,6 +1,6 @@
 import { supabase } from "./supabase";
 
-export type OpportunityType = "Bounty" | "Grant";
+export type OpportunityType = "Bounty" | "Grant" | "RFP";
 
 export interface Opportunity {
   id: string;
