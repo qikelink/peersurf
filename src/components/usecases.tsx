@@ -123,7 +123,7 @@ const UseCasesSection = () => {
         {/* Bottom CTA */}
         <div className="text-center mt-16">
           <button
-            onClick={() => navigate("/wallet")}
+            onClick={() => navigate("/opportunities")}
             className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-semibold px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-green-500/25"
           >
             Get Started with PeerSurf

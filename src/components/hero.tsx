@@ -76,7 +76,7 @@ const Hero = () => {
       {/* Main Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-8 text-center">
         {/* Main Heading */}
-        <h1 className="text-3xl md:text-6xl font-bold mb-8 leading-tight text-foreground">
+        <h1 className="text-3xl md:text-6xl font-bold mb-8 leading-tight text-foreground" data-aos="fade-up">
           Discover
           <br />
           <span>Opportunities on</span>
@@ -91,17 +91,17 @@ const Hero = () => {
         </h1>
 
         {/* Subtitle */}
-        <p className="text-lg md:text-lg text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed">
+        <p className="text-lg md:text-lg text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed" data-aos="fade-up" data-aos-delay="200">
           Join the talent layer of
           livepeer. Contribute as a developer, creator, artist or writer. Earn rewards and
           help shape the future of decentralized video.
         </p>
 
         {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16" data-aos="fade-up" data-aos-delay="400">
           <button
             className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-semibold px-6 py-3 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg  cursor-pointer hover:shadow-green-500/25"
-            onClick={() => navigate("/auth?mode=login")}
+            onClick={() => navigate("/opportunities")}
           >
             Start Building
           </button>

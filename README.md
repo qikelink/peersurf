@@ -17,6 +17,9 @@ PeerSurf addresses the critical coordination problem in the Livepeer ecosystem b
 - **Application Management** - Streamlined workflow from discovery to delivery
 - **Payment Processing** - SAFE multisig integration for automated payments
 - **SPE Dashboards** - Tools for opportunity posting and contributor management
+- **Seasonal Leaderboards** - Competition cycles that reset to encourage new contributors and create social awareness
+- **AI Integration** - Smart chatbot for opportunity discovery and Livepeer documentation assistance
+- **Persona-Based Experience** - User categorization for personalized content and targeted newsletters
 
 ## 🏗️ Architecture
 
@@ -112,21 +115,28 @@ src/
 - [ ] Foundation oversight dashboard
 - [ ] 25+ live bounties across SPEs
 
-#### Milestone 2: Reputation Layer
+#### Milestone 2: Reputation & Competition
 - [ ] EAS-compatible on-chain attestations
 - [ ] Multi-signal reputation scoring algorithm
+- [ ] Seasonal leaderboards with reset cycles
 - [ ] Anti-Sybil infrastructure
-- [ ] Automatic contributor matching
 - [ ] Achievement badges and verification
 
-#### Milestone 3: Builder Studio
+#### Milestone 3: AI & Personalization
+- [ ] AI chatbot for opportunity discovery
+- [ ] Livepeer documentation integration
+- [ ] User persona survey system
+- [ ] Personalized content delivery
+- [ ] Targeted newsletter customization
+
+#### Milestone 4: Builder Studio
 - [ ] Incubation track application system
 - [ ] Three-tier funding pipeline
 - [ ] Portfolio showcase
 - [ ] Team formation tools
 - [ ] VC introduction network
 
-#### Milestone 4: Governance & Sustainability
+#### Milestone 5: Governance & Sustainability
 - [ ] Community-driven bounty sourcing
 - [ ] Public analytics dashboard
 - [ ] Snapshot integration

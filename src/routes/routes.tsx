@@ -1,5 +1,7 @@
 import HomePage from "@/components/pages/home-page";
 import OpportuniesPage from "@/components/pages/opportunities-page";
+import TalentPage from "@/components/pages/talent-page";
+import CommunityPage from "@/components/pages/community-page";
 import AuthPage from "@/components/pages/auth-page";
 import ProfilePage from "@/components/pages/profile-page";
 import SponsorDashboard from "@/components/pages/sponsor-dashboard";
@@ -7,24 +9,9 @@ import NotificationsPage from "../components/pages/notifications-page";
 import OpportunityDetailPage from "../components/pages/opportunity-detail";
 import { useUser } from "../contexts/UserContext";
 
-// Simple auth guard component
+// Auth guard component - only used for pages that require authentication
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const { user, loading } = useUser();
-
-  // Check if Supabase is configured
-  const isSupabaseConfigured = import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-  if (!isSupabaseConfigured) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-background text-foreground">
-        <div className="text-center">
-          <h2 className="text-xl font-bold mb-4">Configuration Error</h2>
-          <p className="text-muted-foreground mb-4">Supabase environment variables are not configured.</p>
-          <p className="text-sm text-muted-foreground">Please check your .env file</p>
-        </div>
-      </div>
-    );
-  }
 
   if (loading) {
     return (
@@ -53,7 +40,14 @@ const routes = [
     path: "/opportunities",
     element: <OpportuniesPage />, // Temporarily bypass AuthGuard
   },
-
+  {
+    path: "/talent",
+    element: <TalentPage />,
+  },
+  {
+    path: "/community",
+    element: <CommunityPage />,
+  },
   {
     path: "/opportunity/:id",
     element: <OpportunityDetailPage />,
@@ -74,19 +68,11 @@ const routes = [
   },
   {
     path: "/sponsor",
-    element: (
-      <AuthGuard>
-        <SponsorDashboard />
-      </AuthGuard>
-    ),
+    element: <SponsorDashboard />,
   },
   {
     path: "/notifications",
-    element: (
-      <AuthGuard>
-        <NotificationsPage />
-      </AuthGuard>
-    ),
+    element: <NotificationsPage />,
   },
   {
     path: "*",

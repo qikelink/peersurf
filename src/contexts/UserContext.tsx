@@ -72,7 +72,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       try {
         // Check if Supabase is configured
         if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
-          console.error("Supabase environment variables are not configured");
+          console.warn("Supabase environment variables are not configured - running without authentication");
           setLoading(false);
           return;
         }
@@ -80,7 +80,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const user = await getUser();
         setUser(user);
       } catch (error) {
-        console.error("Error initializing auth:", error);
+        console.warn("Error initializing auth - running without authentication:", error);
       } finally {
         setLoading(false);
       }
@@ -88,13 +88,18 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     initializeAuth();
 
-    const { data: listener } = onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-    
-    return () => {
-      listener?.subscription.unsubscribe();
-    };
+    // Only set up auth listener if Supabase is configured
+    if (import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY) {
+      const { data: listener } = onAuthStateChange((_event, session) => {
+        setUser(session?.user ?? null);
+      });
+      
+      return () => {
+        listener?.subscription.unsubscribe();
+      };
+    } else {
+      setLoading(false);
+    }
   }, []);
 
   // Wrap signUp to also create a profile
@@ -103,6 +108,14 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     password: string,
     role?: "talent" | "SPE" | "admin"
   ) => {
+    // Check if Supabase is configured
+    if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
+      return { 
+        data: null, 
+        error: { message: "Authentication not configured" } 
+      };
+    }
+
     const { data, error } = await supabaseSignUp(email, password, { role });
     if (!error && data?.user) {
       // Create profile row
@@ -123,7 +136,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         signIn,
         signUp,
         signOut,
-
         signInWithProvider: (provider) => {
           if (provider !== "google" && provider !== "twitter") {
             return Promise.reject(

@@ -145,7 +145,7 @@ const HomePage = () => {
       {/* Ecosystem Overview Section */}
       <section className="pb-16 px-4 sm:px-6 lg:px-8  max-w-7xl mx-auto">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
+          <div className="text-center mb-12" data-aos="fade-up">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Ecosystem Overview</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Discover the current state of the Livepeer ecosystem and track key metrics
@@ -154,7 +154,7 @@ const HomePage = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {ecosystemMetrics.map((metric, index) => (
-              <Card key={index} className="relative overflow-hidden">
+              <Card key={index} className="relative overflow-hidden" data-aos="fade-up" data-aos-delay={`${200 + index * 100}`}>
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-4">
                     <div className="p-2 rounded-lg bg-primary/10">
@@ -178,7 +178,7 @@ const HomePage = () => {
       {/* Latest News & Updates Section */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 bg-muted/20 max-w-7xl mx-auto">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
+          <div className="text-center mb-12" data-aos="fade-up">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Latest News & Updates</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Stay updated with the latest developments in the Livepeer ecosystem
@@ -186,8 +186,8 @@ const HomePage = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {latestNews.map((news) => (
-              <Card key={news.id} className="hover:shadow-lg transition-shadow cursor-pointer">
+            {latestNews.map((news, index) => (
+              <Card key={news.id} className="hover:shadow-lg transition-shadow cursor-pointer" data-aos="fade-up" data-aos-delay={`${200 + index * 100}`}>
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-3">
                     <Avatar className="w-10 h-10">

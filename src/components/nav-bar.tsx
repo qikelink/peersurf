@@ -138,7 +138,7 @@ const Navbar = () => {
               </div>
             ) : (
               <Button 
-                onClick={() => navigate("/auth?mode=signup")}
+                onClick={() => navigate("/opportunities")}
                 className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white px-4 py-2 rounded-lg"
               >
                 Launch App
@@ -226,7 +226,7 @@ const Navbar = () => {
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
-                  navigate("/auth?mode=signup");
+                  navigate("/opportunities");
                 }}
                 className="block w-full px-3 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-sm text-center"
               >
