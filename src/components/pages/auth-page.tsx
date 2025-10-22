@@ -8,6 +8,7 @@ import {
 } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useUser } from "../../contexts/UserContext";
+import { useTheme } from "../../contexts/ThemeContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import Loader from "../ui/loader";
 
@@ -65,11 +66,12 @@ const Button = ({
   type = "button",
   disabled = false,
 }: ButtonProps) => {
+  const { isDark } = useTheme();
   const baseClasses =
     "inline-flex items-center justify-center rounded-xl text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background";
   const variantClasses =
     variant === "outline"
-      ? "border border-gray-600 bg-gray-800 hover:bg-gray-700 text-white"
+      ? `border ${isDark ? 'border-gray-600 bg-gray-800 hover:bg-gray-700 text-white' : 'border-border bg-card hover:bg-muted text-foreground'}`
       : "text-white hover:opacity-90";
 
   return (
@@ -99,6 +101,7 @@ const AuthPage = () => {
   });
   const [loading, setLoading] = useState<boolean>(false);
   const { signIn, signUp, signInWithProvider, user } = useUser();
+  const { isDark } = useTheme();
   const navigate = useNavigate();
 
   // Update mode from query string when it changes
@@ -159,7 +162,7 @@ const AuthPage = () => {
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <div className="flex-1 px-6 flex flex-col justify-center items-center">
         {/* Auth Card */}
-        <div className="bg-gray-950 rounded-2xl shadow-lg border border-gray-700 p-8 relative z-10 max-w-md w-full mt-1">
+        <div className={`${isDark ? 'bg-gray-950 border-gray-700' : 'bg-card border-border'} rounded-2xl shadow-lg border p-8 relative z-10 max-w-md w-full mt-1`}>
           <div className="text-center mb-8">
             <h2 className="text-2xl font-bold mb-2">
               {isSignUp ? "Create Account" : "Sign In"}
@@ -181,7 +184,7 @@ const AuthPage = () => {
                 type="button"
               >
                 {provider.icon}
-                <span className="text-gray-300">Continue with {provider.name}</span>
+                <span className={`${isDark ? 'text-gray-300' : 'text-foreground'}`}>Continue with {provider.name}</span>
               </Button>
             ))}
           </div>
@@ -246,7 +249,7 @@ const AuthPage = () => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300"
+                className={`absolute right-4 top-1/2 transform -translate-y-1/2 ${isDark ? 'text-gray-400 hover:text-gray-300' : 'text-muted-foreground hover:text-foreground'}`}
                 tabIndex={-1}
               >
                 {showPassword ? (
@@ -258,8 +261,8 @@ const AuthPage = () => {
             </div>
 
             {error && (
-              <div className="p-3 rounded-xl bg-red-500/10 border border-red-700">
-                <p className="text-red-400 text-sm">{error}</p>
+              <div className={`p-3 rounded-xl ${isDark ? 'bg-red-500/10 border-red-700' : 'bg-red-50 border-red-200'} border`}>
+                <p className={`text-sm ${isDark ? 'text-red-400' : 'text-red-600'}`}>{error}</p>
               </div>
             )}
 
@@ -300,13 +303,13 @@ const AuthPage = () => {
 
         {/* Footer */}
         <div className="text-center mt-8 pb-8">
-          <p className="text-xs text-gray-500">
+          <p className={`text-xs ${isDark ? 'text-gray-500' : 'text-muted-foreground'}`}>
             By continuing, you agree to our{" "}
-            <a href="/privacy" className="underline hover:no-underline text-gray-400 hover:text-green-400">
+            <a href="/privacy" className={`underline hover:no-underline ${isDark ? 'text-gray-400 hover:text-green-400' : 'text-muted-foreground hover:text-primary'}`}>
               Terms of Service
             </a>{" "}
             and{" "}
-            <a href="/privacy" className="underline hover:no-underline text-gray-400 hover:text-green-400">
+            <a href="/privacy" className={`underline hover:no-underline ${isDark ? 'text-gray-400 hover:text-green-400' : 'text-muted-foreground hover:text-primary'}`}>
               Privacy Policy
             </a>
           </p>

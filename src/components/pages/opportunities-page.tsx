@@ -13,6 +13,7 @@ import {
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "../../contexts/UserContext";
+import { useTheme } from "../../contexts/ThemeContext";
 import { listOpportunities } from "../../lib/opportunities";
 import Navbar from "../nav-bar";
 import { Skeleton } from "../ui/skeleton";
@@ -59,7 +60,7 @@ const mockBounties = [
 
 const mockGrants = [
   {
-    id: 1,
+    id: 101,
     title: "Livepeer Foundation Development Grants",
     team: "PeerSurf Foundation",
     verified: true,
@@ -69,7 +70,7 @@ const mockGrants = [
     category: "Development"
   },
   {
-    id: 2,
+    id: 102,
     title: "PeerSurf Community Grants",
     team: "PeerSurf Community",
     verified: true,
@@ -79,7 +80,7 @@ const mockGrants = [
     category: "Community"
   },
   {
-    id: 3,
+    id: 103,
     title: "Livepeer Research Grants",
     team: "PeerSurf Research",
     verified: true,
@@ -92,7 +93,7 @@ const mockGrants = [
 
 const mockRFPs = [
   {
-    id: 1,
+    id: 201,
     title: "Livepeer Explorer Restoration & Modernization",
     team: "Livepeer Foundation",
     verified: true,
@@ -123,7 +124,7 @@ Success means that within four months the Explorer is:
     issuedBy: "Livepeer Foundation"
   },
   {
-    id: 2,
+    id: 202,
     title: "Livepeer Documentation Restructure & Modernization",
     team: "Livepeer Foundation",
     verified: true,
@@ -153,7 +154,7 @@ Success is a single-source-of-truth documentation system that:
     issuedBy: "Livepeer Foundation"
   },
   {
-    id: 3,
+    id: 203,
     title: "Devconnect Assembly - Buenos Aires",
     team: "Livepeer Foundation",
     verified: true,
@@ -215,6 +216,7 @@ const OpportuniesPage = () => {
   const [showSidebar, setShowSidebar] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const { user, profile } = useUser();
+  const { isDark } = useTheme();
   const navigate = useNavigate();
 
   // Dynamic opportunities from Supabase
@@ -254,11 +256,11 @@ const OpportuniesPage = () => {
           {(!profile?.role || profile?.role === 'SPE') ? (
             <div className="relative overflow-hidden bg-gradient-to-r from-green-600 to-green-700 rounded-sm p-6 sm:p-8 mb-6 sm:mb-8">
               <div className="absolute -top-8 -right-8 w-40 h-40 bg-white/10 rounded-full blur-2xl animate-float" />
-            <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-foreground/5 rounded-full blur-2xl animate-float" />
+              <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-foreground/5 rounded-full blur-2xl animate-float" />
               <div className="relative flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 transition-all duration-700 ease-out">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-4">
-                    <Briefcase className="w-6 h-6 sm:w-8 sm:h-8 text-white animate-float" />
+                    <Briefcase className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
                     <h2 className="text-xl sm:text-2xl font-bold text-white">{profile?.role === 'SPE' ? 'Sponsorship' : 'Become a Sponsor'}</h2>
                   </div>
                   <p className="text-green-100 mb-6 max-w-2xl text-sm sm:text-base">
@@ -371,18 +373,23 @@ const OpportuniesPage = () => {
                 // Show opportunities based on active tab
                 (() => {
                   let opportunities: any[] = [];
+                  
+                  // Get all opportunities first
+                  const allOpportunities = [
+                    ...(dynBounties.length ? dynBounties : mockBounties),
+                    ...(dynGrants.length ? dynGrants : mockGrants),
+                    ...(dynRFPs.length ? dynRFPs : mockRFPs)
+                  ];
+
+                  // Filter by tab
                   if (activeTab === "All") {
-                    opportunities = [
-                      ...(dynBounties.length ? dynBounties : mockBounties),
-                      ...(dynGrants.length ? dynGrants : mockGrants),
-                      ...(dynRFPs.length ? dynRFPs : mockRFPs)
-                    ];
+                    opportunities = allOpportunities;
                   } else if (activeTab === "Bounties") {
-                    opportunities = dynBounties.length ? dynBounties : mockBounties;
+                    opportunities = allOpportunities.filter((opp: any) => opp.type === "Bounty");
                   } else if (activeTab === "Grants") {
-                    opportunities = dynGrants.length ? dynGrants : mockGrants;
+                    opportunities = allOpportunities.filter((opp: any) => opp.type === "Grant");
                   } else if (activeTab === "RFPs") {
-                    opportunities = dynRFPs.length ? dynRFPs : mockRFPs;
+                    opportunities = allOpportunities.filter((opp: any) => opp.type === "RFP");
                   }
 
                   // Filter by category if not "All"
@@ -392,7 +399,7 @@ const OpportuniesPage = () => {
 
                   return opportunities.map((opportunity: any) => (
                 <Link key={opportunity.id} to={`/opportunity/${opportunity.id}`} state={{ opportunity: { ...opportunity, type: opportunity.type || "Bounty", status: opportunity.status || "Active" } }}>
-                <Card className="bg-gray-900 border border-gray-700 p-4 sm:p-6 hover:border-green-500/50 transition-colors">
+                <Card className={`${isDark ? 'bg-gray-900 border-gray-700' : 'bg-card border-border'} p-4 sm:p-6 hover:border-green-500/50 transition-colors`}>
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                     <div className="flex items-start gap-4 flex-1">
                       <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center flex-shrink-0 ${
@@ -408,7 +415,7 @@ const OpportuniesPage = () => {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-semibold text-white text-sm sm:text-base truncate">{opportunity.title}</h3>
+                          <h3 className={`font-semibold ${isDark ? 'text-white' : 'text-foreground'} text-sm sm:text-base truncate`}>{opportunity.title}</h3>
                           {opportunity.verified && <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />}
                         </div>
                         <p className="text-muted-foreground text-xs sm:text-sm mb-2">{opportunity.team || opportunity.issuedBy || "Community Sponsor"}</p>
@@ -455,18 +462,18 @@ const OpportuniesPage = () => {
         </div>
 
         {/* Sidebar - Hidden on mobile, shown on desktop */}
-        <div className={`lg:w-80 lg:border-l lg:border-gray-800 lg:p-6 ${
+        <div className={`lg:w-80 lg:border-l ${isDark ? 'lg:border-gray-800' : 'lg:border-border'} lg:p-6 ${
           showSidebar 
             ? 'fixed inset-0 z-50 bg-background/95 lg:relative lg:bg-transparent' 
             : 'hidden lg:block'
         }`}>
           {/* Mobile Sidebar Header */}
           {showSidebar && (
-            <div className="lg:hidden flex items-center justify-between p-4 border-b border-gray-800">
-              <h3 className="font-semibold text-white">Menu</h3>
+            <div className={`lg:hidden flex items-center justify-between p-4 border-b ${isDark ? 'border-gray-800' : 'border-border'}`}>
+              <h3 className={`font-semibold ${isDark ? 'text-white' : 'text-foreground'}`}>Menu</h3>
               <button
                 onClick={() => setShowSidebar(false)}
-                className="p-2 text-gray-300 hover:text-green-400 transition-colors"
+                className={`p-2 ${isDark ? 'text-gray-300 hover:text-green-400' : 'text-muted-foreground hover:text-primary'} transition-colors`}
               >
                 <X className="w-5 h-5" />
               </button>
@@ -486,10 +493,10 @@ const OpportuniesPage = () => {
                 <Skeleton className="h-9 w-full rounded-sm" />
               </Card>
             ) : (
-              <Card className="bg-gray-900 border border-gray-700 p-4 sm:p-6 mb-6">
+              <Card className={`${isDark ? 'bg-gray-900 border-gray-700' : 'bg-card border-border'} p-4 sm:p-6 mb-6`}>
                 <div className="flex items-center gap-3 mb-4">
                   <Briefcase className="w-5 h-5 sm:w-6 sm:h-6 text-green-400" />
-                  <h3 className="font-semibold text-white text-sm sm:text-base">{profile?.role === 'SPE' ? 'Sponsorship' : 'Become a Sponsor'}</h3>
+                  <h3 className={`font-semibold ${isDark ? 'text-white' : 'text-foreground'} text-sm sm:text-base`}>{profile?.role === 'SPE' ? 'Sponsorship' : 'Become a Sponsor'}</h3>
                 </div>
                 <p className="text-muted-foreground text-xs sm:text-sm mb-4">
                   Reach 50,000+ crypto talent from one single dashboard.
@@ -525,25 +532,25 @@ const OpportuniesPage = () => {
                 </>
               ) : (
                 <>
-                  <div className="flex items-center justify-between p-3 sm:p-4 bg-gray-900 border border-gray-700 rounded-lg">
+                  <div className={`flex items-center justify-between p-3 sm:p-4 ${isDark ? 'bg-gray-900 border-gray-700' : 'bg-card border-border'} rounded-lg`}>
                     <div className="flex items-center gap-3">
                       <div className="w-6 h-6 sm:w-8 sm:h-8 bg-green-600 rounded-full flex items-center justify-center">
                         <DollarSign className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
                       </div>
                       <div>
                         <div className="text-xs sm:text-sm text-muted-foreground">Total Value Earned</div>
-                        <div className="font-bold text-white text-sm sm:text-base">$7,654,510 USD</div>
+                        <div className={`font-bold ${isDark ? 'text-white' : 'text-foreground'} text-sm sm:text-base`}>$7,654,510 USD</div>
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between p-3 sm:p-4 bg-gray-900 border border-gray-700 rounded-lg">
+                  <div className={`flex items-center justify-between p-3 sm:p-4 ${isDark ? 'bg-gray-900 border-gray-700' : 'bg-card border-border'} rounded-lg`}>
                     <div className="flex items-center gap-3">
                       <div className="w-6 h-6 sm:w-8 sm:h-8 bg-purple-600 rounded-full flex items-center justify-center">
                         <Briefcase className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
                       </div>
                       <div>
                         <div className="text-xs sm:text-sm text-muted-foreground">Opportunities Listed</div>
-                        <div className="font-bold text-white text-sm sm:text-base">
+                        <div className={`font-bold ${isDark ? 'text-white' : 'text-foreground'} text-sm sm:text-base`}>
                           {loading ? "..." : 
                             (dynBounties.length || mockBounties.length) + 
                             (dynGrants.length || mockGrants.length) + 
@@ -559,7 +566,7 @@ const OpportuniesPage = () => {
 
             {/* How It Works */}
             <div className="mb-6">
-              <h3 className="font-semibold text-foreground mb-4 text-sm sm:text-base">HOW IT WORKS</h3>
+              <h3 className={`font-semibold ${isDark ? 'text-foreground' : 'text-foreground'} mb-4 text-sm sm:text-base`}>HOW IT WORKS</h3>
               {loading ? (
                 <div className="space-y-3">
                   {Array.from({ length: 3 }).map((_, i) => (
@@ -596,7 +603,7 @@ const OpportuniesPage = () => {
             {/* Recent Earners */}
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-white text-sm sm:text-base">RECENT EARNERS</h3>
+                <h3 className={`font-semibold ${isDark ? 'text-white' : 'text-foreground'} text-sm sm:text-base`}>RECENT EARNERS</h3>
                 <Link to="/opportunities#leaderboard" className="text-green-400 text-xs sm:text-sm hover:underline">Leaderboard</Link>
               </div>
               {loading ? (
@@ -615,7 +622,7 @@ const OpportuniesPage = () => {
               ) : (
                 <div className="space-y-3">
                   {mockRecentEarners.map((earner, index) => (
-                    <div key={index} className="flex items-center gap-3 p-3 bg-gray-900 border border-gray-700 rounded-lg">
+                    <div key={index} className={`flex items-center gap-3 p-3 ${isDark ? 'bg-gray-900 border-gray-700' : 'bg-card border-border'} rounded-lg`}>
                       <Avatar className="w-6 h-6 sm:w-8 sm:h-8">
                         <AvatarImage src={earner.avatar} />
                         <AvatarFallback className="bg-green-600 text-white text-xs">
@@ -623,7 +630,7 @@ const OpportuniesPage = () => {
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
-                        <div className="font-medium text-white text-xs sm:text-sm truncate">{earner.name}</div>
+                        <div className={`font-medium ${isDark ? 'text-white' : 'text-foreground'} text-xs sm:text-sm truncate`}>{earner.name}</div>
                         <div className="text-muted-foreground text-xs truncate">{earner.description}</div>
                       </div>
                       <div className="text-green-400 text-xs sm:text-sm font-medium">{earner.earned}</div>
