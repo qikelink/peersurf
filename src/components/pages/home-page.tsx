@@ -14,7 +14,7 @@ const HomePage = () => {
 
   // Mock data for ecosystem metrics
   const ecosystemMetrics = [
-    { label: "Livepeer Price", value: "$12.45", change: "+5.2%", icon: TrendingUp },
+    { label: "Livepeer Price", value: "$5.26", change: "+5.2%", icon: TrendingUp },
     { label: "Total Value Locked", value: "$89.2M", change: "+12.8%", icon: DollarSign },
     { label: "Active Projects", value: "156", change: "+8", icon: Zap },
     { label: "Community Members", value: "12.4K", change: "+234", icon: Users },
