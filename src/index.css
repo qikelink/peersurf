@@ -174,18 +174,37 @@
     }
   }
 
-  /* Floating animation for cosmic elements */
+  /* Floating animation for cosmic elements - Optimized */
   @keyframes float {
     0%, 100% {
-      transform: translateY(0px) rotate(0deg);
+      transform: translateY(0px);
     }
     50% {
-      transform: translateY(-20px) rotate(2deg);
+      transform: translateY(-10px);
     }
   }
 
   .animate-float {
-    animation: float 6s ease-in-out infinite;
+    animation: float 8s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  /* Performance optimizations */
+  .hero-section {
+    contain: layout style paint;
+  }
+
+  .optimized-scroll {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Reduce motion for users who prefer it */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-float,
+    .animate-pulse {
+      animation: none;
+    }
   }
 
   /* Line clamp utilities */

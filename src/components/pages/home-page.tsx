@@ -1,139 +1,59 @@
 import Navbar from "../nav-bar";
 import Hero from "../hero";
 import Footer from "../footer";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Card } from "../ui/card";
 import { Button } from "../ui/button";
-import { Badge } from "../ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { ArrowRight, TrendingUp, Users, DollarSign, Zap, ExternalLink } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import LogoCarousel from "../ui/logo-carousel";
+import { ArrowUpRight, ChevronLeft, ChevronRight, Disc3Icon, Github, Group, GroupIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const HomePage = () => {
-  const navigate = useNavigate();
+  const [currentSlide, setCurrentSlide] = useState(0);
 
-  // Mock data for ecosystem metrics
-  const ecosystemMetrics = [
-    { label: "Livepeer Price", value: "$5.26", change: "+5.2%", icon: TrendingUp },
-    { label: "Total Value Locked", value: "$89.2M", change: "+12.8%", icon: DollarSign },
-    { label: "Active Projects", value: "156", change: "+8", icon: Zap },
-    { label: "Community Members", value: "12.4K", change: "+234", icon: Users },
-  ];
-
-  // Mock data for latest news
-  const latestNews = [
+  const testimonials = [
     {
-      id: 1,
-      title: "New Video Streaming Protocol Launched",
-      excerpt: "Revolutionary decentralized video infrastructure now live on mainnet",
-      source: "Forum",
-      time: "2 hours ago",
-      author: "Livepeer Team",
-      avatar: "https://altcoinsbox.com/wp-content/uploads/2023/04/livepeer-logo.png"
+      name: "dob",
+      date: "22/10/2025",
+      avatar: "https://yyz2.discourse-cdn.com/flex030/user_avatar/forum.livepeer.org/dob/288/7_2.png",
+      message: "Hey, thanks for reaching out and sharing this! Looks pretty nice"
     },
     {
-      id: 2,
-      title: "Community Governance Proposal #42",
-      excerpt: "Proposal to increase staking rewards for active validators",
-      source: "X (Twitter)",
-      time: "4 hours ago",
-      author: "@livepeer_dev",
-      avatar: "https://pbs.twimg.com/profile_images/1234567890/avatar.jpg"
+      name: "DeFine",
+      date: "23/10/2025",
+      avatar: "https://pbs.twimg.com/profile_images/1970519173835943936/mhpm6-zH_400x400.jpg",
+      message: "Hey Chris that is interesting, we can start with a small bounty 🙂 we are looking for really passionate people to join the project once we get more funding, passion and inventiveness is a must in what we are doing"
     },
     {
-      id: 3,
-      title: "Developer Spotlight: Video NFT Platform",
-      excerpt: "How one team built a complete video NFT marketplace using Livepeer",
-      source: "Blog",
-      time: "1 day ago",
-      author: "Community",
-      avatar: "https://via.placeholder.com/40"
+      name: "Eneche",
+      date: "22/10/2025",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Eneche",
+      message: "This is really nice. useful for the Developer Hub"
+    },
+    {
+      name: "speedybird",
+      date: "22/10/2025",
+      avatar: "https://res.cloudinary.com/dgbreoalg/image/upload/v1761318612/speedy-bird-japan_ervnaq.png",
+      message: "Hey, Anything that helps the community get a better understanding of what is available across the community is a plus for newbies!"
+    },
+    {
+      name: "Marco | stronk-tech.eth",
+      date: "23/10/2025",
+      avatar: "https://hub.stronk.tech/headshot.png",
+      message: "i think this is going to be very useful for the FrameWorks SPE... I've got bounty requests ready to put on it already"
     }
   ];
 
-  // Mock data for spotlight projects
-  const spotlightProjects = [
-    {
-      id: 1,
-      name: "Cloud SPE",
-      description: "Decentralized video NFT marketplace",
-      logo: "https://picsum.photos/60/60?random=1",
-      status: "Funded",
-      amount: "$25,000",
-      contributors: 12
-    },
-    {
-      id: 2,
-      name: "Stream.place",
-      description: "Community-governed streaming platform",
-      logo: "https://picsum.photos/60/60?random=2",
-      status: "Active",
-      amount: "$18,500",
-      contributors: 8
-    },
-    {
-      id: 3,
-      name: "Lisarstake",
-      description: "Professional live streaming toolkit",
-      logo: "https://picsum.photos/60/60?random=3",
-      status: "Completed",
-      amount: "$32,000",
-      contributors: 15
-    },
-    {
-      id: 4,
-      name: "Gwid.io",
-      description: "DeFi integration for video creators",
-      logo: "https://picsum.photos/60/60?random=4",
-      status: "Funded",
-      amount: "$28,500",
-      contributors: 11
-    }
-  ];
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % testimonials.length);
+  };
 
-  // Logo carousel data - using real crypto project logos
-  const projectLogos = [
-    { id: 1, src: "https://cryptologos.cc/logos/stellar-xlm-logo.png?v=040", alt: "Stellar", name: "Stellar" },
-    { id: 2, src: "https://cryptologos.cc/logos/internet-computer-icp-logo.png?v=040", alt: "Internet Computer", name: "Internet Computer" },
-    { id: 3, src: "https://cryptologos.cc/logos/unus-sed-leo-leo-logo.png?v=040", alt: "UNUS SED LEO", name: "UNUS SED LEO" },
-    { id: 4, src: "https://cryptologos.cc/logos/the-graph-grt-logo.png?v=040", alt: "The Graph", name: "The Graph" },
-    { id: 5, src: "https://cryptologos.cc/logos/jupiter-ag-jup-logo.png?v=040", alt: "Jupiter", name: "Jupiter" },
-    { id: 6, src: "https://cryptologos.cc/logos/reserve-rights-rsr-logo.png?v=040", alt: "Reserve Rights", name: "Reserve Rights" },
-    { id: 7, src: "https://cryptologos.cc/logos/harmony-one-logo.png?v=040", alt: "Harmony", name: "Harmony" },
-    { id: 8, src: "https://cryptologos.cc/logos/grin-grin-logo.png?v=040", alt: "Grin", name: "Grin" },
-    { id: 9, src: "https://cryptologos.cc/logos/tellor-trb-logo.png?v=040", alt: "Tellor", name: "Tellor" },
-    { id: 10, src: "https://cryptologos.cc/logos/arweave-ar-logo.png?v=040", alt: "Arweave", name: "Arweave" },
-    { id: 11, src: "https://cryptologos.cc/logos/audius-audio-logo.png?v=040", alt: "Audius", name: "Audius" },
-    { id: 12, src: "https://cryptologos.cc/logos/basic-attention-token-bat-logo.png?v=040", alt: "Basic Attention Token", name: "BAT" },
-  ];
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+  };
 
-  // Mock data for ecosystem needs
-  const ecosystemNeeds = [
-    {
-      id: 1,
-      title: "Mobile SDK Development",
-      description: "Create a comprehensive mobile SDK for iOS and Android platforms",
-      category: "Development",
-      priority: "High",
-      reward: "$15,000 - $25,000"
-    },
-    {
-      id: 2,
-      title: "Content Moderation System",
-      description: "Build AI-powered content moderation for decentralized video",
-      category: "AI/ML",
-      priority: "Medium",
-      reward: "$20,000 - $35,000"
-    },
-    {
-      id: 3,
-      title: "Analytics Dashboard",
-      description: "Create comprehensive analytics for video creators and viewers",
-      category: "Analytics",
-      priority: "Medium",
-      reward: "$12,000 - $18,000"
-    }
-  ];
+  useEffect(() => {
+    const timer = setInterval(nextSlide, 5000);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -142,188 +62,263 @@ const HomePage = () => {
       {/* Hero Section */}
       <Hero />
 
-      {/* Ecosystem Overview Section */}
-      <section className="pb-16 px-4 sm:px-6 lg:px-8  max-w-7xl mx-auto">
+      {/* Efficient and Integrated Ecosystem Services Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-12 bg-teal-800">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12" data-aos="fade-up">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Ecosystem Overview</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Discover the current state of the Livepeer ecosystem and track key metrics
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {ecosystemMetrics.map((metric, index) => (
-              <Card key={index} className="relative overflow-hidden" data-aos="fade-up" data-aos-delay={`${200 + index * 100}`}>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="p-2 rounded-lg bg-primary/10">
-                    <metric.icon className="w-12 h-12 text-green-600 " />
-                    </div>
-                    <Badge variant="secondary" className="text-xs">
-                      {metric.change}
-                    </Badge>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">{metric.label}</p>
-                    <p className="text-2xl font-bold">{metric.value}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Latest News & Updates Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-muted/20 max-w-7xl mx-auto">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12" data-aos="fade-up">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Latest News & Updates</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Stay updated with the latest developments in the Livepeer ecosystem
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">Streamlined Ecosystem Coordination</h2>
+            <p className="text-lg text-white/90 max-w-2xl mx-auto">
+              Unify bounty discovery, contributor reputation, and payment workflows across the Livepeer ecosystem.
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {latestNews.map((news, index) => (
-              <Card key={news.id} className="hover:shadow-lg transition-shadow cursor-pointer" data-aos="fade-up" data-aos-delay={`${200 + index * 100}`}>
-                <CardHeader className="pb-3">
-                  <div className="flex items-center gap-3">
-                    <Avatar className="w-10 h-10">
-                      <AvatarImage src={news.avatar} />
-                      <AvatarFallback className="bg-primary text-primary-foreground">
-                        {news.author.slice(0, 2).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="text-xs">
-                          {news.source}
-                        </Badge>
-                        <span className="text-xs text-muted-foreground">{news.time}</span>
-                      </div>
-                      <p className="text-sm text-muted-foreground">{news.author}</p>
+            {[
+              {
+                icon: "🎯",
+                title: "Bounty Discovery",
+                description: "Unified feed aggregating opportunities from GitHub, Discord, and forums"
+              },
+              {
+                icon: "⭐",
+                title: "Reputation System",
+                description: "On-chain attestation system with multi-signal scoring for contributors"
+              },
+              {
+                icon: "⚡",
+                title: "Application Management",
+                description: "Streamlined workflow from discovery to delivery with automated tracking"
+              },
+              {
+                icon: "💰",
+                title: "Payment Processing",
+                description: "SAFE multisig integration for automated, secure payments"
+              },
+              {
+                icon: "📊",
+                title: "SPE Dashboards",
+                description: "Powerful tools for opportunity posting and contributor management"
+              },
+              {
+                icon: "🏆",
+                title: "Leaderboards & Competition",
+                description: "Seasonal leaderboards that reset to encourage new contributors"
+              }
+            ].map((service, index) => (
+              <div key={index} className="bg-teal-900 rounded-lg p-6 hover:bg-teal-950 transition-colors">
+                  <div className="flex items-center justify-between mb-4">
+                  <div className="text-2xl text-white">{service.icon}</div>
+                  <ArrowUpRight className="w-5 h-5 text-white" />
                     </div>
+                <h3 className="text-xl font-bold text-white mb-2">{service.title}</h3>
+                <p className="text-white/80 text-sm">{service.description}</p>
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <h3 className="font-semibold mb-2 line-clamp-2">{news.title}</h3>
-                  <p className="text-sm text-muted-foreground line-clamp-3">{news.excerpt}</p>
-                </CardContent>
-              </Card>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Spotlight Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      {/* Key Benefits Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-12 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Spotlight Projects</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Discover funded projects and top contributors in the Livepeer ecosystem
-            </p>
-          </div>
-          
-          {/* Logo Carousel */}
-          <div className="mb-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left Column - GIF */}
+            <div className="order-2 lg:order-1">
+              <div className="flex justify-center">
+                <img 
+                  src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExdDQyNTVsOHh3eHBwb3R5ZW11N2tiN3JwcmJjZG8yeWhnc3NlanR2dSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/dDYZTtiW3WdHv0nZBV/giphy.gif"
+                  alt="Livepeer Ecosystem Animation"
+                  className="max-w-full h-auto rounded-lg shadow-lg"
+                />
+              </div>
+            </div>
             
-            <div className="h-24">
-              <LogoCarousel logos={projectLogos} className="h-full" />
+            {/* Right Column - Text Content */}
+            <div className="order-1 lg:order-2">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">Powering the Livepeer Ecosystem</h2>
+              <p className="text-lg text-gray-600 mb-8">Our platform accelerates contributor onboarding, streamlines coordination, and drives ecosystem growth.</p>
+              
+              <div className="space-y-6">
+                {[
+                  {
+                    title: "Unified Opportunity Discovery",
+                    description: "Single dashboard aggregating bounties from GitHub, Discord, and forums across the ecosystem"
+                  },
+                  {
+                    title: "On-Chain Reputation System",
+                    description: "EAS-compatible attestations with multi-signal scoring to build contributor credibility"
+                  },
+                  {
+                    title: "AI-Powered Matching",
+                    description: "Smart chatbot for opportunity discovery and personalized Livepeer documentation assistance"
+                  }
+                ].map((benefit, index) => (
+                  <div key={index} className="flex items-start gap-4">
+                    <div className="flex-shrink-0 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center mt-1">
+                      <div className="w-2 h-2 bg-white rounded-full"></div>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900 mb-2">{benefit.title}</h3>
+                      <p className="text-gray-600">{benefit.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Ecosystem Tiers Section */}
+      {/* Testimonials Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-12 bg-teal-800">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">What the Community Says</h2>
+            <p className="text-lg text-white/90 max-w-2xl mx-auto">
+              Hear from ecosystem members already using the platform
+            </p>
+          </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {spotlightProjects.map((project) => (
-              <Card key={project.id} className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-4 mb-4">
-                    <img 
-                      src={project.logo} 
-                      alt={project.name}
-                      className="w-12 h-12 rounded-lg"
-                    />
-                    <div className="flex-1">
-                      <h3 className="font-semibold">{project.name}</h3>
-                      <Badge 
-                        variant={project.status === 'Completed' ? 'default' : 'secondary'}
-                        className="text-xs"
-                      >
-                        {project.status}
-                      </Badge>
+          {/* Carousel Container */}
+          <div className="relative">
+            {/* Navigation Buttons */}
+            <button
+              onClick={prevSlide}
+              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-white rounded-full p-2 shadow-lg hover:bg-gray-100 transition-colors"
+              aria-label="Previous testimonial"
+            >
+              <ChevronLeft className="w-6 h-6 text-teal-800" />
+            </button>
+            
+            <button
+              onClick={nextSlide}
+              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-white rounded-full p-2 shadow-lg hover:bg-gray-100 transition-colors"
+              aria-label="Next testimonial"
+            >
+              <ChevronRight className="w-6 h-6 text-teal-800" />
+            </button>
+
+            {/* Carousel Track */}
+            <div className="overflow-hidden">
+              <div
+                className="flex transition-transform duration-500 ease-in-out"
+                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+              >
+                {testimonials.map((testimonial, index) => (
+                  <div key={index} className="w-full flex-shrink-0 px-2">
+                    <div className="bg-teal-900 rounded-lg p-6 hover:bg-teal-950 transition-colors max-w-2xl mx-auto">
+                      <div className="flex items-start gap-4 mb-4">
+                        <img
+                          src={testimonial.avatar}
+                          alt={testimonial.name}
+                          className="w-12 h-12 rounded-full bg-white"
+                        />
+                        <div className="flex-1">
+                          <h3 className="text-lg font-bold text-white">{testimonial.name}</h3>
+                          <p className="text-white/60 text-xs">{testimonial.date}</p>
+                        </div>
+                        <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                          <div className="w-3 h-3 bg-white rounded-full"></div>
+                        </div>
+                      </div>
+                      <p className="text-white/80 text-sm leading-relaxed">{testimonial.message}</p>
                     </div>
                   </div>
-                  <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                    {project.description}
-                  </p>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-green-400 font-semibold">{project.amount}</span>
-                    <div className="flex items-center gap-1 text-muted-foreground">
-                      <Users className="w-4 h-4" />
-                      <span>{project.contributors}</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                ))}
+              </div>
+            </div>
+
+            {/* Dots Indicator */}
+            <div className="flex justify-center gap-2 mt-8">
+              {testimonials.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentSlide(index)}
+                  className={`w-2 h-2 rounded-full transition-all ${
+                    currentSlide === index ? 'bg-white w-8' : 'bg-white/40'
+                  }`}
+                  aria-label={`Go to testimonial ${index + 1}`}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Ecosystem Needs CTA Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary/5 to-primary/10 max-w-7xl mx-auto">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Ideas & RFPs</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Explore open-ended project ideas and specific Requests for Projects (RFPs)
-            </p>
+      {/* Empowering the Ecosystem Section */}
+<section className="py-24 px-4 sm:px-6 lg:px-12 bg-white">
+  <div className="max-w-7xl mx-auto">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      {/* Left Column - Text & Button */}
+      <div>
+        <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">Empowering the Livepeer Ecosystem</h2>
+        <p className="text-xl text-gray-600 mb-10 leading-relaxed">
+          Seamlessly integrate with existing tools and workflows. Our platform connects GitHub, Discord, forums, and blockchain infrastructure to create a unified coordination layer for the entire ecosystem.
+        </p>
+        <Button className="bg-green-500 hover:bg-green-600 text-white px-10 py-6 text-lg">
+          Join the Ecosystem
+        </Button>
+      </div>
+    
+      {/* Right Column - Integration Graphic - Larger */}
+      <div className="flex justify-center">
+        <div className="bg-green-100 rounded-lg p-10 shadow-lg w-full h-96 flex items-center justify-center">
+          <div className="grid grid-cols-3 gap-4 w-64 h-64">
+            {/* GitHub */}
+            <div className="bg-white rounded-lg p-3 shadow-sm flex items-center justify-center">
+            <img width="48" height="48" src="https://img.icons8.com/sf-regular-filled/48/github.png" alt="github"/>
+            </div>
+            {/* Discord */}
+            <div className="bg-white rounded-lg p-3 shadow-sm flex items-center justify-center">
+              <img src="https://res.cloudinary.com/dgbreoalg/image/upload/v1761321173/discord_cdzuin.png" alt="Discord" className="w-10 h-10" />
+            </div>
+            {/* Forums */}
+            <div className="bg-white rounded-lg p-3 shadow-sm flex items-center justify-center">
+                <img width="40" height="40" src="https://img.icons8.com/ios/50/people-working-together.png" alt="people-working-together"/>
+              
+            </div>
+            {/* Arbitrum */}
+            <div className="bg-white rounded-lg p-3 shadow-sm flex items-center justify-center">
+              <img src="https://res.cloudinary.com/dgbreoalg/image/upload/v1761320757/cryptocurrency_v0d2cd.png" alt="Arbitrum" className="w-12 h-12" />
+            </div>
+            {/* Center PeerSurf logo */}
+            <div className="bg-teal-500 rounded-lg p-3 shadow-sm flex items-center justify-center">
+              <img src="onyx.png" alt="Arbitrum" className="w-12 h-12" />
+            </div>
+            {/* SAFE */}
+            <div className="bg-white rounded-lg p-3 shadow-sm flex items-center justify-center">
+              <img src="https://res.cloudinary.com/dgbreoalg/image/upload/v1761321470/wallet_ijoebh.png" alt="SAFE" className="w-12 h-12" />
+            </div>
+            {/* EAS */}
+            <div className="bg-white rounded-lg p-3 shadow-sm flex items-center justify-center">
+              <img src="https://attest.org/logo2.png" alt="EAS" className="w-12 h-12" />
+            </div>
+            {/* Supabase */}
+            <div className="bg-white rounded-lg p-3 shadow-sm flex items-center justify-center">
+              <img width="48" height="48" src="https://img.icons8.com/fluency/48/supabase.png" alt="supabase"/>
+            </div>
+            {/* Livepeer */}
+            <div className="bg-white rounded-lg p-3 shadow-sm flex items-center justify-center">
+              <img width="48" height="48" src="https://img.icons8.com/external-black-fill-lafs/64/external-Livepeer-cryptocurrency-black-fill-lafs.png" alt="external-Livepeer-cryptocurrency-black-fill-lafs"/>
+            </div>
           </div>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            {ecosystemNeeds.map((need) => (
-              <Card key={need.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex items-center justify-between mb-2">
-                    <Badge variant="outline">{need.category}</Badge>
-                    <Badge 
-                      variant={need.priority === 'High' ? 'destructive' : 'secondary'}
-                    >
-                      {need.priority}
-                    </Badge>
-                  </div>
-                  <CardTitle className="text-lg">{need.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
-                    {need.description}
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-semibold text-primary">
-                      {need.reward}
-                    </span>
-                    <Button variant="ghost" size="sm" className="text-primary">
-                      <ExternalLink className="w-4 h-4 mr-1" />
-                      View Details
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-          
-          <div className="text-center">
-            <Button 
-              size="lg"
-              className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white px-8 py-3"
-              onClick={() => navigate("/opportunities")}
-            >
-              Explore All Opportunities
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+      {/* From Idea to Impact Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-12 bg-teal-800">
+        <div className="max-w-7xl mx-auto text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">From Idea to Impact in Days</h2>
+          <p className="text-lg text-white/90 max-w-2xl mx-auto mb-8">
+            Accelerate your contribution to the Livepeer ecosystem. Find opportunities, build reputation, and get paid for your work. Start your journey today!
+          </p>
+          <Button className="bg-green-500 hover:bg-green-600 text-white px-8 py-6">
+            Start Contributing
+          </Button>
         </div>
       </section>
 
