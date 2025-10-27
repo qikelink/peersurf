@@ -30,10 +30,10 @@ const Navbar = () => {
   const getMobileActiveStyles = (isActiveLink: boolean) => {
     if (isActiveLink) {
       return isDark 
-        ? "text-white font-semibold bg-gray-800" 
-        : "text-primary font-semibold bg-gray-100";
+        ? "text-white font-semibold bg-gradient-to-r from-green-600/20 to-green-700/20 border border-green-500/30" 
+        : "text-primary font-semibold bg-gradient-to-r from-green-50 to-green-100 border border-green-200";
     }
-    return "text-muted-foreground hover:text-primary hover:bg-muted";
+    return "text-muted-foreground hover:text-primary hover:bg-muted/50";
   };
 
   const handleSignOut = async () => {
@@ -43,8 +43,8 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="w-full bg-background border-b border-border text-foreground sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto sm:px-6 lg:px-4">
+    <nav className="w-full border-b border-border text-foreground sticky top-0 z-50 bg-background/95 backdrop-blur-xl">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center">
@@ -87,7 +87,7 @@ const Navbar = () => {
           <div className="hidden md:flex items-center gap-4">
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg text-gray-300 hover:text-green-400 transition-colors"
+              className="p-2 rounded-lg text-muted-foreground hover:text-primary transition-colors hover:bg-muted"
               title={isDark ? "Switch to light mode" : "Switch to dark mode"}
             >
               {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
@@ -138,8 +138,8 @@ const Navbar = () => {
               </div>
             ) : (
               <Button 
-                onClick={() => navigate("/opportunities")}
-                className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white px-4 py-2 rounded-lg"
+                onClick={() => navigate("/auth")}
+                className="bg-[#00796B] hover:bg-green-600 text-white px-4 py-2 rounded-lg"
               >
                 Launch App
               </Button>
@@ -147,10 +147,11 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="md:hidden">
+          <div className="md:hidden relative z-50">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 text-muted-foreground hover:text-primary transition-colors"
+              className="p-2 text-muted-foreground hover:text-primary transition-colors rounded-lg hover:bg-muted/50"
+              aria-label="Toggle mobile menu"
             >
               {mobileMenuOpen ? (
                 <X className="w-6 h-6" />
@@ -158,77 +159,95 @@ const Navbar = () => {
                 <Menu className="w-6 h-6" />
               )}
             </button>
-              </div>
+          </div>
               
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-card border-t border-border">
-          <div className="px-2 pt-2 pb-3 space-y-1">
-            <Link
-              to="/"
-              className={`block px-3 py-2 rounded-sm transition-colors ${getMobileActiveStyles(isActive("/"))}`}
-              onClick={() => setMobileMenuOpen(false)}
+        <div className="md:hidden fixed inset-x-0 top-16 bg-background border border-border shadow-2xl z-50">
+          <div className="px-6 pt-6 pb-8 space-y-4">
+            {/* Navigation Links */}
+            <div className="space-y-2">
+              <Link
+                to="/"
+                className={`block px-4 py-3 rounded-xl transition-all duration-200 ${getMobileActiveStyles(isActive("/"))}`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <span className="font-medium">Home</span>
+              </Link>
+              <Link
+                to="/opportunities"
+                className={`block px-4 py-3 rounded-xl transition-all duration-200 ${getMobileActiveStyles(isActive("/opportunities"))}`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <span className="font-medium">Opportunities Hub</span>
+              </Link>
+              <Link
+                to="/talent"
+                className={`block px-4 py-3 rounded-xl transition-all duration-200 ${getMobileActiveStyles(isActive("/talent"))}`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <span className="font-medium">Talent Hub</span>
+              </Link>
+              <Link
+                to="/community"
+                className={`block px-4 py-3 rounded-xl transition-all duration-200 ${getMobileActiveStyles(isActive("/community"))}`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <span className="font-medium">Community</span>
+              </Link>
+            </div>
+            
+            {/* Divider */}
+            <div className="border-t border-border/50 my-4"></div>
+            
+            {/* Theme Toggle */}
+            <button
+              onClick={() => {
+                toggleTheme();
+                setMobileMenuOpen(false);
+              }}
+              className="block w-full text-left px-4 py-3 text-muted-foreground hover:text-primary hover:bg-muted/50 rounded-xl transition-all duration-200"
             >
-              Home
-            </Link>
-            <Link
-              to="/opportunities"
-              className={`block px-3 py-2 rounded-sm transition-colors ${getMobileActiveStyles(isActive("/opportunities"))}`}
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Opportunities Hub
-            </Link>
-            <Link
-              to="/talent"
-              className={`block px-3 py-2 rounded-sm transition-colors ${getMobileActiveStyles(isActive("/talent"))}`}
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Talent Hub
-            </Link>
-            <Link
-              to="/community"
-              className={`block px-3 py-2 rounded-sm transition-colors ${getMobileActiveStyles(isActive("/community"))}`}
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Community
-            </Link>
-            <hr className="border-gray-700 my-2" />
+              <span className="font-medium">{isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}</span>
+            </button>
+            
+            {/* User Section */}
             {user ? (
-              <>
+              <div className="space-y-2">
                 <Link
                   to="/profile"
-                  className="block px-3 py-2 text-muted-foreground hover:text-primary hover:bg-muted rounded-sm"
+                  className="block px-4 py-3 text-muted-foreground hover:text-primary hover:bg-muted/50 rounded-xl transition-all duration-200"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Profile
+                  <span className="font-medium">Profile</span>
                 </Link>
                 <Link
                   to="/notifications"
-                  className="block px-3 py-2 text-muted-foreground hover:text-primary hover:bg-muted rounded-sm"
+                  className="block px-4 py-3 text-muted-foreground hover:text-primary hover:bg-muted/50 rounded-xl transition-all duration-200"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Notifications
+                  <span className="font-medium">Notifications</span>
                 </Link>
                 <button
                   onClick={() => {
                     setMobileMenuOpen(false);
                     handleSignOut();
                   }}
-                  className="block w-full text-left px-3 py-2 text-red-400 hover:text-red-300 hover:bg-muted rounded-sm"
+                  className="block w-full text-left px-4 py-3 text-red-400 hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all duration-200"
                 >
-                  Sign Out
+                  <span className="font-medium">Sign Out</span>
                 </button>
-              </>
+              </div>
             ) : (
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
-                  navigate("/opportunities");
+                  navigate("/auth");
                 }}
-                className="block w-full px-3 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-sm text-center"
+                className="block w-full px-4 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white rounded-xl text-center font-medium transition-all duration-200 shadow-lg"
               >
                 Launch App
               </button>

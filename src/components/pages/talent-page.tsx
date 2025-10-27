@@ -3,6 +3,8 @@ import { Card } from '../ui/card';
 import { Button } from '../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Input } from '../ui/input';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '../ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { 
   Trophy, 
   Crown, 
@@ -13,25 +15,28 @@ import {
   Users, 
   DollarSign,
   Calendar,
-  Award
+  Award,
+  Save,
+  Bookmark
 } from 'lucide-react';
 import Navbar from '../nav-bar';
 import { Skeleton } from '../ui/skeleton';
+import Footer from '../footer';
 
 // Simplified talent data
 type TalentCategory = 'Developers' | 'Content Creators' | 'Others';
 
 const mockTalentData = [
-  { id: 1, rank: 1, category: 'Developers' as TalentCategory, name: "Alex Chen", username: "@alexchen", avatar: "https://github.com/shadcn.png", totalEarnings: 15420, projectsCompleted: 23, successRate: 98, tier: "Diamond", tierColor: "from-blue-500 to-purple-600" },
-  { id: 2, rank: 2, category: 'Content Creators' as TalentCategory, name: "Sarah Kim", username: "@sarahkim", avatar: "https://github.com/shadcn.png", totalEarnings: 12850, projectsCompleted: 19, successRate: 95, tier: "Platinum", tierColor: "from-gray-400 to-gray-600" },
-  { id: 3, rank: 3, category: 'Developers' as TalentCategory, name: "Mike Johnson", username: "@mikej", avatar: "https://github.com/shadcn.png", totalEarnings: 11200, projectsCompleted: 17, successRate: 92, tier: "Gold", tierColor: "from-yellow-500 to-orange-500" },
-  { id: 4, rank: 4, category: 'Content Creators' as TalentCategory, name: "Emma Rodriguez", username: "@emmar", avatar: "https://github.com/shadcn.png", totalEarnings: 9850, projectsCompleted: 15, successRate: 88, tier: "Gold", tierColor: "from-yellow-500 to-orange-500" },
-  { id: 5, rank: 5, category: 'Developers' as TalentCategory, name: "David Park", username: "@davidp", avatar: "https://github.com/shadcn.png", totalEarnings: 8750, projectsCompleted: 14, successRate: 85, tier: "Silver", tierColor: "from-gray-300 to-gray-500" },
-  { id: 6, rank: 6, category: 'Others' as TalentCategory, name: "Lisa Wang", username: "@lisaw", avatar: "https://github.com/shadcn.png", totalEarnings: 7200, projectsCompleted: 12, successRate: 90, tier: "Silver", tierColor: "from-gray-300 to-gray-500" },
-  { id: 7, rank: 7, category: 'Developers' as TalentCategory, name: "James Wilson", username: "@jamesw", avatar: "https://github.com/shadcn.png", totalEarnings: 6800, projectsCompleted: 11, successRate: 87, tier: "Silver", tierColor: "from-gray-300 to-gray-500" },
-  { id: 8, rank: 8, category: 'Content Creators' as TalentCategory, name: "Maria Garcia", username: "@mariag", avatar: "https://github.com/shadcn.png", totalEarnings: 6200, projectsCompleted: 10, successRate: 83, tier: "Bronze", tierColor: "from-amber-600 to-amber-800" },
-  { id: 9, rank: 9, category: 'Others' as TalentCategory, name: "Tom Brown", username: "@tomb", avatar: "https://github.com/shadcn.png", totalEarnings: 5800, projectsCompleted: 9, successRate: 89, tier: "Bronze", tierColor: "from-amber-600 to-amber-800" },
-  { id: 10, rank: 10, category: 'Developers' as TalentCategory, name: "Anna Lee", username: "@annal", avatar: "https://github.com/shadcn.png", totalEarnings: 5400, projectsCompleted: 8, successRate: 86, tier: "Bronze", tierColor: "from-amber-600 to-amber-800" }
+  { id: 1, rank: 1, category: 'Developers' as TalentCategory, name: "Alex Chen", username: "@alexchen", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face", totalEarnings: 15420, projectsCompleted: 23, successRate: 98, tier: "Diamond", tierColor: "from-blue-500 to-purple-600" },
+  { id: 2, rank: 2, category: 'Content Creators' as TalentCategory, name: "Sarah Kim", username: "@sarahkim", avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face", totalEarnings: 12850, projectsCompleted: 19, successRate: 95, tier: "Platinum", tierColor: "from-gray-400 to-gray-600" },
+  { id: 3, rank: 3, category: 'Developers' as TalentCategory, name: "Mike Johnson", username: "@mikej", avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face", totalEarnings: 11200, projectsCompleted: 17, successRate: 92, tier: "Gold", tierColor: "from-yellow-500 to-orange-500" },
+  { id: 4, rank: 4, category: 'Content Creators' as TalentCategory, name: "Emma Rodriguez", username: "@emmar", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face", totalEarnings: 9850, projectsCompleted: 15, successRate: 88, tier: "Gold", tierColor: "from-yellow-500 to-orange-500" },
+  { id: 5, rank: 5, category: 'Developers' as TalentCategory, name: "David Park", username: "@davidp", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face", totalEarnings: 8750, projectsCompleted: 14, successRate: 85, tier: "Silver", tierColor: "from-gray-300 to-gray-500" },
+  { id: 6, rank: 6, category: 'Others' as TalentCategory, name: "Lisa Wang", username: "@lisaw", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face", totalEarnings: 7200, projectsCompleted: 12, successRate: 90, tier: "Silver", tierColor: "from-gray-300 to-gray-500" },
+  { id: 7, rank: 7, category: 'Developers' as TalentCategory, name: "James Wilson", username: "@jamesw", avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&h=150&fit=crop&crop=face", totalEarnings: 6800, projectsCompleted: 11, successRate: 87, tier: "Silver", tierColor: "from-gray-300 to-gray-500" },
+  { id: 8, rank: 8, category: 'Content Creators' as TalentCategory, name: "Maria Garcia", username: "@mariag", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face", totalEarnings: 6200, projectsCompleted: 10, successRate: 83, tier: "Bronze", tierColor: "from-amber-600 to-amber-800" },
+  { id: 9, rank: 9, category: 'Others' as TalentCategory, name: "Tom Brown", username: "@tomb", avatar: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=150&h=150&fit=crop&crop=face", totalEarnings: 5800, projectsCompleted: 9, successRate: 89, tier: "Bronze", tierColor: "from-amber-600 to-amber-800" },
+  { id: 10, rank: 10, category: 'Developers' as TalentCategory, name: "Anna Lee", username: "@annal", avatar: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=150&h=150&fit=crop&crop=face", totalEarnings: 5400, projectsCompleted: 8, successRate: 86, tier: "Bronze", tierColor: "from-amber-600 to-amber-800" }
 ];
 
 const seasonStats = {
@@ -57,6 +62,8 @@ const TalentPage = () => {
   const [sortBy, setSortBy] = useState('earnings');
   const [filterTier, setFilterTier] = useState('All');
   const [activeCategory, setActiveCategory] = useState<TalentCategory>('Developers');
+  const [timeRange, setTimeRange] = useState('Seasonal');
+  const [filterBy, setFilterBy] = useState('all');
   const [loading, setLoading] = useState(true);
 
   // Simulate loading
@@ -110,304 +117,282 @@ const TalentPage = () => {
     <div className="min-h-screen bg-background text-foreground font-sans">
       <Navbar />
 
-      {/* Hero Section */}
-      <section className="relative w-full py-12 md:py-20 bg-gradient-to-br from-green-600/5 to-blue-600/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="flex items-center justify-center gap-2 md:gap-3 mb-4 md:mb-6">
-            <Trophy className="w-6 h-6 md:w-8 md:h-8 text-yellow-500" />
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-foreground">
-              Season Leaderboard
-            </h1>
-            <Trophy className="w-6 h-6 md:w-8 md:h-8 text-yellow-500" />
+      {/* Hero Section - Left-aligned info with right-aligned actions */}
+      <section className="relative w-full py-6 md:py-8 bg-gradient-to-br from-green-600/5 to-blue-600/5" style={{
+        backgroundImage: 'url(/trophy_gg.png)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}>
+        {/* Overlay to maintain coloring and dim background */}
+                <div className="absolute inset-0 bg-gradient-to-br from-green-600/5 to-blue-600/5 backdrop-blur-md"></div>
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
+          {/* Countdown timer - Top right */}
+          <div className="flex justify-end mb-4">
+            <div className="inline-flex items-center gap-2 ">
+              <Calendar className="w-4 h-4 text-green-500" />
+              <span className="text-sm text-muted-foreground">Leaderboard resets in:</span>
+              <span className="text-sm font-bold text-green-500 bg-background/80 backdrop-blur-sm rounded-lg border border-border  px-3 py-1.5">{seasonStats.daysUntilReset} days</span>
+            </div>
           </div>
 
-          <p className="text-base md:text-lg text-muted-foreground mb-6 md:mb-8 max-w-2xl mx-auto">
-            Discover the top talent in the Livepeer ecosystem
-          </p>
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+            {/* Left-aligned club/community info */}
+            <div className="flex items-center gap-4 md:gap-6">
+              {/* Circular avatar/logo */}
+              <div className="relative">
+                <div className="w-18 h-18 md:w-20 md:h-20 bg-gradient-to-br from-green-500 to-blue-500 rounded-lg flex items-center justify-center shadow-lg">
+                  <img src="trophy.png" alt="Livepeer Logo" className="w-12 h-12" />
+                </div>
+                
+            </div>
+              
+              {/* Title and description */}
+              <div>
+                <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground mb-2">
+                  Season Leaderboard
+                </h1>
+                <p className="text-sm md:text-base text-muted-foreground max-w-md">
+                  The Livepeer ecosystem talent competition. Find top contributors and compete for rewards.
+                </p>
+            </div>
+            </div>
 
-          {/* Season Info - Mobile Responsive */}
-          <div className="grid grid-cols-2 md:flex md:flex-wrap justify-center gap-2 md:gap-4 mb-6 md:mb-8">
-            <div className="flex items-center justify-center gap-1 md:gap-2 px-2 md:px-4 py-2 bg-gradient-to-r from-green-600/20 to-green-800/20 border border-green-500/30 rounded-full">
-              <Calendar className="w-3 h-3 md:w-4 md:h-4 text-green-500" />
-              <span className="text-xs md:text-sm font-medium">Season {seasonStats.seasonNumber}</span>
-            </div>
-            <div className="flex items-center justify-center gap-1 md:gap-2 px-2 md:px-4 py-2 bg-gradient-to-r from-blue-600/20 to-blue-800/20 border border-blue-500/30 rounded-full">
-              <Users className="w-3 h-3 md:w-4 md:h-4 text-blue-500" />
-              <span className="text-xs md:text-sm font-medium">{seasonStats.totalParticipants.toLocaleString()}</span>
-            </div>
-            <div className="flex items-center justify-center gap-1 md:gap-2 px-2 md:px-4 py-2 bg-gradient-to-r from-purple-600/20 to-purple-800/20 border border-purple-500/30 rounded-full">
-              <DollarSign className="w-3 h-3 md:w-4 md:h-4 text-purple-500" />
-              <span className="text-xs md:text-sm font-medium">{formatCurrency(seasonStats.totalEarnings)}</span>
-            </div>
-            <div className="flex items-center justify-center gap-1 md:gap-2 px-2 md:px-4 py-2 bg-gradient-to-r from-orange-600/20 to-orange-800/20 border border-orange-500/30 rounded-full">
-              <Trophy className="w-3 h-3 md:w-4 md:h-4 text-orange-500" />
-              <span className="text-xs md:text-sm font-medium">{seasonStats.daysUntilReset} days</span>
+            {/* Right-aligned action buttons */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button variant="outline" className="border-green-500 text-green-500 hover:bg-green-500 hover:text-white">
+                <Bookmark className="w-4 h-4 " />
+              </Button>
+              <Button className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white">
+                <Users className="w-4 h-4 mr-2" />
+                Invite Talent
+              </Button>
             </div>
           </div>
         </div>
       </section>
 
+      {/* Filter/Navigation Bar */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="flex items-center justify-between gap-8">
+          {/* Category Tabs - Left side */}
+          <Tabs value={activeCategory} onValueChange={(value) => setActiveCategory(value as TalentCategory)}>
+            <TabsList className="bg-muted">
+              <TabsTrigger value="Developers">Developers</TabsTrigger>
+              <TabsTrigger value="Content Creators">Content Creators</TabsTrigger>
+              <TabsTrigger value="Others">Others</TabsTrigger>
+            </TabsList>
+          </Tabs>
+
+          {/* Right side filters */}
+          <div className="flex items-center gap-4">
+            {/* Time Range Filters */}
+            <Tabs value={timeRange} onValueChange={setTimeRange}>
+              <TabsList className="bg-muted">
+                <TabsTrigger value="24h">24h</TabsTrigger>
+                <TabsTrigger value="7D">7D</TabsTrigger>
+                <TabsTrigger value="30D">30D</TabsTrigger>
+                <TabsTrigger value="Seasonal">Seasonal</TabsTrigger>
+              </TabsList>
+            </Tabs>
+
+            {/* Filter Select */}
+            <Select value={filterBy} onValueChange={setFilterBy}>
+              <SelectTrigger className="w-[140px] border-green-500 text-green-500">
+                <SelectValue placeholder="Filter by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Players</SelectItem>
+                <SelectItem value="my-place">My Place</SelectItem>
+                <SelectItem value="top-10">Top 10</SelectItem>
+                <SelectItem value="top-50">Top 50</SelectItem>
+                <SelectItem value="recent">Recent Activity</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </div>
+
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
-        {/* Category Tabs + Layout */}
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Sidebar Filters */}
-          <aside className="lg:w-64 flex-shrink-0 space-y-4">
-            <Card className="p-4 bg-gradient-to-br from-green-600/10 to-blue-600/10 border-green-500/20">
-              <h3 className="font-semibold mb-3">Leaderboards</h3>
-              <div className="grid grid-cols-3 lg:grid-cols-1 gap-2">
-                {(['Developers','Content Creators','Others'] as TalentCategory[]).map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => setActiveCategory(cat)}
-                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors text-left ${
-                      activeCategory === cat
-                        ? 'bg-green-600 text-white'
-                        : 'bg-muted text-muted-foreground hover:text-foreground'
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                ))}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
+        {/* Top 3 Players Section (Podium Cards) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
+  {loading ? (
+    Array.from({ length: 3 }).map((_, i) => (
+      <Card key={i} className="p-6">
+        <div className="flex flex-col items-center text-center">
+          <Skeleton className="w-16 h-16 rounded-full mb-4" />
+          <Skeleton className="h-6 w-24 mb-2" />
+          <Skeleton className="h-4 w-16 mb-4" />
+          <Skeleton className="w-12 h-12 mb-4" />
+          <div className="space-y-2 w-full">
+            <Skeleton className="h-3 w-full" />
+            <Skeleton className="h-3 w-full" />
+            <Skeleton className="h-3 w-full" />
+          </div>
               </div>
             </Card>
-
-            <Card className="p-4">
-              <h3 className="font-semibold mb-3">Filters</h3>
-              <div className="space-y-3">
+    ))
+  ) : (
+    sortedTalent.slice(0, 3).map((talent, index) => {
+      const trophyColors = ['text-yellow-500', 'text-gray-400', 'text-amber-600'];
+      const trophySizes = ['w-12 h-12', 'w-10 h-10', 'w-8 h-8'];
+      return (
+        <Card key={talent.id} className={`p-3 ${index === 0 ? 'ring-2 ring-yellow-500/50' : ''}`}>
+          <div className="flex flex-col">
+            {/* Top Row: Avatar/Name on left, Trophy on right */}
+            <div className="flex items-center justify-between w-full mb-4">
+              {/* Left side: Avatar and Name */}
+              <div className="flex items-center gap-2">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search talent..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 text-sm"
-                  />
+                  <Avatar className="w-12 h-12">
+                    <AvatarImage src={talent.avatar} />
+                    <AvatarFallback className="bg-gradient-to-br from-green-500 to-blue-500 text-white text-sm">
+                      {talent.name.split(' ').map(n => n[0]).join('')}
+                    </AvatarFallback>
+                  </Avatar>
+                  {index === 0 && (
+                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-500 rounded-full flex items-center justify-center">
+                      <Crown className="w-2 h-2 text-white" />
                 </div>
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="w-full px-3 py-2 bg-card border border-border rounded-lg text-sm"
-                >
-                  <option value="earnings">Sort by Earnings</option>
-                  <option value="projects">Sort by Projects</option>
-                  <option value="success">Sort by Success Rate</option>
-                  <option value="name">Sort by Name</option>
-                </select>
-                {/* Desktop sidebar: vertical list; hidden on mobile */}
-                <div className="hidden lg:flex flex-col gap-2">
-                  {tiers.map((tier) => (
-                    <button
-                      key={tier}
-                      onClick={() => setFilterTier(tier)}
-                      className={`w-full px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 border border-transparent focus:outline-none focus:ring-2 focus:ring-green-400 ${
-                        filterTier === tier
-                          ? 'bg-green-600 text-white shadow'
-                          : 'bg-muted text-muted-foreground hover:text-foreground hover:border-green-200'
-                      }`}
-                      style={{minHeight: 36}}
-                      type="button"
-                    >
-                      {tier}
-                    </button>
-                  ))}
+                  )}
                 </div>
+                <h3 className="text-sm font-bold text-foreground">{talent.name}</h3>
               </div>
-            </Card>
-          </aside>
-
-          {/* Main Column */}
-          <div className="flex-1">
-            {/* Stats Cards - Mobile Responsive */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-6 md:mb-8" >
-              {loading ? (
-                Array.from({ length: 4 }).map((_, i) => (
-                  <Card key={i} className="p-3 md:p-6" >
-                    <Skeleton className="h-3 md:h-4 w-16 md:w-24 mb-2" />
-                    <Skeleton className="h-6 md:h-8 w-20 md:w-32" />
-                  </Card>
-                ))
-              ) : (
-                <>
-                  <Card className="p-3 md:p-6 bg-gradient-to-br from-green-600/10 to-green-800/10 border-green-500/20" >
-                    <div className="flex items-center gap-2 mb-1 md:mb-2">
-                      <Trophy className="w-4 h-4 md:w-5 md:h-5 text-green-500" />
-                      <span className="text-xs md:text-sm font-medium text-muted-foreground">Top Earner</span>
+              
+              {/* Right side: Trophy */}
+              <div className={`${trophyColors[index]}`}>
+                {index === 0 && <img src="/trophy.png" alt="Trophy" className="w-12 h-12" />}
+                {index === 1 && <img src="/ice-hockey.png" alt="Ice Hockey" className="w-12 h-12" />}
+                {index === 2 && <img src="/water-polo.png" alt="Water Polo" className="w-12 h-12" />}
                     </div>
-                    <div className="text-lg md:text-2xl font-bold text-foreground truncate">{seasonStats.topEarner}</div>
-                    <div className="text-xs md:text-sm text-green-500">{formatCurrency(seasonStats.topEarnings)}</div>
-                  </Card>
-
-                  <Card className="p-3 md:p-6 bg-gradient-to-br from-blue-600/10 to-blue-800/10 border-blue-500/20" >
-                    <div className="flex items-center gap-2 mb-1 md:mb-2">
-                      <Users className="w-4 h-4 md:w-5 md:h-5 text-blue-500" />
-                      <span className="text-xs md:text-sm font-medium text-muted-foreground">Participants</span>
-                    </div>
-                    <div className="text-lg md:text-2xl font-bold text-foreground">{seasonStats.totalParticipants.toLocaleString()}</div>
-                    <div className="text-xs md:text-sm text-blue-500">+12% this month</div>
-                  </Card>
-
-                  <Card className="p-3 md:p-6 bg-gradient-to-br from-purple-600/10 to-purple-800/10 border-purple-500/20" >
-                    <div className="flex items-center gap-2 mb-1 md:mb-2">
-                      <DollarSign className="w-4 h-4 md:w-5 md:h-5 text-purple-500" />
-                      <span className="text-xs md:text-sm font-medium text-muted-foreground">Total Earnings</span>
-                    </div>
-                    <div className="text-lg md:text-2xl font-bold text-foreground">{formatCurrency(seasonStats.totalEarnings)}</div>
-                    <div className="text-xs md:text-sm text-purple-500">+8% this week</div>
-                  </Card>
-
-                  <Card className="p-3 md:p-6 bg-gradient-to-br from-orange-600/10 to-orange-800/10 border-orange-500/20" >
-                    <div className="flex items-center gap-2 mb-1 md:mb-2">
-                      <TrendingUp className="w-4 h-4 md:w-5 md:h-5 text-orange-500" />
-                      <span className="text-xs md:text-sm font-medium text-muted-foreground">Avg. Earnings</span>
-                    </div>
-                    <div className="text-lg md:text-2xl font-bold text-foreground">{formatCurrency(seasonStats.averageEarnings)}</div>
-                    <div className="text-xs md:text-sm text-orange-500">Per participant</div>
-                  </Card>
-                </>
-              )}
             </div>
 
-            {/* Search and Filters - top row (mobile-visible) */}
-            <div className="flex flex-col gap-3 md:gap-4 mb-4 md:mb-6 lg:hidden" >
-              <div className="flex flex-col sm:flex-row gap-2 md:gap-4">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search talent..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 text-sm"
-                  />
+            {/* Stats */}
+            <div className="space-y-1 w-full">
+              <div className="flex justify-between items-center">
+                <span className="text-xs text-muted-foreground">Earnings</span>
+                <span className="text-xs font-semibold text-green-500">{formatCurrency(talent.totalEarnings)}</span>
                 </div>
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="px-3 py-2 bg-card border border-border rounded-lg text-sm min-w-[140px]"
-                >
-                  <option value="earnings">Sort by Earnings</option>
-                  <option value="projects">Sort by Projects</option>
-                  <option value="success">Sort by Success Rate</option>
-                  <option value="name">Sort by Name</option>
-                </select>
+              <div className="flex justify-between items-center">
+                <span className="text-xs text-muted-foreground">Projects</span>
+                <span className="text-xs font-semibold">{talent.projectsCompleted}</span>
               </div>
-              {/* Mobile: horizontal scrollable chip row; hidden on desktop */}
-              <div className="flex lg:hidden overflow-x-auto pb-1 gap-2 -mx-1">
-                {tiers.map((tier) => (
-                  <button
-                    key={tier}
-                    onClick={() => setFilterTier(tier)}
-                    className={`flex-shrink-0 px-4 py-1.5 rounded-full text-xs md:text-sm font-medium transition-all duration-200 border border-transparent focus:outline-none focus:ring-2 focus:ring-green-400 ${
-                      filterTier === tier
-                        ? 'bg-green-600 text-white shadow'
-                        : 'bg-muted text-muted-foreground border border-gray-300 hover:text-foreground'
-                    }`}
-                    style={{minWidth: 64, minHeight: 36}}
-                    type="button"
-                  >
-                    {tier}
-                  </button>
-                ))}
+              <div className="flex justify-between items-center">
+                <span className="text-xs text-muted-foreground">Success</span>
+                <span className="text-xs font-semibold text-green-500">{talent.successRate}%</span>
               </div>
             </div>
+          </div>
+        </Card>
+      );
+    })
+  )}
+</div>
 
-            {/* Leaderboard - Mobile Responsive */}
-            <div className="space-y-3 md:space-y-4" >
+        
+
+        {/* General Leaderboard Table */}
+        <Card className="overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-muted/50">
+                <tr>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Place</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Player Name</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Earnings</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Projects</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Success Rate</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Tier</th>
+                </tr>
+              </thead>
+              <tbody>
               {loading ? (
-                Array.from({ length: 10 }).map((_, i) => (
-                  <Card key={i} className="p-4"  >
+                  Array.from({ length: 7 }).map((_, i) => (
+                    <tr key={i} className="border-t border-border">
+                      <td className="px-4 py-3"><Skeleton className="h-4 w-8" /></td>
+                      <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       <Skeleton className="w-8 h-8 rounded-full" />
-                      <div className="flex-1">
-                        <Skeleton className="h-4 w-32 mb-2" />
-                        <Skeleton className="h-3 w-20" />
+                          <Skeleton className="h-4 w-24" />
                       </div>
-                      <Skeleton className="h-6 w-16" />
-                    </div>
-                  </Card>
+                      </td>
+                      <td className="px-4 py-3"><Skeleton className="h-4 w-16" /></td>
+                      <td className="px-4 py-3"><Skeleton className="h-4 w-12" /></td>
+                      <td className="px-4 py-3"><Skeleton className="h-4 w-12" /></td>
+                      <td className="px-4 py-3"><Skeleton className="h-4 w-16" /></td>
+                    </tr>
                 ))
               ) : (
-                sortedTalent.map((talent) => (
-                  <Card key={talent.id} className="p-3 md:p-4 hover:bg-muted/30 transition-colors"  >
-                    <div className="flex items-center gap-3">
-                      {/* Rank */}
-                      <div className="flex items-center gap-2 min-w-[60px]">
+                  sortedTalent.slice(3).map((talent) => (
+                    <tr key={talent.id} className="border-t border-border hover:bg-muted/30 transition-colors">
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2">
                         {getRankIcon(talent.rank)}
-                        <span className="font-bold text-sm md:text-base">{talent.rank}</span>
+                          <span className="font-bold text-sm">{talent.rank}</span>
                       </div>
-                      
-                      {/* Avatar & Name */}
-                      <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
-                        <Avatar className="w-8 h-8 md:w-10 md:h-10 flex-shrink-0">
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="w-8 h-8">
                           <AvatarImage src={talent.avatar} />
-                          <AvatarFallback className="bg-green-600 text-white text-xs">
+                            <AvatarFallback className="bg-gradient-to-br from-green-500 to-blue-500 text-white text-xs">
                             {talent.name.split(' ').map(n => n[0]).join('')}
                           </AvatarFallback>
                         </Avatar>
-                        <div className="min-w-0 flex-1">
-                          <div className="font-semibold text-foreground text-sm md:text-base truncate">{talent.name}</div>
-                          <div className="text-xs md:text-sm text-muted-foreground truncate">{talent.username}</div>
+                          <div>
+                            <div className="font-semibold text-foreground">{talent.name}</div>
+                            <div className="text-sm text-muted-foreground">{talent.username}</div>
+                          </div>
                         </div>
-                      </div>
-                      
-                      {/* Tier */}
-                      <div className="hidden sm:block">
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="font-bold text-green-500">{formatCurrency(talent.totalEarnings)}</div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="font-semibold">{talent.projectsCompleted}</div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="font-semibold text-green-500">{talent.successRate}%</div>
+                      </td>
+                      <td className="px-4 py-3">
                         <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r ${talent.tierColor} text-white`}>
                           <Star className="w-3 h-3" />
                           {talent.tier}
                         </div>
-                      </div>
-                      
-                      {/* Stats - Desktop */}
-                      <div className="hidden lg:flex items-center gap-4 text-sm">
-                        <div className="text-right">
-                          <div className="font-bold text-green-500">{formatCurrency(talent.totalEarnings)}</div>
-                          <div className="text-xs text-muted-foreground">Earnings</div>
-                        </div>
-                        <div className="text-right">
-                          <div className="font-semibold">{talent.projectsCompleted}</div>
-                          <div className="text-xs text-muted-foreground">Projects</div>
-                        </div>
-                        <div className="text-right">
-                          <div className="font-semibold text-green-500">{talent.successRate}%</div>
-                          <div className="text-xs text-muted-foreground">Success</div>
-                        </div>
-                      </div>
-                      
-                      {/* Stats - Mobile */}
-                      <div className="lg:hidden text-right">
-                        <div className="font-bold text-green-500 text-sm">{formatCurrency(talent.totalEarnings)}</div>
-                        <div className="text-xs text-muted-foreground">{talent.projectsCompleted} projects</div>
-                      </div>
-                    </div>
-                  </Card>
-                ))
-              )}
-            </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
-        </div>
+        </Card>
 
         {/* Call to Action - Mobile Responsive */}
-        <div className="mt-8 md:mt-12 text-center" >
-          <Card className="p-4 md:p-8 bg-gradient-to-r from-green-600/10 to-blue-600/10 border-green-500/20">
-            <h3 className="text-xl md:text-2xl font-bold mb-3 md:mb-4" >Ready to Join the Competition?</h3>
-            <p className="text-sm md:text-base text-muted-foreground mb-4 md:mb-6 max-w-2xl mx-auto" >
+        <div className="mt-4 md:mt-6 text-center" >
+          <Card className="p-3 md:p-4 bg-gradient-to-r from-green-600/10 to-blue-600/10 border-green-500/20">
+            <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3" >Ready to Join the Competition?</h3>
+            <p className="text-xs md:text-sm text-muted-foreground mb-3 md:mb-4 max-w-2xl mx-auto" >
               Start contributing to the Livepeer ecosystem and compete for the top spot in Season {seasonStats.seasonNumber}.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center" >
-              <Button className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white px-6 md:px-8 py-2 md:py-3 text-sm md:text-base">
+            <div className="flex flex-col sm:flex-row gap-2 md:gap-3 justify-center" >
+              <Button className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white px-4 md:px-6 py-1.5 md:py-2 text-xs md:text-sm">
                 Browse Opportunities
               </Button>
-              <Button variant="outline" className="px-6 md:px-8 py-2 md:py-3 text-sm md:text-base">
+              <Button variant="outline" className="px-4 md:px-6 py-1.5 md:py-2 text-xs md:text-sm">
                 Create Profile
               </Button>
             </div>
-            <div className="mt-3 md:mt-4 text-xs md:text-sm text-muted-foreground" >
+            <div className="mt-2 md:mt-3 text-xs text-muted-foreground" >
               Next reset: {new Date(seasonStats.nextReset).toLocaleDateString()} ({seasonStats.daysUntilReset} days)
             </div>
           </Card>
         </div>
       </div>
+
+      <Footer />
     </div>
   );
 };

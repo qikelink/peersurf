@@ -8,7 +8,13 @@ import {
   Briefcase,
   Zap,
   DollarSign,
-  X
+  X,
+  Users,
+  Target,
+  TrendingUp,
+  Star,
+  User,
+  Wallet
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -210,11 +216,49 @@ const mockRecentEarners = [
   }
 ];
 
+// Sponsor carousel data
+const sponsorCards = [
+  {
+    id: 1,
+    title: "Reach 50,000+ Top Talent",
+    subtitle: "Get high-quality work done across content, development, and design",
+    description: "Join 1,780+ sponsors who trust PeerSurf for their project needs",
+    icon: Users,
+    gradient: "from-teal-600 to-teal-800",
+    accent: "bg-gradient-to-r from-green-600 to-green-700",
+    stats: "50K+ Talent",
+    cta: "Start Hiring"
+  },
+  {
+    id: 2,
+    title: "Launch Your Project",
+    subtitle: "From concept to completion with vetted crypto professionals",
+    description: "Access the largest network of Web3 developers and creators",
+    icon: Target,
+    gradient: "from-black to-gray-900",
+    accent: "bg-teal-400",
+    stats: "24/7 Support",
+    cta: "Get Started"
+  },
+  {
+    id: 3,
+    title: "Scale Your Impact",
+    subtitle: "Build the future of decentralized media with Livepeer",
+    description: "Partner with the leading video infrastructure for the open internet",
+    icon: TrendingUp,
+    gradient: "from-green-600 to-green-700",
+    accent: "bg-black",
+    stats: "Global Reach",
+    cta: "Join Now"
+  }
+];
+
 const OpportuniesPage = () => {
   const [activeTab, setActiveTab] = useState("All");
   const [activeCategory, setActiveCategory] = useState("All");
   const [showSidebar, setShowSidebar] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const [currentCard, setCurrentCard] = useState(0);
   const { user, profile } = useUser();
   const { isDark } = useTheme();
   const navigate = useNavigate();
@@ -241,7 +285,18 @@ const OpportuniesPage = () => {
   }, []);
 
   const categories = ["All", "Content", "Design", "Development", "Events", "Other"];
-  const tabs = ["All", "Bounties", "Grants", "RFPs"];
+  const tabs = ["All", "Bounties", "RFPs"];
+
+  // Carousel functionality
+  const nextCard = () => {
+    setCurrentCard((prev) => (prev + 1) % sponsorCards.length);
+  };
+
+  // Auto-advance carousel
+  useEffect(() => {
+    const interval = setInterval(nextCard, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
 
   return (
@@ -254,25 +309,119 @@ const OpportuniesPage = () => {
         <div className="flex-1 p-4 sm:p-6">
           {/* Hero Section - Conditional based on role */}
           {(!profile?.role || profile?.role === 'SPE') ? (
-            <div className="relative overflow-hidden bg-gradient-to-r from-green-600 to-green-700 rounded-sm p-6 sm:p-8 mb-6 sm:mb-8">
+            <div className="relative mb-6 sm:mb-8">
+              {/* Sponsor Carousel */}
+              <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-gray-900 to-black">
+                <div className="relative overflow-hidden rounded-xl">
+                  {/* Carousel Container */}
+                  <div className="relative h-64 sm:h-72 lg:h-64">
+                    {sponsorCards.map((card, index) => {
+                      const IconComponent = card.icon;
+                      const isActive = index === currentCard;
+                      const isPrev = index === (currentCard - 1 + sponsorCards.length) % sponsorCards.length;
+                      const isNext = index === (currentCard + 1) % sponsorCards.length;
+                      
+                      return (
+                        <div
+                          key={card.id}
+                          className={`absolute inset-0 transition-all duration-700 ease-in-out ${
+                            isActive 
+                              ? 'opacity-100 translate-x-0 scale-100' 
+                              : isPrev 
+                                ? 'opacity-0 -translate-x-full scale-95' 
+                                : isNext 
+                                  ? 'opacity-0 translate-x-full scale-95'
+                                  : 'opacity-0 translate-x-0 scale-95'
+                          }`}
+                        >
+                          <div className={`h-full bg-gradient-to-br ${card.gradient} p-6 sm:p-8 relative overflow-hidden`}>
+                            {/* Background Image for first card */}
+                            {index === 0 && (
+                              <div className="absolute inset-0 flex items-center justify-end pr-8">
+                                <img 
+                                  src="/erased_01.png" 
+                                  alt="Team collaboration" 
+                                  className="w-1/2 h-full object-contain opacity-20 hover:opacity-30 transition-opacity duration-500"
+                                />
+                              </div>
+                            )}
+                            
+                            {/* Background Image for second card */}
+                            {index === 1 && (
+                              <div className="absolute inset-0 flex items-center justify-end pr-8">
+                                <img 
+                                  src="/erased_02.png" 
+                                  alt="Project launch" 
+                                  className="w-1/2 h-full object-contain opacity-20 hover:opacity-30 transition-opacity duration-500"
+                                />
+                              </div>
+                            )}
+                            
+                            {/* Background Effects */}
               <div className="absolute -top-8 -right-8 w-40 h-40 bg-white/10 rounded-full blur-2xl animate-float" />
-              <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-foreground/5 rounded-full blur-2xl animate-float" />
-              <div className="relative flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 transition-all duration-700 ease-out">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-4">
-                    <Briefcase className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
-                    <h2 className="text-xl sm:text-2xl font-bold text-white">{profile?.role === 'SPE' ? 'Sponsorship' : 'Become a Sponsor'}</h2>
-                  </div>
-                  <p className="text-green-100 mb-6 max-w-2xl text-sm sm:text-base">
-                    Reach 50,000+ top-tier talent in under 5 clicks. Get high-quality work done across content, development, and design.
-                  </p>
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                            <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-white/5 rounded-full blur-2xl animate-float" />
+                            <div className="absolute top-1/2 right-4 w-24 h-24 bg-white/5 rounded-full blur-xl animate-pulse" />
+                            
+                            {/* Content */}
+                            <div className="relative h-full flex flex-col justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-3 mb-4">
+                                  <div className={`w-12 h-12 ${card.accent} rounded-xl flex items-center justify-center`}>
+                                    <IconComponent className="w-6 h-6 text-white" />
+                                  </div>
+                                  <div>
+                                    <h2 className="text-lg sm:text-xl font-bold text-white">{card.title}</h2>
+                                    <p className="text-white/80 text-sm">{card.subtitle}</p>
+                                  </div>
+                                </div>
+                                
+                                <p className="text-white/90 mb-6 max-w-2xl text-sm leading-relaxed hidden sm:block">
+                                  {card.description}
+                                </p>
+                                
+                                <div className="flex items-center gap-4 mb-6">
+                                  <div className="flex items-center gap-2">
+                                    <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                                    <span className="text-white/80 text-sm font-medium">{card.stats}</span>
+                                  </div>
+                                  <div className="h-4 w-px bg-white/20" />
+                                  <span className="text-white/60 text-sm">Trusted by 1,780+ sponsors</span>
+                                </div>
+                              </div>
+                              
+                              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <Link to={profile?.role === 'SPE' ? '/sponsor' : '/auth?mode=signup&role=SPE'} className="w-full sm:w-auto">
-                      <Button className="bg-foreground text-background hover:opacity-90 px-6 py-3 rounded-lg w-full sm:w-auto">
-                        Get Started
+                                  <Button className="bg-white text-black hover:bg-white/90 px-8 py-3 rounded-xl font-semibold w-full sm:w-auto transition-all duration-300 hover:scale-105">
+                                    {card.cta}
                       </Button>
                     </Link>
-                    <span className="text-green-200 text-sm">Join 1,780+ others</span>
+                                <div className="flex items-center gap-2 text-white/60 text-sm">
+                                  <div className="w-2 h-2 bg-white/40 rounded-full animate-pulse" />
+                                  <span>Join the future of work</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  
+                 
+                  
+                  {/* Dots Indicator */}
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                    {sponsorCards.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentCard(index)}
+                        className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                          index === currentCard 
+                            ? 'bg-white scale-125' 
+                            : 'bg-white/40 hover:bg-white/60'
+                        }`}
+                      />
+                    ))}
                   </div>
                 </div>
               </div>
@@ -283,8 +432,8 @@ const OpportuniesPage = () => {
               <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-foreground/5 rounded-full blur-2xl animate-float" />
               <div className="relative flex items-start justify-between gap-6 transition-all duration-700 ease-out">
                 <div className="flex-1">
-                  <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">{`Welcome back, ${profile?.username || user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'there'}`}</h2>
-                  <p className="text-green-100 mb-6 max-w-2xl text-sm sm:text-base">We're so glad to have you on Earn</p>
+                  <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">{`Welcome back, ${profile?.username || user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'there'}`}</h2>
+                  <p className="text-green-100 mb-6 max-w-2xl text-sm">We're so glad to have you on Earn</p>
                   <div className="flex flex-wrap items-center gap-3 text-xs sm:text-sm text-white/80">
                     <span className="px-3 py-1 rounded-full bg-white/10 border border-white/20">Opportunities curated for talent</span>
                     <span className="px-3 py-1 rounded-full bg-white/10 border border-white/20">New listings daily</span>
@@ -296,31 +445,38 @@ const OpportuniesPage = () => {
 
           {/* Browse Opportunities */}
           <div className="mb-8">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-              <h2 className="text-xl sm:text-2xl font-bold">Browse Opportunities</h2>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+              <div>
+                <h2 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+                  Browse Opportunities
+                </h2>
+                <p className="text-muted-foreground text-sm mt-1">
+                  Discover your next project from our curated collection
+                </p>
+              </div>
               <button 
                 onClick={() => setShowFilters(!showFilters)}
-                className={`flex items-center gap-2 transition-colors ${
+                className={`flex items-center gap-2 transition-all duration-300 ${
                   showFilters 
-                    ? "text-green-400 bg-green-400/10" 
-                    : "text-muted-foreground hover:text-primary"
-                } px-3 py-2 rounded-lg`}
+                    ? "text-white bg-gradient-to-r from-green-600 to-green-700 shadow-lg shadow-green-500/25" 
+                    : "text-muted-foreground hover:text-foreground bg-muted/50 hover:bg-muted"
+                } px-4 py-2 rounded-xl font-medium`}
               >
                 <Filter className="w-4 h-4" />
-                <span className="hidden sm:inline">Filter</span>
+                <span className="hidden sm:inline text-sm">Filter</span>
               </button>
             </div>
 
             {/* Primary Tabs */}
-            <div className="flex gap-1 mb-4 overflow-x-auto pb-2">
+            <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
               {tabs.map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ${
+                  className={`px-4 sm:px-4 py-2 rounded-xl font-semibold transition-all duration-300 whitespace-nowrap ${
                     activeTab === tab
-                      ? "bg-green-600 text-white"
-                      : "text-muted-foreground hover:text-foreground"
+                      ? "bg-gradient-to-r from-green-600 to-green-700 text-white shadow-lg shadow-green-500/25 transform scale-105"
+                      : "text-muted-foreground hover:text-foreground bg-muted/30 hover:bg-muted/50 hover:scale-105"
                   }`}
                 >
                   {tab}
@@ -330,15 +486,15 @@ const OpportuniesPage = () => {
 
             {/* Category Pills - Conditionally rendered based on showFilters */}
             {showFilters && (
-              <div className="flex gap-2 mb-6 overflow-x-auto pb-2 animate-in slide-in-from-top-2 duration-200">
+              <div className="flex gap-3 mb-8 overflow-x-auto pb-2 animate-in slide-in-from-top-2 duration-300">
                 {categories.map((category) => (
                   <button
                     key={category}
                     onClick={() => setActiveCategory(category)}
-                    className={`px-3 py-1 rounded-full text-sm font-medium transition-colors whitespace-nowrap ${
+                    className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 whitespace-nowrap ${
                       activeCategory === category
-                        ? "bg-green-600 text-white"
-                        : "bg-muted text-muted-foreground hover:text-foreground"
+                        ? "bg-gradient-to-r from-green-600 to-green-700 text-white shadow-lg shadow-green-500/25 transform scale-105"
+                        : "bg-muted/50 text-muted-foreground hover:text-foreground hover:bg-muted hover:scale-105"
                     }`}
                   >
                     {category}
@@ -348,24 +504,24 @@ const OpportuniesPage = () => {
             )}
 
             {/* Opportunities List */}
-            <div className="space-y-4 flex flex-col">
+            <div className="space-y-3 flex flex-col">
               {loading ? (
                 Array.from({ length: 3 }).map((_, i) => (
-                  <Card key={`bounty-skel-${i}`} className="bg-card border border-border p-4 sm:p-6">
-                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                      <div className="flex items-start gap-4 flex-1">
-                        <Skeleton className="w-12 h-12 rounded-lg" />
-                        <div className="flex-1 min-w-0 space-y-2">
-                          <Skeleton className="h-4 w-3/4" />
-                          <Skeleton className="h-3 w-1/3" />
-                          <div className="flex gap-3">
-                            <Skeleton className="h-3 w-14" />
-                            <Skeleton className="h-3 w-10" />
-                            <Skeleton className="h-3 w-16" />
+                  <Card key={`bounty-skel-${i}`} className="bg-card/50 border border-border/50 p-6 sm:p-8 rounded-2xl backdrop-blur-sm">
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6">
+                      <div className="flex items-start gap-6 flex-1">
+                        <Skeleton className="w-16 h-16 rounded-2xl" />
+                        <div className="flex-1 min-w-0 space-y-3">
+                          <Skeleton className="h-5 w-3/4" />
+                          <Skeleton className="h-4 w-1/3" />
+                          <div className="flex gap-4">
+                            <Skeleton className="h-4 w-16" />
+                            <Skeleton className="h-4 w-12" />
+                            <Skeleton className="h-4 w-20" />
                           </div>
                         </div>
                       </div>
-                      <Skeleton className="h-5 w-20" />
+                      <Skeleton className="h-6 w-24" />
                     </div>
                   </Card>
                 ))
@@ -381,15 +537,14 @@ const OpportuniesPage = () => {
                     ...(dynRFPs.length ? dynRFPs : mockRFPs)
                   ];
 
-                  // Filter by tab
+                  // Filter by tab (excluding grants)
+                  const nonGrantOpportunities = allOpportunities.filter((opp: any) => opp.type !== "Grant");
                   if (activeTab === "All") {
-                    opportunities = allOpportunities;
+                    opportunities = nonGrantOpportunities;
                   } else if (activeTab === "Bounties") {
-                    opportunities = allOpportunities.filter((opp: any) => opp.type === "Bounty");
-                  } else if (activeTab === "Grants") {
-                    opportunities = allOpportunities.filter((opp: any) => opp.type === "Grant");
+                    opportunities = nonGrantOpportunities.filter((opp: any) => opp.type === "Bounty");
                   } else if (activeTab === "RFPs") {
-                    opportunities = allOpportunities.filter((opp: any) => opp.type === "RFP");
+                    opportunities = nonGrantOpportunities.filter((opp: any) => opp.type === "RFP");
                   }
 
                   // Filter by category if not "All"
@@ -399,46 +554,50 @@ const OpportuniesPage = () => {
 
                   return opportunities.map((opportunity: any) => (
                 <Link key={opportunity.id} to={`/opportunity/${opportunity.id}`} state={{ opportunity: { ...opportunity, type: opportunity.type || "Bounty", status: opportunity.status || "Active" } }}>
-                <Card className={`${isDark ? 'bg-gray-900 border-gray-700' : 'bg-card border-border'} p-4 sm:p-6 hover:border-green-500/50 transition-colors`}>
-                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                    <div className="flex items-start gap-4 flex-1">
-                      <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                        opportunity.type === "RFP" 
-                          ? "bg-gradient-to-br from-orange-600 to-orange-800" 
-                          : opportunity.type === "Grant"
-                          ? "bg-gradient-to-br from-purple-600 to-purple-800"
-                          : "bg-gradient-to-br from-green-600 to-green-800"
-                      }`}>
-                        <span className="text-white font-bold text-xs sm:text-sm">
-                          {opportunity.type === "RFP" ? "RFP" : opportunity.team ? "PS" : "SP"}
-                        </span>
+                <Card className={`group relative overflow-hidden ${isDark ? 'bg-gray-900/50 border-gray-700/50' : 'bg-card/50 border-border/50'} p-2    sm: p-4   rounded-2xl backdrop-blur-sm border transition-all duration-500 hover:border-green-500/50 hover:shadow-2xl hover:shadow-green-500/10 hover:scale-[1.02] hover:bg-card/80`}>
+                  {/* Gradient overlay on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-green-600/0 via-green-600/0 to-green-600/0 group-hover:from-green-600/5 group-hover:via-green-600/10 group-hover:to-green-600/5 transition-all duration-500" />
+                  
+                  <div className="relative flex flex-col sm:flex-row sm:items-start justify-between gap-6">
+                    <div className="flex items-start gap-6 flex-1">
+                      <div className="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg transition-all duration-300 group-hover:scale-110 bg-[#EAF6F2]">
+                        {opportunity.team?.toLowerCase().includes('peersurf') || opportunity.issuedBy?.toLowerCase().includes('peersurf') ? (
+                          <img src="onyx.png" alt="PeerSurf" className="w-14 h-14 rounded-full" />
+                        ) : opportunity.team?.toLowerCase().includes('livepeer') || opportunity.issuedBy?.toLowerCase().includes('livepeer') ? (
+                          <img src="livepeer.webp" alt="Livepeer" className="w-14 h-14 rounded-full" />
+                        ) : (
+                          <div className={`w-14 h-14 rounded-full flex items-center justify-center`}>
+                            <span className="text-white font-bold text-sm">
+                              {opportunity.type === "RFP" ? "RFP" : "SP"}
+                            </span>
+                          </div>
+                        )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className={`font-semibold ${isDark ? 'text-white' : 'text-foreground'} text-sm sm:text-base truncate`}>{opportunity.title}</h3>
+                        <div className="flex items-center gap-3 mb-2">
+                          <h3 className={`font-bold ${isDark ? 'text-white' : 'text-foreground'} text-base truncate group-hover:text-green-400 transition-colors duration-300`}>
+                            {opportunity.title}
+                          </h3>
                           {opportunity.verified && <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />}
                         </div>
-                        <p className="text-muted-foreground text-xs sm:text-sm mb-2">{opportunity.team || opportunity.issuedBy || "Community Sponsor"}</p>
+                        <p className="text-muted-foreground text-xs mb-3">
+                          {opportunity.team || opportunity.issuedBy || "Community Sponsor"}
+                        </p>
                         
-                        {/* Description */}
-                        <div className="mb-2">
-                          <p className="text-muted-foreground text-xs sm:text-sm">
-                            {opportunity.description}
-                          </p>
-                        </div>
-                        
-                        <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm">
-                          <span className="flex items-center gap-1 text-muted-foreground">
-                            <Zap className="w-3 h-3 sm:w-4 sm:h-4" />
+                        <div className="flex flex-wrap items-center gap-1 text-sm">
+                          <span className="flex items-center gap-2 text-muted-foreground bg-muted/50 px-1.5 py-1.5 rounded-full">
+                            <Zap className="w-4 h-4" />
                             {opportunity.type}
-                          </span>
-                          <span className="text-green-400">{opportunity.status || "Active"}</span>
-                          <span className="flex items-center gap-1 text-muted-foreground">
-                            <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4" />
+                          </span> |
+                          <span className="text-muted-foreground font-semibold px-3 py-1.5 rounded-full">
+                            {opportunity.status || "Active"}
+                          </span> |
+                          <span className="flex items-center gap-2 text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-full">
+                            <MessageCircle className="w-4 h-4" />
                             {opportunity.comments ?? 0}
-                          </span>
+                          </span> 
                           {opportunity.deadline && (
-                            <span className="text-orange-400">
+                            <span className="text-muted-foreground font-semibold px-3 py-1.5 rounded-full">
                               Due: {opportunity.deadline}
                             </span>
                           )}
@@ -446,7 +605,7 @@ const OpportuniesPage = () => {
                       </div>
                     </div>
                     <div className="text-right sm:text-left">
-                      <div className="text-base sm:text-lg font-bold text-green-400">
+                      <div className="text-sm font-bold bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent">
                         {opportunity.reward || opportunity.maxAmount || opportunity.avgAmount || ""}
                       </div>
                     </div>
@@ -459,12 +618,117 @@ const OpportuniesPage = () => {
             </div>
 
           </div>
+
+          {/* Grants Section */}
+          <div className="mb-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+              <div>
+                <h2 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+                  Grants
+                </h2>
+                <p className="text-muted-foreground text-sm mt-1">
+                  Discover funding opportunities for your projects
+                </p>
+              </div>
+            </div>
+
+            {/* Grants List */}
+            <div className="space-y-4 flex flex-col">
+              {loading ? (
+                Array.from({ length: 3 }).map((_, i) => (
+                  <Card key={`grant-skel-${i}`} className="bg-card/50 border border-border/50 p-6 sm:p-8 rounded-2xl backdrop-blur-sm">
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6">
+                      <div className="flex items-start gap-6 flex-1">
+                        <Skeleton className="w-16 h-16 rounded-2xl" />
+                        <div className="flex-1 min-w-0 space-y-3">
+                          <Skeleton className="h-5 w-3/4" />
+                          <Skeleton className="h-4 w-1/3" />
+                          <div className="flex gap-4">
+                            <Skeleton className="h-4 w-16" />
+                            <Skeleton className="h-4 w-12" />
+                          </div>
+                        </div>
+                      </div>
+                      <Skeleton className="h-6 w-24" />
+                    </div>
+                  </Card>
+                ))
+              ) : (
+                (() => {
+                  // Get grants only
+                  const grants = [
+                    ...(dynGrants.length ? dynGrants : mockGrants)
+                  ];
+
+                  // Filter by category if not "All"
+                  let filteredGrants = grants;
+                  if (activeCategory !== "All") {
+                    filteredGrants = grants.filter((grant: any) => grant.category === activeCategory);
+                  }
+
+                  return filteredGrants.map((grant: any) => (
+                    <Link key={grant.id} to={`/opportunity/${grant.id}`} state={{ opportunity: { ...grant, type: "Grant", status: "Active" } }}>
+                      <Card className={`group relative overflow-hidden ${isDark ? 'bg-gray-900/50 border-gray-700/50' : 'bg-card/50 border-border/50'} p-2 sm:p-4 rounded-2xl backdrop-blur-sm border transition-all duration-500 hover:border-purple-500/50 hover:shadow-2xl hover:shadow-purple-500/10 hover:scale-[1.02] hover:bg-card/80`}>
+                        {/* Gradient overlay on hover */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-purple-600/0 via-purple-600/0 to-purple-600/0 group-hover:from-purple-600/5 group-hover:via-purple-600/10 group-hover:to-purple-600/5 transition-all duration-500" />
+                        
+                        <div className="relative flex flex-col sm:flex-row sm:items-start justify-between gap-6">
+                          <div className="flex items-start gap-6 flex-1">
+                            <div className="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg transition-all duration-300 group-hover:scale-110 bg-[#EAF6F2]">
+                              {grant.team?.toLowerCase().includes('peersurf') || grant.issuedBy?.toLowerCase().includes('peersurf') ? (
+                                <img src="onyx.png" alt="PeerSurf" className="w-14 h-14 rounded-full" />
+                              ) : grant.team?.toLowerCase().includes('livepeer') || grant.issuedBy?.toLowerCase().includes('livepeer') ? (
+                                <img src="livepeer.webp" alt="Livepeer" className="w-14 h-14 rounded-full" />
+                              ) : (
+                                <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gradient-to-br from-purple-500 to-purple-700">
+                                  <span className="text-white font-bold text-sm">G</span>
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-3 mb-2">
+                                <h3 className={`font-bold ${isDark ? 'text-white' : 'text-foreground'} text-base truncate group-hover:text-purple-400 transition-colors duration-300`}>
+                                  {grant.title}
+                                </h3>
+                                {grant.verified && <CheckCircle className="w-4 h-4 text-purple-400 flex-shrink-0" />}
+                              </div>
+                              <p className="text-muted-foreground text-xs mb-3">
+                                {grant.team || "Community Sponsor"}
+                              </p>
+                              
+                              <div className="flex flex-wrap items-center gap-1 text-sm">
+                                <span className="flex items-center gap-2 text-muted-foreground bg-muted/50 px-1.5 py-1.5 rounded-full">
+                                  <Zap className="w-4 h-4" />
+                                  Grant
+                                </span> |
+                                <span className="text-muted-foreground font-semibold px-3 py-1.5 rounded-full">
+                                  Active
+                                </span> |
+                                <span className="text-muted-foreground px-3 py-1.5 rounded-full">
+                                  {grant.avgAmount} Avg. Grant
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-right sm:text-left">
+                            <div className="text-sm font-bold bg-gradient-to-r from-purple-600 to-purple-700 bg-clip-text text-transparent">
+                              {grant.maxAmount || grant.avgAmount || ""}
+                            </div>
+                          </div>
+                        </div>
+                      </Card>
+                    </Link>
+                  ));
+                })()
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Sidebar - Hidden on mobile, shown on desktop */}
-        <div className={`lg:w-80 lg:border-l ${isDark ? 'lg:border-gray-800' : 'lg:border-border'} lg:p-6 ${
+        <div className={`lg:w-80 lg:border-l ${isDark ? 'lg:border-gray-700/50' : 'lg:border-border/50'} lg:p-6 ${
           showSidebar 
-            ? 'fixed inset-0 z-50 bg-background/95 lg:relative lg:bg-transparent' 
+            ? 'fixed inset-0 z-50 bg-background/95 backdrop-blur-xl lg:relative lg:bg-transparent' 
             : 'hidden lg:block'
         }`}>
           {/* Mobile Sidebar Header */}
@@ -483,74 +747,86 @@ const OpportuniesPage = () => {
           <div className="p-4 lg:p-0">
             {/* Become a Sponsor / Sponsorship Card */}
             {loading ? (
-              <Card className="bg-card border border-border p-4 sm:p-6 mb-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <Skeleton className="w-6 h-6 rounded" />
-                  <Skeleton className="h-4 w-1/2" />
+              <Card className="bg-card/50 border border-border/50 p-6 sm:p-8 mb-8 rounded-2xl backdrop-blur-sm">
+                <div className="flex items-center gap-4 mb-6">
+                  <Skeleton className="w-8 h-8 rounded-xl" />
+                  <Skeleton className="h-5 w-1/2" />
                 </div>
-                <Skeleton className="h-3 w-3/4 mb-2" />
-                <Skeleton className="h-3 w-2/3 mb-4" />
-                <Skeleton className="h-9 w-full rounded-sm" />
+                <Skeleton className="h-4 w-3/4 mb-3" />
+                <Skeleton className="h-4 w-2/3 mb-6" />
+                <Skeleton className="h-12 w-full rounded-xl" />
               </Card>
             ) : (
-              <Card className={`${isDark ? 'bg-gray-900 border-gray-700' : 'bg-card border-border'} p-4 sm:p-6 mb-6`}>
-                <div className="flex items-center gap-3 mb-4">
-                  <Briefcase className="w-5 h-5 sm:w-6 sm:h-6 text-green-400" />
-                  <h3 className={`font-semibold ${isDark ? 'text-white' : 'text-foreground'} text-sm sm:text-base`}>{profile?.role === 'SPE' ? 'Sponsorship' : 'Become a Sponsor'}</h3>
+              <Card className={`group relative overflow-hidden ${isDark ? 'bg-gray-900/50 border-gray-700/50' : 'bg-card/50 border-border/50'} p-4 sm:p-6 mb-8 rounded-2xl backdrop-blur-sm border transition-all duration-500 hover:border-green-500/50 hover:shadow-2xl hover:shadow-green-500/10 hover:scale-[1.02]`}>
+                <div className="absolute inset-0 bg-gradient-to-br from-green-600/0 to-green-600/0 group-hover:from-green-600/5 group-hover:to-green-600/10 transition-all duration-500" />
+                <div className="relative">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="w-12 h-12 bg-gradient-to-r from-green-600 to-green-700 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/25">
+                      <Briefcase className="w-6 h-6 text-white" />
+                    </div>
+                    <h3 className={`font-bold ${isDark ? 'text-white' : 'text-foreground'} text-base`}>
+                      {profile?.role === 'SPE' ? 'Sponsorship' : 'Become a Sponsor'}
+                    </h3>
                 </div>
-                <p className="text-muted-foreground text-xs sm:text-sm mb-4">
+                  <p className="text-muted-foreground text-sm mb-6 leading-relaxed">
                   Reach 50,000+ crypto talent from one single dashboard.
                 </p>
-                <Button onClick={() => navigate(profile?.role === 'SPE' ? '/sponsor' : '/auth?mode=signup&role=SPE')} className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white text-sm">
+                  <Button 
+                    onClick={() => navigate(profile?.role === 'SPE' ? '/sponsor' : '/auth?mode=signup&role=SPE')} 
+                    className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-semibold py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-green-500/25"
+                  >
                   Get Started
                 </Button>
+                </div>
               </Card>
             )}
 
             {/* Key Metrics */}
-            <div className="space-y-3 sm:space-y-4 mb-6">
+            <div className="space-y-4 mb-8">
               {loading ? (
                 <>
-                  <Card className="bg-card border border-border p-3 sm:p-4">
-                    <div className="flex items-center gap-3">
-                      <Skeleton className="w-8 h-8 rounded-full" />
-                      <div className="flex-1 space-y-2">
-                        <Skeleton className="h-3 w-32" />
-                        <Skeleton className="h-4 w-40" />
+                  <Card className="bg-card/50 border border-border/50 p-4 sm:p-6 rounded-2xl backdrop-blur-sm">
+                    <div className="flex items-center gap-4">
+                      <Skeleton className="w-12 h-12 rounded-xl" />
+                      <div className="flex-1 space-y-3">
+                        <Skeleton className="h-4 w-32" />
+                        <Skeleton className="h-5 w-40" />
                       </div>
                     </div>
                   </Card>
-                  <Card className="bg-card border border-border p-3 sm:p-4">
-                    <div className="flex items-center gap-3">
-                      <Skeleton className="w-8 h-8 rounded-full" />
-                      <div className="flex-1 space-y-2">
-                        <Skeleton className="h-3 w-36" />
-                        <Skeleton className="h-4 w-16" />
+                  <Card className="bg-card/50 border border-border/50 p-4 sm:p-6 rounded-2xl backdrop-blur-sm">
+                    <div className="flex items-center gap-4">
+                      <Skeleton className="w-12 h-12 rounded-xl" />
+                      <div className="flex-1 space-y-3">
+                        <Skeleton className="h-4 w-36" />
+                        <Skeleton className="h-5 w-20" />
                       </div>
                     </div>
                   </Card>
                 </>
               ) : (
                 <>
-                  <div className={`flex items-center justify-between p-3 sm:p-4 ${isDark ? 'bg-gray-900 border-gray-700' : 'bg-card border-border'} rounded-lg`}>
-                    <div className="flex items-center gap-3">
-                      <div className="w-6 h-6 sm:w-8 sm:h-8 bg-green-600 rounded-full flex items-center justify-center">
-                        <DollarSign className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
+                  <div className={`group flex items-center justify-between p-4 sm:p-6 ${isDark ? 'bg-gray-900/50 border-gray-700/50' : 'bg-card/50 border-border/50'} rounded-2xl backdrop-blur-sm border transition-all duration-300 hover:border-green-500/30 hover:shadow-lg hover:shadow-green-500/10`}>
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-gradient-to-r from-green-600 to-green-700 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/25 group-hover:scale-110 transition-transform duration-300">
+                        <DollarSign className="w-6 h-6 text-white" />
                       </div>
                       <div>
-                        <div className="text-xs sm:text-sm text-muted-foreground">Total Value Earned</div>
-                        <div className={`font-bold ${isDark ? 'text-white' : 'text-foreground'} text-sm sm:text-base`}>$7,654,510 USD</div>
+                        <div className="text-base text-muted-foreground font-medium">Total Value Earned</div>
+                        <div className={`font-bold ${isDark ? 'text-white' : 'text-foreground'} text-sm bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent`}>
+                          $7,654,510 USD
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <div className={`flex items-center justify-between p-3 sm:p-4 ${isDark ? 'bg-gray-900 border-gray-700' : 'bg-card border-border'} rounded-lg`}>
-                    <div className="flex items-center gap-3">
-                      <div className="w-6 h-6 sm:w-8 sm:h-8 bg-purple-600 rounded-full flex items-center justify-center">
-                        <Briefcase className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
+                  <div className={`group flex items-center justify-between p-4 sm:p-6 ${isDark ? 'bg-gray-900/50 border-gray-700/50' : 'bg-card/50 border-border/50'} rounded-2xl backdrop-blur-sm border transition-all duration-300 hover:border-purple-500/30 hover:shadow-lg hover:shadow-purple-500/10`}>
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-purple-700 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/25 group-hover:scale-110 transition-transform duration-300">
+                        <Briefcase className="w-6 h-6 text-white" />
                       </div>
                       <div>
-                        <div className="text-xs sm:text-sm text-muted-foreground">Opportunities Listed</div>
-                        <div className={`font-bold ${isDark ? 'text-white' : 'text-foreground'} text-sm sm:text-base`}>
+                        <div className="text-base text-muted-foreground font-medium">Opportunities Listed</div>
+                        <div className={`font-bold ${isDark ? 'text-white' : 'text-foreground'} text-sm bg-gradient-to-r from-purple-600 to-purple-700 bg-clip-text text-transparent`}>
                           {loading ? "..." : 
                             (dynBounties.length || mockBounties.length) + 
                             (dynGrants.length || mockGrants.length) + 
@@ -565,36 +841,49 @@ const OpportuniesPage = () => {
             </div>
 
             {/* How It Works */}
-            <div className="mb-6">
-              <h3 className={`font-semibold ${isDark ? 'text-foreground' : 'text-foreground'} mb-4 text-sm sm:text-base`}>HOW IT WORKS</h3>
+            <div className="mb-8">
+              <h3 className={`font-bold ${isDark ? 'text-white' : 'text-foreground'} mb-6 text-sm bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent`}>
+                HOW IT WORKS
+              </h3>
               {loading ? (
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {Array.from({ length: 3 }).map((_, i) => (
-                    <div key={`how-${i}`} className="flex items-center gap-3">
-                      <Skeleton className="w-8 h-8 rounded-full" />
-                      <Skeleton className="h-3 w-48" />
+                    <div key={`how-${i}`} className="flex items-center gap-4">
+                      <Skeleton className="w-12 h-12 rounded-xl" />
+                      <Skeleton className="h-4 w-48" />
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gray-700 rounded-full flex items-center justify-center">
-                      <span className="text-white text-xs sm:text-sm font-bold">1</span>
+                <div className="relative">
+                  {/* Connecting line */}
+                  <div className="absolute left-6 top-12 bottom-0 w-px bg-muted-foreground/20"></div>
+                  
+                  <div className="space-y-2">
+                    <div className="group flex items-center gap-4 p-2 rounded-xl hover:bg-muted/30 transition-all duration-300 relative shadow-sm border-2 border-gray-200">
+                      <div className="w-12 h-12 bg-muted/50 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <User className="w-6 h-6 text-muted-foreground" />
+                      </div>
+                      <span className="text-muted-foreground text-sm font-medium group-hover:text-foreground transition-colors duration-300">
+                        Create your Profile
+                      </span>
                     </div>
-                    <span className="text-muted-foreground text-xs sm:text-sm">Create your Profile</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gray-700 rounded-full flex items-center justify-center">
-                      <span className="text-white text-xs sm:text-sm font-bold">2</span>
+                    <div className="group flex items-center gap-4 p-2 rounded-xl hover:bg-muted/30 transition-all duration-300 relative shadow-sm border-2 border-gray-200">
+                      <div className="w-12 h-12 bg-muted/50 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <Zap className="w-6 h-6 text-muted-foreground" />
+                      </div>
+                      <span className="text-muted-foreground text-sm font-medium group-hover:text-foreground transition-colors duration-300">
+                        Participate in Bounties & Projects
+                      </span>
                     </div>
-                    <span className="text-muted-foreground text-xs sm:text-sm">Participate in Bounties & Projects</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gray-700 rounded-full flex items-center justify-center">
-                      <span className="text-white text-xs sm:text-sm font-bold">3</span>
+                    <div className="group flex items-center gap-4 p-2 rounded-xl hover:bg-muted/30 transition-all duration-300 relative shadow-sm border-2 border-gray-200">
+                      <div className="w-12 h-12 bg-muted/50 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <Wallet className="w-6 h-6 text-muted-foreground" />
+                      </div>
+                      <span className="text-muted-foreground text-sm font-medium group-hover:text-foreground transition-colors duration-300">
+                        Get Paid for Your Work
+                      </span>
                     </div>
-                    <span className="text-muted-foreground text-xs sm:text-sm">Get Paid for Your Work</span>
                   </div>
                 </div>
               )}
@@ -602,38 +891,46 @@ const OpportuniesPage = () => {
 
             {/* Recent Earners */}
             <div>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className={`font-semibold ${isDark ? 'text-white' : 'text-foreground'} text-sm sm:text-base`}>RECENT EARNERS</h3>
-                <Link to="/opportunities#leaderboard" className="text-green-400 text-xs sm:text-sm hover:underline">Leaderboard</Link>
+              <div className="flex items-center justify-between mb-6">
+                <h3 className={`font-bold ${isDark ? 'text-white' : 'text-foreground'} text-sm bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent`}>
+                  RECENT EARNERS
+                </h3>
+                <Link to="/opportunities#leaderboard" className="text-green-400 text-sm font-medium hover:text-green-300 transition-colors duration-300 hover:underline">
+                  Leaderboard
+                </Link>
               </div>
               {loading ? (
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {Array.from({ length: 3 }).map((_, i) => (
-                    <div key={`earner-${i}`} className="flex items-center gap-3 p-3 bg-card border border-border rounded-lg">
-                      <Skeleton className="w-8 h-8 rounded-full" />
-                      <div className="flex-1 min-w-0 space-y-2">
-                        <Skeleton className="h-3 w-32" />
+                    <div key={`earner-${i}`} className="flex items-center gap-4 p-4 bg-card/50 border border-border/50 rounded-2xl backdrop-blur-sm">
+                      <Skeleton className="w-12 h-12 rounded-xl" />
+                      <div className="flex-1 min-w-0 space-y-3">
+                        <Skeleton className="h-4 w-32" />
                         <Skeleton className="h-3 w-40" />
                       </div>
-                      <Skeleton className="h-3 w-12" />
+                      <Skeleton className="h-4 w-16" />
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {mockRecentEarners.map((earner, index) => (
-                    <div key={index} className={`flex items-center gap-3 p-3 ${isDark ? 'bg-gray-900 border-gray-700' : 'bg-card border-border'} rounded-lg`}>
-                      <Avatar className="w-6 h-6 sm:w-8 sm:h-8">
+                    <div key={index} className={`group flex items-center gap-4 p-4 ${isDark ? 'bg-gray-900/50 border-gray-700/50' : 'bg-card/50 border-border/50'} rounded-2xl backdrop-blur-sm border transition-all duration-300 hover:border-green-500/30 hover:shadow-lg hover:shadow-green-500/10 hover:scale-[1.02]`}>
+                      <Avatar className="w-12 h-12 ring-2 ring-green-500/20 group-hover:ring-green-500/40 transition-all duration-300">
                         <AvatarImage src={earner.avatar} />
-                        <AvatarFallback className="bg-green-600 text-white text-xs">
+                        <AvatarFallback className="bg-gradient-to-r from-green-600 to-green-700 text-white text-sm font-bold">
                           {earner.name.split(' ').map(n => n[0]).join('')}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
-                        <div className={`font-medium ${isDark ? 'text-white' : 'text-foreground'} text-xs sm:text-sm truncate`}>{earner.name}</div>
+                        <div className={`font-semibold ${isDark ? 'text-white' : 'text-foreground'} text-xs truncate group-hover:text-green-400 transition-colors duration-300`}>
+                          {earner.name}
+                        </div>
                         <div className="text-muted-foreground text-xs truncate">{earner.description}</div>
                       </div>
-                      <div className="text-green-400 text-xs sm:text-sm font-medium">{earner.earned}</div>
+                      <div className="text-green-400 text-xs font-bold bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent">
+                        {earner.earned}
+                      </div>
                     </div>
                   ))}
                 </div>

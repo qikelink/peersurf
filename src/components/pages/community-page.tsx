@@ -187,7 +187,7 @@ const CommunityPage = () => {
       <Navbar />
       
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 py-16 px-4 sm:px-6 lg:px-8">
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5 py-8 px-4 sm:px-6 lg:px-8">
         <div className="absolute inset-0 bg-gradient-to-r from-green-600/5 to-blue-600/5" />
         <div className="absolute -top-20 -right-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl animate-float" />
         <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl animate-float" />
@@ -224,13 +224,15 @@ const CommunityPage = () => {
       <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {communityStats.map((stat, index) => (
-            <Card key={index} className="relative overflow-hidden hover:shadow-lg transition-shadow">
-              <CardContent className="p-6 text-center">
-                <div className={`w-16 h-16 mx-auto mb-4 rounded-full ${stat.bgColor} flex items-center justify-center`}>
-                  <stat.icon className={`w-8 h-8 ${stat.color}`} />
+            <Card key={index} className="relative overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
+              <CardContent className="p-2 flex items-center gap-4">
+                <div className={`w-12 h-12 flex-2 rounded-full ${stat.bgColor} flex items-center justify-center flex-shrink-0`}>
+                  <stat.icon className={`w-6 h-6 ${stat.color}`} />
                 </div>
-                <div className="text-3xl font-bold mb-2">{stat.value}</div>
-                <div className="text-sm text-muted-foreground">{stat.label}</div>
+                <div className="flex-2">
+                  <div className="text-2xl font-bold mb-1">{stat.value}</div>
+                  <div className="text-sm text-muted-foreground">{stat.label}</div>
+                </div>
               </CardContent>
             </Card>
           ))}
@@ -238,7 +240,7 @@ const CommunityPage = () => {
       </section>
 
       {/* Social Media Platforms */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-muted/20 max-w-7xl mx-auto">
+      <section className=" px-4 sm:px-6 lg:px-8 bg-muted/20 max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Connect With Us</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -253,7 +255,7 @@ const CommunityPage = () => {
               className={`hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer group ${platform.borderColor} border-2`}
               onClick={() => window.open(platform.url, '_blank')}
             >
-              <CardContent className="p-6">
+              <CardContent className="px-4">
                 <div className="flex items-center gap-4 mb-4">
                   <div className={`w-12 h-12 rounded-lg ${platform.bgColor} flex items-center justify-center group-hover:scale-110 transition-transform`}>
                     <platform.icon className={`w-6 h-6 ${platform.color}`} />
