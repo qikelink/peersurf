@@ -12,91 +12,21 @@ import {
   Users,
   Target,
   TrendingUp,
-  Star,
   User,
   Wallet
 } from "lucide-react";
+import HeroCarousel from "../opportunities/HeroCarousel";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "../../contexts/UserContext";
 import { useTheme } from "../../contexts/ThemeContext";
-import { listOpportunities } from "../../lib/opportunities";
+import { getAllActiveBounties } from "../../lib/bounties";
+import { getAllGrants } from "../../lib/grants";
+import { getUserProfile } from "../../lib/auth";
 import Navbar from "../nav-bar";
 import { Skeleton } from "../ui/skeleton";
 
-// Mock data for opportunities
-const mockBounties = [
-  {
-    id: 1,
-    title: "Build Livepeer Analytics Dashboard",
-    team: "PeerSurf Labs",
-    verified: true,
-    type: "Bounty",
-    status: "Active",
-    comments: 12,
-    reward: "800 USDC",
-    category: "Development",
-    description: "Create a comprehensive analytics dashboard for Livepeer orchestrators"
-  },
-  {
-    id: 2,
-    title: "Design PeerSurf Mobile App UI",
-    team: "PeerSurf Design",
-    verified: true,
-    type: "Bounty",
-    status: "Active",
-    comments: 8,
-    reward: "600 USDC",
-    category: "Design",
-    description: "Design the mobile app interface for PeerSurf platform"
-  },
-  {
-    id: 3,
-    title: "Write Livepeer Ecosystem Guide",
-    team: "PeerSurf Content",
-    verified: true,
-    type: "Bounty",
-    status: "Active",
-    comments: 5,
-    reward: "400 USDC",
-    category: "Content",
-    description: "Create comprehensive documentation for Livepeer ecosystem"
-  }
-];
-
-const mockGrants = [
-  {
-    id: 101,
-    title: "Livepeer Foundation Development Grants",
-    team: "PeerSurf Foundation",
-    verified: true,
-    type: "Grant",
-    avgAmount: "$4.25k",
-    maxAmount: "Up to 10k USDC",
-    category: "Development"
-  },
-  {
-    id: 102,
-    title: "PeerSurf Community Grants",
-    team: "PeerSurf Community",
-    verified: true,
-    type: "Grant",
-    avgAmount: "$3.5k",
-    maxAmount: "Up to 8k USDC",
-    category: "Community"
-  },
-  {
-    id: 103,
-    title: "Livepeer Research Grants",
-    team: "PeerSurf Research",
-    verified: true,
-    type: "Grant",
-    avgAmount: "$5.2k",
-    maxAmount: "Up to 12k USDC",
-    category: "Research"
-  }
-];
-
+// Mock data for opportunities (keeping only RFPs)
 const mockRFPs = [
   {
     id: 201,
@@ -263,25 +193,89 @@ const OpportuniesPage = () => {
   const { isDark } = useTheme();
   const navigate = useNavigate();
 
-  // Dynamic opportunities from Supabase
+  // Dynamic bounties and grants from Supabase
   const [dynBounties, setDynBounties] = useState<any[]>([]);
   const [dynGrants, setDynGrants] = useState<any[]>([]);
-  const [dynRFPs, setDynRFPs] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   useEffect(() => {
-    const fetchAll = async () => {
+    const fetchOpportunities = async () => {
       try {
         setLoading(true);
-        const { data } = await listOpportunities();
-        const all = data || [];
-        setDynBounties(all.filter((o: any) => o.type === "Bounty"));
-        setDynGrants(all.filter((o: any) => o.type === "Grant"));
-        setDynRFPs(all.filter((o: any) => o.type === "RFP"));
+        
+        // Fetch bounties and grants in parallel
+        const [bounties, grants] = await Promise.all([
+          getAllActiveBounties(),
+          getAllGrants()
+        ]);
+        
+        // Process bounties with profile information
+        const bountiesWithProfiles = await Promise.all(
+          bounties.map(async (bounty: any) => {
+            const { data: profile } = await getUserProfile(bounty.created_by);
+            return {
+              ...bounty,
+              poster_profile: profile
+            };
+          })
+        );
+        
+        // Process grants with profile information
+        const grantsWithProfiles = await Promise.all(
+          grants.map(async (grant: any) => {
+            const { data: profile } = await getUserProfile(grant.created_by);
+            return {
+              ...grant,
+              poster_profile: profile
+            };
+          })
+        );
+        
+        // Transform bounty data to match the expected format
+        const transformedBounties = bountiesWithProfiles.map((bounty: any) => ({
+          id: bounty.id,
+          title: bounty.title,
+          team: bounty.poster_profile?.full_name || bounty.poster_profile?.username || "Anonymous",
+          verified: true,
+          type: "Bounty",
+          status: bounty.status === 'active' ? 'Active' : 'Closed',
+          comments: 0,
+          reward: `${bounty.budget_amount} ${bounty.budget_currency}`,
+          category: bounty.category,
+          description: bounty.description,
+          deadline: bounty.deadline,
+          created_at: bounty.created_at,
+          poster_avatar: bounty.poster_profile?.avatar_url
+        }));
+        
+        // Transform grant data to match the expected format
+        const transformedGrants = grantsWithProfiles.map((grant: any) => ({
+          id: grant.id,
+          title: grant.title,
+          team: grant.poster_profile?.full_name || grant.poster_profile?.username || "Anonymous",
+          verified: true,
+          type: "Grant",
+          status: grant.status === 'active' ? 'Active' : grant.status === 'submitted' ? 'Submitted' : 'Closed',
+          reward: `${grant.amount} ${grant.currency}`, // Add reward field for detail page
+          max_amount: `Up to ${grant.amount} ${grant.currency}`, // Add max_amount field for detail page
+          avgAmount: `${grant.amount} ${grant.currency}`,
+          maxAmount: `Up to ${grant.amount} ${grant.currency}`,
+          category: grant.category,
+          description: grant.overview,
+          created_at: grant.created_at,
+          poster_avatar: grant.poster_profile?.avatar_url
+        }));
+        
+        setDynBounties(transformedBounties);
+        setDynGrants(transformedGrants);
+      } catch (error) {
+        console.error('Error fetching opportunities:', error);
+        setDynBounties([]);
+        setDynGrants([]);
       } finally {
         setLoading(false);
       }
     };
-    fetchAll();
+    fetchOpportunities();
   }, []);
 
   const categories = ["All", "Content", "Design", "Development", "Events", "Other"];
@@ -307,141 +301,14 @@ const OpportuniesPage = () => {
       <div className="flex flex-col lg:flex-row max-w-7xl mx-auto">
         {/* Main Content */}
         <div className="flex-1 p-4 sm:p-6">
-          {/* Hero Section - Conditional based on role */}
-          {(!profile?.role || profile?.role === 'SPE') ? (
-            <div className="relative mb-6 sm:mb-8">
-              {/* Sponsor Carousel */}
-              <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-gray-900 to-black">
-                <div className="relative overflow-hidden rounded-xl">
-                  {/* Carousel Container */}
-                  <div className="relative h-64 sm:h-72 lg:h-64">
-                    {sponsorCards.map((card, index) => {
-                      const IconComponent = card.icon;
-                      const isActive = index === currentCard;
-                      const isPrev = index === (currentCard - 1 + sponsorCards.length) % sponsorCards.length;
-                      const isNext = index === (currentCard + 1) % sponsorCards.length;
-                      
-                      return (
-                        <div
-                          key={card.id}
-                          className={`absolute inset-0 transition-all duration-700 ease-in-out ${
-                            isActive 
-                              ? 'opacity-100 translate-x-0 scale-100' 
-                              : isPrev 
-                                ? 'opacity-0 -translate-x-full scale-95' 
-                                : isNext 
-                                  ? 'opacity-0 translate-x-full scale-95'
-                                  : 'opacity-0 translate-x-0 scale-95'
-                          }`}
-                        >
-                          <div className={`h-full bg-gradient-to-br ${card.gradient} p-6 sm:p-8 relative overflow-hidden`}>
-                            {/* Background Image for first card */}
-                            {index === 0 && (
-                              <div className="absolute inset-0 flex items-center justify-end pr-8">
-                                <img 
-                                  src="/erased_01.png" 
-                                  alt="Team collaboration" 
-                                  className="w-1/2 h-full object-contain opacity-20 hover:opacity-30 transition-opacity duration-500"
-                                />
-                              </div>
-                            )}
-                            
-                            {/* Background Image for second card */}
-                            {index === 1 && (
-                              <div className="absolute inset-0 flex items-center justify-end pr-8">
-                                <img 
-                                  src="/erased_02.png" 
-                                  alt="Project launch" 
-                                  className="w-1/2 h-full object-contain opacity-20 hover:opacity-30 transition-opacity duration-500"
-                                />
-                              </div>
-                            )}
-                            
-                            {/* Background Effects */}
-              <div className="absolute -top-8 -right-8 w-40 h-40 bg-white/10 rounded-full blur-2xl animate-float" />
-                            <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-white/5 rounded-full blur-2xl animate-float" />
-                            <div className="absolute top-1/2 right-4 w-24 h-24 bg-white/5 rounded-full blur-xl animate-pulse" />
-                            
-                            {/* Content */}
-                            <div className="relative h-full flex flex-col justify-between">
-                              <div className="flex-1">
-                                <div className="flex items-center gap-3 mb-4">
-                                  <div className={`w-12 h-12 ${card.accent} rounded-xl flex items-center justify-center`}>
-                                    <IconComponent className="w-6 h-6 text-white" />
-                                  </div>
-                                  <div>
-                                    <h2 className="text-lg sm:text-xl font-bold text-white">{card.title}</h2>
-                                    <p className="text-white/80 text-sm">{card.subtitle}</p>
-                                  </div>
-                                </div>
-                                
-                                <p className="text-white/90 mb-6 max-w-2xl text-sm leading-relaxed hidden sm:block">
-                                  {card.description}
-                                </p>
-                                
-                                <div className="flex items-center gap-4 mb-6">
-                                  <div className="flex items-center gap-2">
-                                    <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                                    <span className="text-white/80 text-sm font-medium">{card.stats}</span>
-                                  </div>
-                                  <div className="h-4 w-px bg-white/20" />
-                                  <span className="text-white/60 text-sm">Trusted by 1,780+ sponsors</span>
-                                </div>
-                              </div>
-                              
-                              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <Link to={profile?.role === 'SPE' ? '/sponsor' : '/auth?mode=signup&role=SPE'} className="w-full sm:w-auto">
-                                  <Button className="bg-white text-black hover:bg-white/90 px-8 py-3 rounded-xl font-semibold w-full sm:w-auto transition-all duration-300 hover:scale-105">
-                                    {card.cta}
-                      </Button>
-                    </Link>
-                                <div className="flex items-center gap-2 text-white/60 text-sm">
-                                  <div className="w-2 h-2 bg-white/40 rounded-full animate-pulse" />
-                                  <span>Join the future of work</span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  
-                 
-                  
-                  {/* Dots Indicator */}
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-                    {sponsorCards.map((_, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setCurrentCard(index)}
-                        className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                          index === currentCard 
-                            ? 'bg-white scale-125' 
-                            : 'bg-white/40 hover:bg-white/60'
-                        }`}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="relative overflow-hidden bg-gradient-to-r from-green-600 to-green-700 rounded-2xl p-6 sm:p-8 mb-6 sm:mb-8">
-              <div className="absolute -top-8 -right-8 w-40 h-40 bg-white/10 rounded-full blur-2xl animate-float" />
-              <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-foreground/5 rounded-full blur-2xl animate-float" />
-              <div className="relative flex items-start justify-between gap-6 transition-all duration-700 ease-out">
-                <div className="flex-1">
-                  <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">{`Welcome back, ${profile?.username || user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'there'}`}</h2>
-                  <p className="text-green-100 mb-6 max-w-2xl text-sm">We're so glad to have you on Earn</p>
-                  <div className="flex flex-wrap items-center gap-3 text-xs sm:text-sm text-white/80">
-                    <span className="px-3 py-1 rounded-full bg-white/10 border border-white/20">Opportunities curated for talent</span>
-                    <span className="px-3 py-1 rounded-full bg-white/10 border border-white/20">New listings daily</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+          {/* Hero Section */}
+          <HeroCarousel
+            user={user}
+            profile={profile}
+            sponsorCards={sponsorCards as any}
+            currentCard={currentCard}
+            setCurrentCard={setCurrentCard}
+          />
 
           {/* Browse Opportunities */}
           <div className="mb-8">
@@ -530,11 +397,10 @@ const OpportuniesPage = () => {
                 (() => {
                   let opportunities: any[] = [];
                   
-                  // Get all opportunities first
+                  // Get bounties from Supabase and RFPs from hardcoded data
                   const allOpportunities = [
-                    ...(dynBounties.length ? dynBounties : mockBounties),
-                    ...(dynGrants.length ? dynGrants : mockGrants),
-                    ...(dynRFPs.length ? dynRFPs : mockRFPs)
+                    ...dynBounties, // Always use dynamic bounties from Supabase
+                    ...mockRFPs    // Always use hardcoded RFPs
                   ];
 
                   // Filter by tab (excluding grants)
@@ -554,14 +420,25 @@ const OpportuniesPage = () => {
 
                   return opportunities.map((opportunity: any) => (
                 <Link key={opportunity.id} to={`/opportunity/${opportunity.id}`} state={{ opportunity: { ...opportunity, type: opportunity.type || "Bounty", status: opportunity.status || "Active" } }}>
-                <Card className={`group relative overflow-hidden ${isDark ? 'bg-gray-900/50 border-gray-700/50' : 'bg-card/50 border-border/50'} p-2    sm: p-4   rounded-2xl backdrop-blur-sm border transition-all duration-500 hover:border-green-500/50 hover:shadow-2xl hover:shadow-green-500/10 hover:scale-[1.02] hover:bg-card/80`}>
-                  {/* Gradient overlay on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-green-600/0 via-green-600/0 to-green-600/0 group-hover:from-green-600/5 group-hover:via-green-600/10 group-hover:to-green-600/5 transition-all duration-500" />
+                <Card className={`group relative overflow-hidden ${isDark ? 'bg-gray-900/50 border-gray-700/50' : 'bg-card/50 border-border/50'} p-2 sm:p-4 rounded-2xl backdrop-blur-sm border transition-all duration-300 hover:border-green-500/30 hover:shadow-lg hover:shadow-green-500/5`}>
+                  {/* Simple gradient overlay on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-green-600/0 to-green-600/0 group-hover:from-green-600/3 group-hover:to-green-600/3 transition-all duration-300" />
                   
                   <div className="relative flex flex-col sm:flex-row sm:items-start justify-between gap-6">
                     <div className="flex items-start gap-6 flex-1">
-                      <div className="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg transition-all duration-300 group-hover:scale-110 bg-[#EAF6F2]">
-                        {opportunity.team?.toLowerCase().includes('peersurf') || opportunity.issuedBy?.toLowerCase().includes('peersurf') ? (
+                      <div className="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg transition-all duration-300 group-hover:scale-105 bg-[#EAF6F2]">
+                        {opportunity.type === "Bounty" ? (
+                          // For bounties from Supabase, use poster's avatar
+                          opportunity.poster_avatar ? (
+                            <img src={opportunity.poster_avatar} alt={opportunity.team} className="w-14 h-14 rounded-full object-cover" />
+                          ) : (
+                            <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gradient-to-br from-green-500 to-green-700">
+                              <span className="text-white font-bold text-sm">
+                                {(opportunity.team || "A").charAt(0).toUpperCase()}
+                              </span>
+                            </div>
+                          )
+                        ) : opportunity.team?.toLowerCase().includes('peersurf') || opportunity.issuedBy?.toLowerCase().includes('peersurf') ? (
                           <img src="onyx.png" alt="PeerSurf" className="w-14 h-14 rounded-full" />
                         ) : opportunity.team?.toLowerCase().includes('livepeer') || opportunity.issuedBy?.toLowerCase().includes('livepeer') ? (
                           <img src="livepeer.webp" alt="Livepeer" className="w-14 h-14 rounded-full" />
@@ -575,7 +452,7 @@ const OpportuniesPage = () => {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-3 mb-2">
-                          <h3 className={`font-bold ${isDark ? 'text-white' : 'text-foreground'} text-base truncate group-hover:text-green-400 transition-colors duration-300`}>
+                          <h3 className={`font-bold ${isDark ? 'text-white' : 'text-foreground'} text-base truncate group-hover:text-green-500 transition-colors duration-300`}>
                             {opportunity.title}
                           </h3>
                           {opportunity.verified && <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />}
@@ -605,7 +482,7 @@ const OpportuniesPage = () => {
                       </div>
                     </div>
                     <div className="text-right sm:text-left">
-                      <div className="text-sm font-bold bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent">
+                      <div className="text-base font-bold bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent">
                         {opportunity.reward || opportunity.maxAmount || opportunity.avgAmount || ""}
                       </div>
                     </div>
@@ -655,10 +532,8 @@ const OpportuniesPage = () => {
                 ))
               ) : (
                 (() => {
-                  // Get grants only
-                  const grants = [
-                    ...(dynGrants.length ? dynGrants : mockGrants)
-                  ];
+                  // Get grants from Supabase
+                  const grants = dynGrants;
 
                   // Filter by category if not "All"
                   let filteredGrants = grants;
@@ -668,26 +543,26 @@ const OpportuniesPage = () => {
 
                   return filteredGrants.map((grant: any) => (
                     <Link key={grant.id} to={`/opportunity/${grant.id}`} state={{ opportunity: { ...grant, type: "Grant", status: "Active" } }}>
-                      <Card className={`group relative overflow-hidden ${isDark ? 'bg-gray-900/50 border-gray-700/50' : 'bg-card/50 border-border/50'} p-2 sm:p-4 rounded-2xl backdrop-blur-sm border transition-all duration-500 hover:border-purple-500/50 hover:shadow-2xl hover:shadow-purple-500/10 hover:scale-[1.02] hover:bg-card/80`}>
-                        {/* Gradient overlay on hover */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-purple-600/0 via-purple-600/0 to-purple-600/0 group-hover:from-purple-600/5 group-hover:via-purple-600/10 group-hover:to-purple-600/5 transition-all duration-500" />
+                      <Card className={`group relative overflow-hidden ${isDark ? 'bg-gray-900/50 border-gray-700/50' : 'bg-card/50 border-border/50'} p-2 sm:p-4 rounded-2xl backdrop-blur-sm border transition-all duration-300 hover:border-purple-500/30 hover:shadow-lg hover:shadow-purple-500/5`}>
+                        {/* Simple gradient overlay on hover */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-purple-600/0 to-purple-600/0 group-hover:from-purple-600/3 group-hover:to-purple-600/3 transition-all duration-300" />
                         
                         <div className="relative flex flex-col sm:flex-row sm:items-start justify-between gap-6">
                           <div className="flex items-start gap-6 flex-1">
-                            <div className="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg transition-all duration-300 group-hover:scale-110 bg-[#EAF6F2]">
-                              {grant.team?.toLowerCase().includes('peersurf') || grant.issuedBy?.toLowerCase().includes('peersurf') ? (
-                                <img src="onyx.png" alt="PeerSurf" className="w-14 h-14 rounded-full" />
-                              ) : grant.team?.toLowerCase().includes('livepeer') || grant.issuedBy?.toLowerCase().includes('livepeer') ? (
-                                <img src="livepeer.webp" alt="Livepeer" className="w-14 h-14 rounded-full" />
+                            <div className="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg transition-all duration-300 group-hover:scale-105 bg-[#EAF6F2]">
+                              {grant.poster_avatar ? (
+                                <img src={grant.poster_avatar} alt={grant.team} className="w-14 h-14 rounded-full object-cover" />
                               ) : (
                                 <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gradient-to-br from-purple-500 to-purple-700">
-                                  <span className="text-white font-bold text-sm">G</span>
+                                  <span className="text-white font-bold text-sm">
+                                    {(grant.team || "G").charAt(0).toUpperCase()}
+                                  </span>
                                 </div>
                               )}
                             </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-3 mb-2">
-                                <h3 className={`font-bold ${isDark ? 'text-white' : 'text-foreground'} text-base truncate group-hover:text-purple-400 transition-colors duration-300`}>
+                                <h3 className={`font-bold ${isDark ? 'text-white' : 'text-foreground'} text-base truncate group-hover:text-purple-500 transition-colors duration-300`}>
                                   {grant.title}
                                 </h3>
                                 {grant.verified && <CheckCircle className="w-4 h-4 text-purple-400 flex-shrink-0" />}
@@ -711,7 +586,7 @@ const OpportuniesPage = () => {
                             </div>
                           </div>
                           <div className="text-right sm:text-left">
-                            <div className="text-sm font-bold bg-gradient-to-r from-purple-600 to-purple-700 bg-clip-text text-transparent">
+                            <div className="text-base font-bold bg-gradient-to-r from-purple-600 to-purple-700 bg-clip-text text-transparent">
                               {grant.maxAmount || grant.avgAmount || ""}
                             </div>
                           </div>
@@ -828,9 +703,9 @@ const OpportuniesPage = () => {
                         <div className="text-base text-muted-foreground font-medium">Opportunities Listed</div>
                         <div className={`font-bold ${isDark ? 'text-white' : 'text-foreground'} text-sm bg-gradient-to-r from-purple-600 to-purple-700 bg-clip-text text-transparent`}>
                           {loading ? "..." : 
-                            (dynBounties.length || mockBounties.length) + 
-                            (dynGrants.length || mockGrants.length) + 
-                            (dynRFPs.length || mockRFPs.length)
+                            dynBounties.length + 
+                            dynGrants.length + 
+                            mockRFPs.length
                           }
                         </div>
                       </div>

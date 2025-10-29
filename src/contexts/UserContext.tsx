@@ -9,6 +9,7 @@ import {
   createUserProfile,
   getUserProfile,
   getUserStakes,
+  updateUserProfile,
 } from "../lib/auth";
 
 interface UserContextType {
@@ -59,7 +60,57 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Fetch profile and stakes after login
   useEffect(() => {
     if (user && user.id) {
-      refreshProfile();
+      // Console log user details for debugging
+      console.log('=== USER SIGN-IN DETAILS ===');
+      console.log('User ID:', user.id);
+      console.log('User Email:', user.email);
+      console.log('User Metadata:', user.user_metadata);
+      console.log('Avatar URL (metadata.avatar_url):', user.user_metadata?.avatar_url);
+      console.log('Picture (metadata.picture):', user.user_metadata?.picture);
+      console.log('Full Name:', user.user_metadata?.full_name);
+      console.log('Provider:', user.app_metadata?.provider);
+      console.log('================================');
+      
+      // Check if profile exists, if not create one with OAuth data
+      const createProfileIfNeeded = async () => {
+        const { data: existingProfile, error } = await getUserProfile(user.id);
+        console.log('Existing Profile:', existingProfile);
+        console.log('Profile Error:', error);
+        
+        if (error || !existingProfile) {
+          // Profile doesn't exist, create one with OAuth data
+          const profileData = {
+            id: user.id,
+            username: user.user_metadata?.full_name?.split(' ')[0] || user.email?.split('@')[0] || 'user',
+            full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
+            avatar_url: user.user_metadata?.avatar_url || user.user_metadata?.picture || '',
+            bio: null,
+            role: 'talent' as const
+          };
+          
+          console.log('Creating profile with data:', profileData);
+          const { data: createdProfile, error: createError } = await createUserProfile(profileData);
+          console.log('Profile creation result:', createdProfile);
+          console.log('Profile creation error:', createError);
+        } else {
+          // Backfill missing avatar_url from OAuth metadata
+          const oauthAvatar = user.user_metadata?.avatar_url || user.user_metadata?.picture || '';
+          console.log('OAuth Avatar URL:', oauthAvatar);
+          console.log('Existing Profile Avatar URL:', existingProfile.avatar_url);
+          
+          if (!existingProfile.avatar_url && oauthAvatar) {
+            console.log('Backfilling avatar URL...');
+            const { data: updatedProfile, error: updateError } = await updateUserProfile(user.id, { avatar_url: oauthAvatar });
+            console.log('Avatar update result:', updatedProfile);
+            console.log('Avatar update error:', updateError);
+          }
+        }
+        
+        // Refresh profile after potential creation/backfill
+        refreshProfile();
+      };
+      
+      createProfileIfNeeded();
       refreshStakes();
     } else {
       setProfile(null);

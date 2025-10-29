@@ -6,8 +6,7 @@ import { Button } from "../ui/button";
 import { Award, Calendar, CheckCircle, Clock, DollarSign, Mail, MessageCircle, Zap, FileText } from "lucide-react";
 import { getOpportunityById, listOpportunities, Opportunity } from "../../lib/opportunities";
 import { useUser } from "../../contexts/UserContext";
-import { useTheme } from "../../contexts/ThemeContext";
-import { createSubmission, listSubmissionsForOpportunity } from "../../lib/submissions";
+import { listSubmissionsForOpportunity, createBountySubmission, createGrantSubmission, checkUserBountySubmission, checkUserGrantSubmission } from "../../lib/submissions";
 import { createCommentForOpportunity, listCommentsForOpportunity, OpportunityComment } from "../../lib/comments";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
@@ -16,18 +15,20 @@ const OpportunityDetailPage = () => {
   const location = useLocation() as any;
   const navigate = useNavigate();
   const { user } = useUser();
-  const { isDark } = useTheme();
 
   const initialFromState: Partial<Opportunity> | undefined = location?.state?.opportunity;
 
   const [opportunity, setOpportunity] = useState<Partial<Opportunity> | null>(initialFromState ?? null);
   const [loading, setLoading] = useState<boolean>(!initialFromState);
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
+  const [projectName, setProjectName] = useState<string>("");
   const [proposal, setProposal] = useState<string>("");
   const [links, setLinks] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [successMsg, setSuccessMsg] = useState<string>("");
   const [submissionCount, setSubmissionCount] = useState<number>(0);
+  const [userHasSubmitted, setUserHasSubmitted] = useState<boolean>(false);
+  const [userSubmissionStatus, setUserSubmissionStatus] = useState<string>("");
   const [related, setRelated] = useState<Partial<Opportunity>[]>([]);
   const [comments, setComments] = useState<OpportunityComment[]>([]);
   const [commentText, setCommentText] = useState<string>("");
@@ -45,7 +46,7 @@ const OpportunityDetailPage = () => {
         setLoading(false);
         return;
       }
-      setLoading(true);
+      setLoading(true); 
       const { data } = await getOpportunityById(id);
       setOpportunity(data ?? null);
       setLoading(false);
@@ -61,6 +62,40 @@ const OpportunityDetailPage = () => {
     };
     loadCount();
   }, [id, isSupabaseConfigured]);
+
+  // Check if user has already submitted
+  useEffect(() => {
+    const checkUserSubmission = async () => {
+      if (!id || !user?.id || !opportunity || !isSupabaseConfigured) {
+        setUserHasSubmitted(false);
+        setUserSubmissionStatus("");
+        return;
+      }
+      
+      try {
+        let result;
+        if (opportunity.type === "Grant") {
+          result = await checkUserGrantSubmission(id, user.id);
+        } else {
+          result = await checkUserBountySubmission(id, user.id);
+        }
+        
+        if (result.data) {
+          setUserHasSubmitted(true);
+          setUserSubmissionStatus(result.data.status);
+        } else {
+          setUserHasSubmitted(false);
+          setUserSubmissionStatus("");
+        }
+      } catch (error) {
+        console.error("Error checking user submission:", error);
+        setUserHasSubmitted(false);
+        setUserSubmissionStatus("");
+      }
+    };
+    
+    checkUserSubmission();
+  }, [id, user?.id, opportunity, isSupabaseConfigured]);
 
   useEffect(() => {
     const loadRelated = async () => {
@@ -102,7 +137,6 @@ const OpportunityDetailPage = () => {
         setTimeLeft("Ended");
         return;
       }
-      const seconds = Math.floor(diff / 1000) % 60;
       const minutes = Math.floor(diff / (1000 * 60)) % 60;
       const hours = Math.floor(diff / (1000 * 60 * 60)) % 24;
       const days = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -110,7 +144,7 @@ const OpportunityDetailPage = () => {
       if (days) parts.push(`${days}d`);
       parts.push(`${hours.toString().padStart(2, '0')}h:${minutes
         .toString()
-        .padStart(2, '0')}m:${seconds.toString().padStart(2, '0')}s`);
+        .padStart(2, '0')}m`);
       setTimeLeft(parts.join(" "));
     };
     update();
@@ -150,23 +184,66 @@ const OpportunityDetailPage = () => {
       navigate("/auth?mode=login");
       return;
     }
-    if (!id) return;
+    if (!id || !opportunity) return;
+    
+    // Check if user has already submitted
+    if (userHasSubmitted) {
+      setError("You have already submitted to this opportunity.");
+      return;
+    }
+    
+    if (!projectName.trim()) {
+      setError("Please provide a project name.");
+      return;
+    }
     if (!proposal.trim()) {
       setError("Please provide a brief proposal.");
       return;
     }
     setSubmitLoading(true);
     try {
-      const { error } = await createSubmission({
-        opportunity_id: id,
-        user_id: user.id,
-        proposal: proposal.trim(),
-        links: links.trim() || null,
-      });
-      if (error) throw error;
-      setSuccessMsg("Submission received. We'll notify the sponsor.");
-      setProposal("");
-      setLinks("");
+      let result;
+      
+      // Determine submission type based on opportunity type
+      if (opportunity.type === "Grant") {
+        result = await createGrantSubmission({
+          grant_id: id,
+          user_id: user.id,
+          project_name: projectName.trim(),
+          project_url: links.trim() || null,
+          description: proposal.trim(),
+          attachments: null, // Can be enhanced later for file uploads
+        });
+      } else {
+        // For Bounty and RFP, use bounty submission
+        result = await createBountySubmission({
+          bounty_id: id,
+          user_id: user.id,
+          project_name: projectName.trim(),
+          project_url: links.trim() || null,
+          description: proposal.trim(),
+          attachments: null, // Can be enhanced later for file uploads
+        });
+      }
+      
+      if (result.error) {
+        // Handle unique constraint violation
+        if (result.error.message.includes("duplicate key") || result.error.message.includes("unique constraint")) {
+          setError("You have already submitted to this opportunity.");
+          setUserHasSubmitted(true);
+          setUserSubmissionStatus("pending");
+        } else {
+          throw result.error;
+        }
+      } else {
+        setSuccessMsg("Submission received. We'll notify the sponsor.");
+        setProjectName("");
+        setProposal("");
+        setLinks("");
+        setUserHasSubmitted(true);
+        setUserSubmissionStatus("pending");
+        setSubmissionCount(prev => prev + 1);
+      }
     } catch (e: any) {
       setError(e?.message || "Failed to submit. Please try again.");
     } finally {
@@ -283,39 +360,85 @@ const OpportunityDetailPage = () => {
           </div>
         </Card>
             <Card className="bg-card border border-border p-4 sm:p-6">
-              <h2 className="text-lg font-semibold mb-4">Submit your proposal</h2>
+              <h2 className="text-lg font-semibold mb-4">
+                {userHasSubmitted ? "Your Submission Status" : `Submit Your ${opportunity?.type === "Grant" ? "Grant Application" : "Bounty Submission"}`}
+              </h2>
               {!user && (
                 <div className="mb-4 text-sm text-muted-foreground">
                   You need to be logged in to submit. <button className="text-green-400" onClick={() => navigate("/auth?mode=login")}>Login</button>
                 </div>
               )}
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm text-foreground mb-2">Proposal</label>
-                  <textarea
-                    value={proposal}
-                    onChange={(e) => setProposal(e.target.value)}
-                    className="w-full bg-background text-foreground border border-border rounded-lg p-3 min-h-[120px] focus:ring-2 focus:ring-ring focus:border-transparent"
-                    placeholder="Describe how you plan to deliver. Include milestones and timelines."
-                  />
+              
+              {user && userHasSubmitted ? (
+                <div className="space-y-4">
+                  <div className="bg-muted p-4 rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <CheckCircle className="w-5 h-5 text-green-500" />
+                      <span className="font-medium">Submission Status: </span>
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        userSubmissionStatus === 'approved' ? 'bg-green-100 text-green-800' :
+                        userSubmissionStatus === 'rejected' ? 'bg-red-100 text-red-800' :
+                        'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {userSubmissionStatus.charAt(0).toUpperCase() + userSubmissionStatus.slice(1)}
+                      </span>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      You have already submitted to this {opportunity?.type === "Grant" ? "grant" : "bounty"}. 
+                      {userSubmissionStatus === 'pending' && " The sponsor will review your submission and notify you of the decision."}
+                      {userSubmissionStatus === 'approved' && " Congratulations! Your submission has been approved."}
+                      {userSubmissionStatus === 'rejected' && " Unfortunately, your submission was not selected this time."}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-sm text-foreground mb-2">Links (optional)</label>
-                  <input
-                    value={links}
-                    onChange={(e) => setLinks(e.target.value)}
-                    className="w-full bg-background text-foreground border border-border rounded-lg p-3 focus:ring-2 focus:ring-ring focus:border-transparent"
-                    placeholder="GitHub, portfolio, demo links (comma separated)"
-                  />
+              ) : (
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm text-foreground mb-2">Project Name *</label>
+                    <input
+                      value={projectName}
+                      onChange={(e) => setProjectName(e.target.value)}
+                      className="w-full bg-background text-foreground border border-border rounded-lg p-3 focus:ring-2 focus:ring-ring focus:border-transparent"
+                      placeholder={opportunity?.type === "Grant" ? "Enter your project name" : "Enter your project name"}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-foreground mb-2">
+                      {opportunity?.type === "Grant" ? "Project Proposal" :  "Description/ Additional Notes"}
+                    </label>
+                    <textarea
+                      value={proposal}
+                      onChange={(e) => setProposal(e.target.value)}
+                      className="w-full bg-background text-foreground border border-border rounded-lg p-3 min-h-[120px] focus:ring-2 focus:ring-ring focus:border-transparent"
+                      placeholder={
+                        opportunity?.type === "Grant" 
+                          ? "Describe your project goals, timeline, and expected outcomes. Include team information and milestones."
+                          : "Description/ Additional Notes (Optional)"
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-foreground mb-2">Links (optional)</label>
+                    <input
+                      value={links}
+                      onChange={(e) => setLinks(e.target.value)}
+                      className="w-full bg-background text-foreground border border-border rounded-lg p-3 focus:ring-2 focus:ring-ring focus:border-transparent"
+                      placeholder={
+                        opportunity?.type === "Grant" 
+                          ? "GitHub, portfolio, demo links, team profiles (comma separated)"
+                          : "GitHub, portfolio, demo links (comma separated)"
+                      }
+                    />
+                  </div>
+                  {error && <div className="text-destructive text-sm">{error}</div>}
+                  {successMsg && <div className="text-green-400 text-sm">{successMsg}</div>}
+                  <div className="flex justify-end">
+                    <Button onClick={handleSubmit} className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white" disabled={submitLoading}>
+                      {submitLoading ? "Submitting..." : `Submit ${opportunity?.type === "Grant" ? "Application" : "Submission"}`}
+                    </Button>
+                  </div>
                 </div>
-                {error && <div className="text-destructive text-sm">{error}</div>}
-                {successMsg && <div className="text-green-400 text-sm">{successMsg}</div>}
-                <div className="flex justify-end">
-                  <Button onClick={handleSubmit} className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600" disabled={submitLoading}>
-                    {submitLoading ? "Submitting..." : "Submit"}
-                  </Button>
-                </div>
-              </div>
+              )}
             </Card>
 
             {/* Comments Section */}
@@ -324,7 +447,7 @@ const OpportunityDetailPage = () => {
               {user ? (
                 <div className="flex items-start gap-3 mb-4">
                   <Avatar className="w-8 h-8">
-                    <AvatarImage src={(user as any)?.user_metadata?.avatar_url || ""} />
+                    <AvatarImage src={(user as any)?.user_metadata?.avatar_url || (user as any)?.user_metadata?.picture || ""} />
                     <AvatarFallback className="bg-green-700 text-white">
                       {(user?.email || "U").slice(0,2).toUpperCase()}
                     </AvatarFallback>
@@ -458,7 +581,7 @@ const OpportunityDetailPage = () => {
               <h3 className="font-semibold mb-2">Contact organizers</h3>
               <div className="text-sm text-muted-foreground mb-4">Have questions or need clarification? Reach out to the organizers.</div>
               <Button
-                className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 flex items-center gap-2 justify-center"
+                className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 flex items-center gap-2 justify-center text-white"
                 onClick={() => {
                   const email = (opportunity as any)?.contact_email || "support@peersurf.xyz";
                   const subject = encodeURIComponent(`Opportunity Inquiry: ${opportunity.title}`);

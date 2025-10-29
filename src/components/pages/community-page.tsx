@@ -130,25 +130,25 @@ const CommunityPage = () => {
   const communityStats = [
     {
       label: "Total Community Members",
-      value: "65,000+",
+      value: "650+",
       icon: Users,
       color: "text-green-400"
     },
     {
       label: "Active Developers",
-      value: "2,500+",
+      value: "25+",
       icon: Github,
       color: "text-blue-400"
     },
     {
       label: "Projects Built",
-      value: "150+",
+      value: "15+",
       icon: Zap,
       color: "text-purple-400"
     },
     {
       label: "Community Events",
-      value: "200+",
+      value: "2+",
       icon: Calendar,
       color: "text-orange-400"
     }
@@ -206,7 +206,7 @@ const CommunityPage = () => {
           <div className="flex flex-wrap items-center justify-center gap-4">
             <Badge variant="secondary" className="px-4 py-2 text-sm">
               <Users className="w-4 h-4 mr-2" />
-              65,000+ Members
+              650+ Members
             </Badge>
             <Badge variant="secondary" className="px-4 py-2 text-sm">
               <Globe className="w-4 h-4 mr-2" />

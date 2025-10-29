@@ -2,7 +2,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useUser } from "../contexts/UserContext";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
-import { Menu, Moon, Sun, X } from "lucide-react";
+import { Menu, Moon, Sun, X, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { useTheme } from "../contexts/ThemeContext";
 
@@ -97,13 +97,21 @@ const Navbar = () => {
                 <button
                   className="flex items-center gap-2 focus:outline-none"
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  aria-haspopup="menu"
+                  aria-expanded={userMenuOpen}
                 >
-                  <Avatar className="w-9 h-9">
-                    <AvatarImage src={profile?.avatar_url || ""} />
+                  <Avatar className="w-9 h-9" title={(profile?.full_name || user?.user_metadata?.full_name || user?.email) ?? ''}>
+                    <AvatarImage
+                      key={profile?.avatar_url || user?.user_metadata?.avatar_url || user?.user_metadata?.picture || "empty"}
+                      src={profile?.avatar_url || user?.user_metadata?.avatar_url || user?.user_metadata?.picture || ""}
+                      alt="User avatar"
+                      referrerPolicy="no-referrer"
+                    />
                     <AvatarFallback className="bg-green-700 text-white">
-                      {(profile?.username || user?.email || "U").slice(0, 2).toUpperCase()}
+                      {(profile?.username || user?.user_metadata?.full_name || user?.email || "U").slice(0, 2).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
+                  <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
                 </button>
                 
                 {userMenuOpen && (
