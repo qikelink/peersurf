@@ -156,16 +156,9 @@ const CommunityPage = () => {
 
   // Recent community highlights
   const communityHighlights = [
+   
     {
       id: 1,
-      title: "Livepeer Foundation Announces $2M Grant Program",
-      description: "New funding opportunities for developers building on Livepeer",
-      platform: "Twitter",
-      engagement: "1.2K likes, 340 retweets",
-      date: "2 days ago"
-    },
-    {
-      id: 2,
       title: "Community Spotlight: Video NFT Platform Launch",
       description: "Featured project built by community member using Livepeer infrastructure",
       platform: "Discord",
@@ -173,7 +166,7 @@ const CommunityPage = () => {
       date: "5 days ago"
     },
     {
-      id: 3,
+      id: 2,
       title: "New Developer Documentation Released",
       description: "Comprehensive guides for AI video processing and transcoding",
       platform: "GitHub",
