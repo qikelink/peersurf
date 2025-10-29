@@ -142,3 +142,58 @@ export const createUserProfile = async (profile: Partial<Profile>) => {
 
   return { data, error };
 };
+
+// Upload profile image to Supabase Storage
+export const uploadProfileImage = async (
+  userId: string,
+  file: File
+): Promise<{ data: { publicUrl: string } | null; error: Error | null }> => {
+  try {
+    checkSupabaseConfig();
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      return { data: null, error: new Error('File must be an image') };
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      return { data: null, error: new Error('Image size must be less than 5MB') };
+    }
+
+    // Create a unique filename
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${userId}-${Date.now()}.${fileExt}`;
+    const filePath = `avatars/${fileName}`;
+
+    // Upload file to Supabase Storage
+    const { data: uploadData, error: uploadError } = await supabase.storage
+      .from('avatars')
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false
+      });
+
+    if (uploadError) {
+      console.error('Upload error:', uploadError);
+      return { data: null, error: new Error(uploadError.message) };
+    }
+
+    // Get public URL
+    const { data: urlData } = supabase.storage
+      .from('avatars')
+      .getPublicUrl(filePath);
+
+    if (!urlData?.publicUrl) {
+      return { data: null, error: new Error('Failed to get public URL') };
+    }
+
+    return { data: { publicUrl: urlData.publicUrl }, error: null };
+  } catch (error) {
+    console.error('Error uploading profile image:', error);
+    return { 
+      data: null, 
+      error: error instanceof Error ? error : new Error('Failed to upload image') 
+    };
+  }
+};

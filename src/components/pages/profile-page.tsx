@@ -1,7 +1,7 @@
 import { useUser } from "../../contexts/UserContext";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
-import { updateUserProfile, createUserProfile } from "../../lib/auth";
+import { updateUserProfile, createUserProfile, uploadProfileImage } from "../../lib/auth";
 import { supabase } from "../../lib/supabase";
 import Navbar from "../nav-bar";
 import Sidebar from "../profile/Sidebar";
@@ -79,6 +79,8 @@ const ProfilePage = () => {
   });
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   // Update editedProfile when profile changes
   useEffect(() => {
@@ -261,27 +263,56 @@ const ProfilePage = () => {
   const handleSave = async () => {
     if (!user?.id) return;
     
+    setIsUploading(true);
+    setError(null);
+    
     try {
+      let avatarUrl = editedProfile.avatar_url || profile?.avatar_url;
+      
+      // Upload image if a new one is selected
+      if (selectedImageFile) {
+        const { data: uploadData, error: uploadError } = await uploadProfileImage(user.id, selectedImageFile);
+        
+        if (uploadError) {
+          console.error('Error uploading image:', uploadError);
+          setError(`Failed to upload image: ${uploadError.message}`);
+          setIsUploading(false);
+          return;
+        }
+        
+        if (uploadData?.publicUrl) {
+          avatarUrl = uploadData.publicUrl;
+        }
+      }
+      
+      // Update profile with all fields including avatar_url
       const { data, error } = await updateUserProfile(user.id, {
         full_name: editedProfile.full_name,
         username: editedProfile.username,
         bio: editedProfile.bio,
         role: editedProfile.role || 'talent',
+        avatar_url: avatarUrl,
       });
       
       if (error) {
         console.error('Error updating profile:', error);
         setError('Failed to save profile. Please try again.');
+        setIsUploading(false);
         return;
       }
       
       console.log('Profile updated successfully:', data);
       await refreshProfile();
       setIsEditing(false);
+      setSelectedImageFile(null); // Clear selected image
       setError(null); // Clear any previous errors
+      setSuccessMessage('Profile updated successfully!');
+      setTimeout(() => setSuccessMessage(null), 5000);
     } catch (error) {
       console.error('Error saving profile:', error);
       setError('Failed to save profile. Please try again.');
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -418,8 +449,16 @@ const ProfilePage = () => {
                   editedProfile={editedProfile}
                   setEditedProfile={setEditedProfile}
                   isEditing={isEditing}
-                  setIsEditing={setIsEditing}
+                  setIsEditing={(editing) => {
+                    setIsEditing(editing);
+                    if (!editing) {
+                      // Clear selected image when canceling edit
+                      setSelectedImageFile(null);
+                    }
+                  }}
                   handleSave={handleSave}
+                  onImageSelect={(file) => setSelectedImageFile(file)}
+                  isUploading={isUploading}
                 />
               )}
 

@@ -1,7 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-import { UserCog, Edit3, X, Save } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
+import { UserCog, Edit3, X, Save, Upload, Image as ImageIcon } from "lucide-react";
+import { useState, useRef } from "react";
 
 const ProfileEditor = ({ 
   profile, 
@@ -9,7 +11,9 @@ const ProfileEditor = ({
   setEditedProfile, 
   isEditing, 
   setIsEditing, 
-  handleSave 
+  handleSave,
+  onImageSelect,
+  isUploading 
 }: {
   profile: any;
   editedProfile: any;
@@ -17,7 +21,21 @@ const ProfileEditor = ({
   isEditing: boolean;
   setIsEditing: (editing: boolean) => void;
   handleSave: () => Promise<void>;
+  onImageSelect?: (file: File) => void;
+  isUploading?: boolean;
 }) => {
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // Clear preview when exiting edit mode
+  const handleCancel = () => {
+    setIsEditing(false);
+    setImagePreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+  
   // Don't render if profile is not loaded yet
   if (!profile) {
     return (
@@ -56,6 +74,93 @@ const ProfileEditor = ({
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
+          {/* Profile Image Section */}
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">
+              Profile Image
+            </label>
+            <div className="flex items-center gap-4">
+              <Avatar className="w-20 h-20 border-2 border-border">
+                <AvatarImage 
+                  src={imagePreview || editedProfile?.avatar_url || profile?.avatar_url || ""} 
+                  alt="Profile"
+                  referrerPolicy="no-referrer"
+                />
+                <AvatarFallback className="bg-green-600 text-white text-lg">
+                  {(profile?.username || profile?.full_name || "U").slice(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              {isEditing && (
+                <div className="flex flex-col gap-2">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        // Validate file type
+                        if (!file.type.startsWith('image/')) {
+                          alert('Please select an image file');
+                          return;
+                        }
+                        // Validate file size (5MB max)
+                        if (file.size > 5 * 1024 * 1024) {
+                          alert('Image size must be less than 5MB');
+                          return;
+                        }
+                        // Create preview
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          setImagePreview(reader.result as string);
+                        };
+                        reader.readAsDataURL(file);
+                        // Notify parent component
+                        if (onImageSelect) {
+                          onImageSelect(file);
+                        }
+                      }
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex items-center gap-2"
+                  >
+                    <Upload className="w-4 h-4" />
+                    {imagePreview ? "Change Image" : "Upload Image"}
+                  </Button>
+                  {imagePreview && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setImagePreview(null);
+                        if (fileInputRef.current) {
+                          fileInputRef.current.value = '';
+                        }
+                      }}
+                      className="flex items-center gap-2 text-red-400 hover:text-red-300"
+                    >
+                      <X className="w-4 h-4" />
+                      Remove
+                    </Button>
+                  )}
+                </div>
+              )}
+              {!isEditing && !profile?.avatar_url && (
+                <div className="flex items-center gap-2 text-muted-foreground text-sm">
+                  <ImageIcon className="w-4 h-4" />
+                  <span>No profile image</span>
+                </div>
+              )}
+            </div>
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-foreground mb-2">
               Full Name
@@ -167,14 +272,19 @@ const ProfileEditor = ({
 
           {isEditing && (
             <div className="flex gap-3 pt-4">
-              <Button onClick={handleSave} className="bg-green-600 hover:bg-green-700">
+              <Button 
+                onClick={handleSave} 
+                className="bg-green-600 hover:bg-green-700"
+                disabled={isUploading}
+              >
                 <Save className="w-4 h-4 mr-2" />
-                Save Changes
+                {isUploading ? "Saving..." : "Save Changes"}
               </Button>
               <Button
-                onClick={() => setIsEditing(false)}
+                onClick={handleCancel}
                 variant="outline"
                 className="border-border text-foreground hover:bg-muted"
+                disabled={isUploading}
               >
                 Cancel
               </Button>
