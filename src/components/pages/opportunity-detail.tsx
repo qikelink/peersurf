@@ -56,12 +56,12 @@ const OpportunityDetailPage = () => {
 
   useEffect(() => {
     const loadCount = async () => {
-      if (!id || !isSupabaseConfigured) return;
-      const { data } = await listSubmissionsForOpportunity(id);
+      if (!id || !isSupabaseConfigured || !opportunity) return;
+      const { data } = await listSubmissionsForOpportunity(id, opportunity.type);
       setSubmissionCount(data?.length ?? 0);
     };
     loadCount();
-  }, [id, isSupabaseConfigured]);
+  }, [id, isSupabaseConfigured, opportunity]);
 
   // Check if user has already submitted
   useEffect(() => {
@@ -242,7 +242,10 @@ const OpportunityDetailPage = () => {
         setLinks("");
         setUserHasSubmitted(true);
         setUserSubmissionStatus("pending");
-        setSubmissionCount(prev => prev + 1);
+        
+        // Reload submission count to ensure accuracy
+        const { data } = await listSubmissionsForOpportunity(id, opportunity.type);
+        setSubmissionCount(data?.length ?? 0);
       }
     } catch (e: any) {
       setError(e?.message || "Failed to submit. Please try again.");

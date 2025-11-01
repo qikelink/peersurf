@@ -134,13 +134,64 @@ export const createSubmission = async (input: CreateSubmissionInput) => {
   return { data, error };
 };
 
-export const listSubmissionsForOpportunity = async (opportunityId: string) => {
-  const { data, error } = await supabase
-    .from("submissions")
-    .select("*")
-    .eq("opportunity_id", opportunityId)
-    .order("created_at", { ascending: false });
-  return { data, error };
+export const listSubmissionsForOpportunity = async (opportunityId: string, opportunityType?: string) => {
+  // Try new tables first based on opportunity type
+  if (opportunityType === "Grant") {
+    const { data, error } = await supabase
+      .from("grant_submissions")
+      .select("*")
+      .eq("grant_id", opportunityId)
+      .order("created_at", { ascending: false });
+    
+    if (!error && data) {
+      return { data, error };
+    }
+    
+    // If new table doesn't exist or has error, fall back to legacy
+    if (error && (error.message.includes('relation "grant_submissions" does not exist') || error.message.includes('permission denied'))) {
+      // Fall back to legacy submissions table
+      const { data: legacyData, error: legacyError } = await supabase
+        .from("submissions")
+        .select("*")
+        .eq("opportunity_id", opportunityId)
+        .order("created_at", { ascending: false });
+      return { data: legacyData, error: legacyError };
+    }
+    
+    return { data, error };
+  } else if (opportunityType === "Bounty" || opportunityType === "RFP") {
+    // For Bounty and RFP, check bounty_submissions
+    const { data, error } = await supabase
+      .from("bounty_submissions")
+      .select("*")
+      .eq("bounty_id", opportunityId)
+      .order("created_at", { ascending: false });
+    
+    if (!error && data) {
+      return { data, error };
+    }
+    
+    // If new table doesn't exist or has error, fall back to legacy
+    if (error && (error.message.includes('relation "bounty_submissions" does not exist') || error.message.includes('permission denied'))) {
+      // Fall back to legacy submissions table
+      const { data: legacyData, error: legacyError } = await supabase
+        .from("submissions")
+        .select("*")
+        .eq("opportunity_id", opportunityId)
+        .order("created_at", { ascending: false });
+      return { data: legacyData, error: legacyError };
+    }
+    
+    return { data, error };
+  } else {
+    // Legacy: query the old submissions table
+    const { data, error } = await supabase
+      .from("submissions")
+      .select("*")
+      .eq("opportunity_id", opportunityId)
+      .order("created_at", { ascending: false });
+    return { data, error };
+  }
 };
 
 

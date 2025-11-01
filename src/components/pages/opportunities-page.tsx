@@ -3,7 +3,7 @@ import { Button } from "../ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { 
   Filter, 
-  MessageCircle, 
+  MessageCircle,
   CheckCircle,
   Briefcase,
   Zap,
@@ -23,8 +23,10 @@ import { useTheme } from "../../contexts/ThemeContext";
 import { getAllActiveBounties } from "../../lib/bounties";
 import { getAllGrants } from "../../lib/grants";
 import { getUserProfile } from "../../lib/auth";
+import { listSubmissionsForOpportunity } from "../../lib/submissions";
 import Navbar from "../nav-bar";
 import { Skeleton } from "../ui/skeleton";
+import { FileText } from "lucide-react";
 
 // Mock data for opportunities (keeping only RFPs)
 const mockRFPs = [
@@ -231,39 +233,66 @@ const OpportuniesPage = () => {
         );
         
         // Transform bounty data to match the expected format
-        const transformedBounties = bountiesWithProfiles.map((bounty: any) => ({
-          id: bounty.id,
-          title: bounty.title,
-          team: bounty.poster_profile?.full_name || bounty.poster_profile?.username || "Anonymous",
-          verified: true,
-          type: "Bounty",
-          status: bounty.status === 'active' ? 'Active' : 'Closed',
-          comments: 0,
-          reward: `${bounty.budget_amount} ${bounty.budget_currency}`,
-          category: bounty.category,
-          description: bounty.description,
-          deadline: bounty.deadline,
-          created_at: bounty.created_at,
-          poster_avatar: bounty.poster_profile?.avatar_url
-        }));
+        const transformedBounties = await Promise.all(
+          bountiesWithProfiles.map(async (bounty: any) => {
+            // Fetch submission count for this bounty
+            let submissionCount = 0;
+            try {
+              const { data } = await listSubmissionsForOpportunity(bounty.id, "Bounty");
+              submissionCount = data?.length ?? 0;
+            } catch (error) {
+              console.error(`Error fetching submissions for bounty ${bounty.id}:`, error);
+            }
+            
+            return {
+              id: bounty.id,
+              title: bounty.title,
+              team: bounty.poster_profile?.full_name || bounty.poster_profile?.username || "Anonymous",
+              verified: true,
+              type: "Bounty",
+              status: bounty.status === 'active' ? 'Active' : 'Closed',
+              submissionCount,
+              reward: `${bounty.budget_amount} ${bounty.budget_currency}`,
+              category: bounty.category,
+              description: bounty.description,
+              deadline: bounty.deadline,
+              created_at: bounty.created_at,
+              poster_avatar: bounty.poster_profile?.avatar_url
+            };
+          })
+        );
         
         // Transform grant data to match the expected format
-        const transformedGrants = grantsWithProfiles.map((grant: any) => ({
-          id: grant.id,
-          title: grant.title,
-          team: grant.poster_profile?.full_name || grant.poster_profile?.username || "Anonymous",
-          verified: true,
-          type: "Grant",
-          status: grant.status === 'active' ? 'Active' : grant.status === 'submitted' ? 'Submitted' : 'Closed',
-          reward: `${grant.amount} ${grant.currency}`, // Add reward field for detail page
-          max_amount: `Up to ${grant.amount} ${grant.currency}`, // Add max_amount field for detail page
-          avgAmount: `${grant.amount} ${grant.currency}`,
-          maxAmount: `Up to ${grant.amount} ${grant.currency}`,
-          category: grant.category,
-          description: grant.overview,
-          created_at: grant.created_at,
-          poster_avatar: grant.poster_profile?.avatar_url
-        }));
+        const transformedGrants = await Promise.all(
+          grantsWithProfiles.map(async (grant: any) => {
+            // Fetch submission count for this grant
+            let submissionCount = 0;
+            try {
+              const { data } = await listSubmissionsForOpportunity(grant.id, "Grant");
+              submissionCount = data?.length ?? 0;
+            } catch (error) {
+              console.error(`Error fetching submissions for grant ${grant.id}:`, error);
+            }
+            
+            return {
+              id: grant.id,
+              title: grant.title,
+              team: grant.poster_profile?.full_name || grant.poster_profile?.username || "Anonymous",
+              verified: true,
+              type: "Grant",
+              status: grant.status === 'active' ? 'Active' : grant.status === 'submitted' ? 'Submitted' : 'Closed',
+              submissionCount,
+              reward: `${grant.amount} ${grant.currency}`, // Add reward field for detail page
+              max_amount: `Up to ${grant.amount} ${grant.currency}`, // Add max_amount field for detail page
+              avgAmount: `${grant.amount} ${grant.currency}`,
+              maxAmount: `Up to ${grant.amount} ${grant.currency}`,
+              category: grant.category,
+              description: grant.overview,
+              created_at: grant.created_at,
+              poster_avatar: grant.poster_profile?.avatar_url
+            };
+          })
+        );
         
         setDynBounties(transformedBounties);
         setDynGrants(transformedGrants);
@@ -469,10 +498,17 @@ const OpportuniesPage = () => {
                           <span className="text-muted-foreground font-semibold px-3 py-1.5 rounded-full">
                             {opportunity.status || "Active"}
                           </span> |
-                          <span className="flex items-center gap-2 text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-full">
-                            <MessageCircle className="w-4 h-4" />
-                            {opportunity.comments ?? 0}
-                          </span> 
+                          {opportunity.type === "RFP" ? (
+                            <span className="flex items-center gap-2 text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-full">
+                              <MessageCircle className="w-4 h-4" />
+                              {opportunity.comments ?? 0}
+                            </span>
+                          ) : (
+                            <span className="flex items-center gap-2 text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-full">
+                              <MessageCircle className="w-4 h-4" />
+                               {opportunity.submissionCount}
+                            </span>
+                          )} 
                           {opportunity.deadline && (
                             <span className="text-muted-foreground font-semibold px-3 py-1.5 rounded-full">
                               Due: {opportunity.deadline}
