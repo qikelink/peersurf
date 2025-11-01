@@ -4,6 +4,7 @@ import { Card } from './ui/card';
 import { Input } from './ui/input';
 import { Send, X, MessageCircle, Minimize2, Maximize2 } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+import { GoogleGenAI } from '@google/genai';
 
 interface Message {
   id: string;
@@ -28,6 +29,18 @@ const Chatbot: React.FC = () => {
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  
+  // Initialize Google Gemini AI (memoized to avoid re-initializing)
+  const apiKey = "AIzaSyBKKgDl1L3m3gZNAB9pDfPjdI3Wxc3rzJA";
+  const aiRef = useRef<GoogleGenAI | null>(null);
+  
+  useEffect(() => {
+    if (apiKey && !aiRef.current) {
+      aiRef.current = new GoogleGenAI({ apiKey });
+    }
+  }, [apiKey]);
+  
+  const ai = aiRef.current;
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -53,21 +66,105 @@ const Chatbot: React.FC = () => {
       timestamp: new Date()
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    const userInput = inputValue;
     setInputValue('');
     setIsTyping(true);
 
-    // Simulate bot response
-    setTimeout(() => {
+    // Add user message and make AI call
+    setMessages(prev => {
+      const updatedMessages = [...prev, userMessage];
+      
+      // Make AI call with the updated messages
+      (async () => {
+        try {
+          let botResponseText: string;
+
+          if (ai && apiKey) {
+            // Use Gemini AI for dynamic responses
+            botResponseText = await getAIBotResponse(userInput, updatedMessages);
+          } else {
+            // Fallback to hardcoded responses if API key is not configured
+            botResponseText = getBotResponse(userInput);
+          }
+
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: getBotResponse(inputValue),
+            text: botResponseText,
+            isUser: false,
+            timestamp: new Date()
+          };
+          setMessages(msgs => [...msgs, botResponse]);
+          setIsTyping(false);
+        } catch (error) {
+          console.error('Error generating AI response:', error);
+          const errorResponse: Message = {
+            id: (Date.now() + 1).toString(),
+            text: 'I apologize, but I\'m having trouble processing your request right now. Please try again or check if the API key is configured correctly.',
         isUser: false,
         timestamp: new Date()
       };
-      setMessages(prev => [...prev, botResponse]);
+          setMessages(msgs => [...msgs, errorResponse]);
       setIsTyping(false);
-    }, 1000);
+        }
+      })();
+      
+      return updatedMessages;
+    });
+
+    return; // Early return since AI call is async
+
+  };
+
+  const getAIBotResponse = async (userInput: string, conversationHistory: Message[]): Promise<string> => {
+    if (!ai) {
+      throw new Error('AI instance not initialized');
+    }
+
+    // Build conversation context for the AI
+    const systemPrompt = `You are the Smart PeerSurf Assistant, a helpful AI assistant for the PeerSurf platform. Your role is to help users discover funding opportunities and provide Livepeer documentation assistance.
+
+**About PeerSurf:**
+- PeerSurf is a platform that connects creators and developers with funding opportunities
+- The platform features Creator Grants (up to $10,000), Developer Bounties ($500-$5,000), Community Projects ($1,000-$25,000), and Research Fellowships ($15,000+)
+- PeerSurf integrates with Livepeer, a decentralized video streaming network
+- Users can delegate to Livepeer orchestrators and earn rewards (up to 65% APY)
+
+**Your capabilities:**
+1. Help users discover and understand funding opportunities (grants, bounties, fellowships)
+2. Provide guidance on Livepeer technology, orchestrators, delegation, and API documentation
+3. Explain application processes and requirements
+4. Assist with account management and platform navigation
+5. Answer general questions about the platform
+
+**Important guidelines:**
+- Be concise and helpful
+- Use emojis sparingly and appropriately
+- Format responses with clear structure (bullets, headers)
+- If asked about something outside your scope, politely redirect to relevant features
+- Maintain a friendly and professional tone
+- Always focus on helping users navigate PeerSurf and understand Livepeer
+
+Please respond naturally and helpfully to the user's query.`;
+
+    // Build conversation history (last 10 messages for context)
+    const recentMessages = conversationHistory.slice(-10);
+    const conversationContext = recentMessages
+      .map(msg => `${msg.isUser ? 'User' : 'Assistant'}: ${msg.text}`)
+      .join('\n');
+
+    const fullPrompt = `${systemPrompt}\n\n**Conversation History:**\n${conversationContext}\n\n**Current User Query:**\n${userInput}\n\n**Assistant Response:**`;
+
+    try {
+      const response = await ai.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: fullPrompt,
+      });
+
+      return response.text || 'I apologize, but I couldn\'t generate a response. Please try again.';
+    } catch (error) {
+      console.error('AI API error:', error);
+      throw error;
+    }
   };
 
   const getBotResponse = (userInput: string): string => {
@@ -134,11 +231,11 @@ const Chatbot: React.FC = () => {
 
       {/* Chatbot Window */}
       {isOpen && (
-        <Card className={`fixed bottom-20 right-2 sm:right-4 z-40 w-[calc(100vw-1rem)] sm:w-80 md:w-96 max-h-[calc(100vh-8rem)] flex flex-col shadow-2xl border ${isDark ? 'border-gray-800' : 'border-gray-300'} rounded-2xl transition-all duration-300 chatbot-window ${
+        <Card className={`fixed bottom-20 right-2 sm:right-4 z-40 w-[calc(100vw-1rem)]  sm:w-80 md:w-96 max-h-[calc(100vh-8rem)] flex flex-col shadow-2xl border ${isDark ? 'border-gray-800' : 'border-gray-300'} rounded-2xl transition-all duration-300 chatbot-window overflow-hidden p-0 gap-0 ${
           isMinimized ? 'h-12' : 'h-80 sm:h-96'
         }`}>
           {/* Header */}
-          <div className={`flex items-center justify-between p-3 border-b ${isDark ? 'border-gray-800' : 'border-gray-300'} bg-gradient-to-r from-green-600 to-green-800 text-white rounded-t-2xl`}>
+          <div className={`flex items-center justify-between p-3 border-b ${isDark ? 'border-gray-800' : 'border-gray-300'} bg-gradient-to-r from-green-600 to-green-800 text-white rounded-t-2xl flex-shrink-0`}>
             <div className="flex items-center gap-2">
               <MessageCircle className="w-5 h-5" />
               <span className="font-semibold">Smart Assistant</span>
@@ -159,7 +256,7 @@ const Chatbot: React.FC = () => {
           {!isMinimized && (
             <>
               {/* Messages Container */}
-              <div className={`flex-1 overflow-y-auto p-3 space-y-3 ${isDark ? 'bg-gray-900/50' : 'bg-gray-50'} backdrop-blur-sm chatbot-messages`}>
+              <div className={`flex-1 overflow-y-auto p-3 space-y-3 min-h-0 ${isDark ? 'bg-gray-900/50' : 'bg-gray-50'} backdrop-blur-sm chatbot-messages`}>
                 {messages.map((message) => (
                   <div
                     key={message.id}
@@ -199,7 +296,7 @@ const Chatbot: React.FC = () => {
               </div>
 
               {/* Input Area */}
-              <div className={`p-2 sm:p-3 border-t ${isDark ? 'border-gray-800' : 'border-gray-300'} ${isDark ? 'bg-gray-900/50' : 'bg-gray-100/50'} backdrop-blur-sm rounded-b-2xl`}>
+              <div className={`p-2 sm:p-3 border-t ${isDark ? 'border-gray-800' : 'border-gray-300'} ${isDark ? 'bg-gray-900/50' : 'bg-gray-100/50'} backdrop-blur-sm rounded-b-2xl flex-shrink-0`}>
                 <div className="flex gap-1 sm:gap-2">
                   <Input
                     ref={inputRef}

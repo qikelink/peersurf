@@ -50,7 +50,7 @@ export default {
       fontFamily: {
         sans: ["var(--font-sans)"],
         playfair: ["var(--font-playfair)"],
-        inter: ["var(--font-inter)"],
+        mulish: ["var(--font-mulish)"],
         gamja: ["var(--font-gamja)"],
       },
     },

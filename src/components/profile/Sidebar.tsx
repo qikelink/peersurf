@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import { 
   LogOut, Bell, 
   LayoutDashboard, Target, 
-  Users, BarChart3, Shield, Crown, UserCog, Briefcase
+  Users, BarChart3, Shield, Crown, UserCog, Briefcase, TrendingUp
 } from "lucide-react";
 
 const Sidebar = ({ 
@@ -77,6 +77,27 @@ const Sidebar = ({
             {item.label}
           </button>
         ))}
+
+        {profile?.role === "talent" && (
+          <>
+            <div className="pt-4 pb-2">
+              <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3">
+                Talent Tools
+              </div>
+            </div>
+            <button
+              onClick={() => setActiveSection("talent-progress")}
+              className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
+                activeSection === "talent-progress"
+                  ? "bg-green-600 text-white"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
+              }`}
+            >
+              <TrendingUp className="w-4 h-4" />
+              Talent Progress
+            </button>
+          </>
+        )}
 
         {(profile?.role === "SPE" || profile?.role === "admin") && (
           <>

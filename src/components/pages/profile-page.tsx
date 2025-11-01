@@ -59,6 +59,17 @@ interface DashboardData {
     requested_role: string;
     created_at: string;
   }>;
+  talentProgress: Array<{
+    id: string;
+    type: 'bounty' | 'grant';
+    opportunity_id: string;
+    opportunity_title: string;
+    project_name: string;
+    status: 'pending' | 'approved' | 'rejected';
+    amount: number | null;
+    currency: string | null;
+    created_at: string;
+  }>;
 }
 
 // Main Profile Page Component
@@ -76,6 +87,7 @@ const ProfilePage = () => {
     userBounties: [],
     userGrants: [],
     pendingRoleRequests: [],
+    talentProgress: [],
   });
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -202,6 +214,90 @@ const ProfilePage = () => {
         .eq('status', 'pending')
         .order('created_at', { ascending: false });
 
+      // Fetch talent progress (submissions) for Talent role
+      const talentProgressData: Array<{
+        id: string;
+        type: 'bounty' | 'grant';
+        opportunity_id: string;
+        opportunity_title: string;
+        project_name: string;
+        status: 'pending' | 'approved' | 'rejected';
+        amount: number | null;
+        currency: string | null;
+        created_at: string;
+      }> = [];
+
+      // Fetch bounty submissions
+      try {
+        const { data: bountySubmissions, error: bountyError } = await supabase
+          .from('bounty_submissions')
+          .select(`
+            *,
+            bounties:bounty_id(title, budget_amount, budget_currency)
+          `)
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false });
+
+        if (bountyError) {
+          console.log('Error fetching bounty submissions:', bountyError);
+        } else if (bountySubmissions) {
+          bountySubmissions.forEach((sub: any) => {
+            const bounty = Array.isArray(sub.bounties) ? sub.bounties[0] : sub.bounties;
+            talentProgressData.push({
+              id: sub.id,
+              type: 'bounty',
+              opportunity_id: sub.bounty_id,
+              opportunity_title: bounty?.title || 'Unknown Bounty',
+              project_name: sub.project_name,
+              status: sub.status,
+              amount: sub.status === 'approved' ? (bounty?.budget_amount ? parseFloat(bounty.budget_amount) : null) : null,
+              currency: sub.status === 'approved' ? (bounty?.budget_currency || null) : null,
+              created_at: sub.created_at,
+            });
+          });
+        }
+      } catch (error) {
+        console.log('Error fetching bounty submissions:', error);
+      }
+
+      // Fetch grant submissions
+      try {
+        const { data: grantSubmissions, error: grantError } = await supabase
+          .from('grant_submissions')
+          .select(`
+            *,
+            grants:grant_id(title, amount, currency)
+          `)
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false });
+
+        if (grantError) {
+          console.log('Error fetching grant submissions:', grantError);
+        } else if (grantSubmissions) {
+          grantSubmissions.forEach((sub: any) => {
+            const grant = Array.isArray(sub.grants) ? sub.grants[0] : sub.grants;
+            talentProgressData.push({
+              id: sub.id,
+              type: 'grant',
+              opportunity_id: sub.grant_id,
+              opportunity_title: grant?.title || 'Unknown Grant',
+              project_name: sub.project_name,
+              status: sub.status,
+              amount: sub.status === 'approved' ? (grant?.amount ? parseFloat(grant.amount) : null) : null,
+              currency: sub.status === 'approved' ? (grant?.currency || null) : null,
+              created_at: sub.created_at,
+            });
+          });
+        }
+      } catch (error) {
+        console.log('Error fetching grant submissions:', error);
+      }
+
+      // Sort by created_at descending
+      talentProgressData.sort((a, b) => 
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+
       setDashboardData({
         assignedProjects: projects || [],
         contributions: {
@@ -216,6 +312,7 @@ const ProfilePage = () => {
         userBounties: bountiesWithSubmissions,
         userGrants: grantsWithSubmissions,
         pendingRoleRequests: roleRequests || [],
+        talentProgress: talentProgressData,
       });
 
     } catch (error) {
@@ -443,7 +540,7 @@ const ProfilePage = () => {
                 </div>
               )}
               {/* Profile Editor */}
-              {activeSection !== "bounties" && activeSection !== "grants" && activeSection !== "bounty-management" && activeSection !== "grant-management" && activeSection !== "user-management" && activeSection !== "ecosystem-analytics" && (
+              {activeSection !== "bounties" && activeSection !== "grants" && activeSection !== "bounty-management" && activeSection !== "grant-management" && activeSection !== "user-management" && activeSection !== "ecosystem-analytics" && activeSection !== "talent-progress" && (
                 <ProfileEditor
                   profile={profile}
                   editedProfile={editedProfile}

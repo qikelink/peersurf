@@ -1,5 +1,5 @@
-/* Default font switched to Inter */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+/* Default font switched to Mulish */
+@import url('https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap');
 @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap");
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Gamja+Flower&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
 
@@ -43,9 +43,9 @@
   --sidebar-accent-foreground: oklch(0.25 0.02 255);
   --sidebar-border: oklch(0.92 0.01 255);
   --sidebar-ring: oklch(0.65 0.15 145);
-  --font-sans: "Inter", "Open Sans", "Raleway", "sans-serif";
+  --font-sans: "Mulish", "Open Sans", "Raleway", "sans-serif";
   --font-playfair: "Playfair Display", serif;
-  --font-inter: "Inter", sans-serif;
+  --font-mulish: "Mulish", sans-serif;
   --font-gamja: "Gamja Flower", sans-serif;
 }
 
@@ -86,7 +86,7 @@
 
 @theme inline {
   --font-playfair: "Playfair Display", serif;
-  --font-inter: "Inter", sans-serif;
+  --font-mulish: "Mulish", sans-serif;
   --font-gamja: "Gamja Flower", sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -139,14 +139,15 @@
     font-family: var(--font-sans);
     background-color: var(--background);
     min-height: 100vh;
+    overflow-x: hidden;
   }
 
   .font-playfair {
     font-family: var(--font-playfair);
   }
   
-  .font-inter {
-    font-family: var(--font-inter);
+  .font-mulish {
+    font-family: var(--font-mulish);
   }
 
   .font-gamja {

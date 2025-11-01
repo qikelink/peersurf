@@ -1,9 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
+import { Badge } from "../ui/badge";
 import { 
   DollarSign, Target, 
   Briefcase,
-  UserCheck, UserX, Activity, UserCog, FileText, Users
+  UserCheck, UserX, Activity, UserCog, FileText, Users, TrendingUp, CheckCircle2, XCircle, Clock
 } from "lucide-react";
 import BountyForm from "./BountyForm";
 import GrantForm from "./GrantForm";
@@ -60,6 +61,17 @@ interface DashboardData {
     user_id: string;
     username: string;
     requested_role: string;
+    created_at: string;
+  }>;
+  talentProgress: Array<{
+    id: string;
+    type: 'bounty' | 'grant';
+    opportunity_id: string;
+    opportunity_title: string;
+    project_name: string;
+    status: 'pending' | 'approved' | 'rejected';
+    amount: number | null;
+    currency: string | null;
     created_at: string;
   }>;
 }
@@ -442,6 +454,94 @@ const DashboardContent = ({ activeSection, profile, dashboardData, handleRoleAct
                       </div>
                     </div>
                   ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        );
+
+      case "talent-progress":
+        return (
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5" />
+                  Talent Progress
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {dashboardData.talentProgress.length === 0 ? (
+                    <div className="text-center py-12 text-muted-foreground">
+                      <TrendingUp className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                      <h3 className="text-lg font-semibold mb-2">No submissions yet</h3>
+                      <p>Start submitting to bounties and grants to track your progress here.</p>
+                    </div>
+                  ) : (
+                    dashboardData.talentProgress.map((submission) => (
+                      <div 
+                        key={submission.id} 
+                        className="border rounded-lg p-4 hover:bg-muted/50 transition-colors"
+                      >
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              {submission.type === 'bounty' ? (
+                                <Target className="w-4 h-4 text-blue-500" />
+                              ) : (
+                                <Briefcase className="w-4 h-4 text-purple-500" />
+                              )}
+                              <span className="text-xs font-medium text-muted-foreground uppercase">
+                                {submission.type}
+                              </span>
+                            </div>
+                            <h4 className="font-semibold text-lg mb-1">{submission.opportunity_title}</h4>
+                            <p className="text-sm text-muted-foreground mb-2">
+                              Project: <span className="text-foreground">{submission.project_name}</span>
+                            </p>
+                            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                              <span>
+                                Submitted: {new Date(submission.created_at).toLocaleDateString('en-US', {
+                                  year: 'numeric',
+                                  month: 'short',
+                                  day: 'numeric'
+                                })}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="flex flex-col items-end gap-2">
+                            <Badge
+                              variant={
+                                submission.status === 'approved' ? 'default' :
+                                submission.status === 'rejected' ? 'destructive' :
+                                'secondary'
+                              }
+                              className="capitalize flex items-center gap-1"
+                            >
+                              {submission.status === 'approved' && <CheckCircle2 className="w-3 h-3" />}
+                              {submission.status === 'rejected' && <XCircle className="w-3 h-3" />}
+                              {submission.status === 'pending' && <Clock className="w-3 h-3" />}
+                              {submission.status}
+                            </Badge>
+                            {submission.status === 'approved' && submission.amount && submission.currency ? (
+                              <div className="text-right">
+                                <div className="text-green-500 font-bold text-lg">
+                                  {submission.currency} {submission.amount.toLocaleString()}
+                                </div>
+                                <div className="text-xs text-muted-foreground">Amount Won</div>
+                              </div>
+                            ) : (
+                              <div className="text-right">
+                                <div className="text-muted-foreground text-sm">—</div>
+                                <div className="text-xs text-muted-foreground">No amount</div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
               </CardContent>
             </Card>

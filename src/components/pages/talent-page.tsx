@@ -50,7 +50,7 @@ const seasonStats = {
   currentWeek: 23,
   seasonNumber: 3,
   nextReset: "2025-01-01",
-  daysUntilReset: 45,
+  daysUntilReset: 30,
   previousSeasonWinner: "Sarah Kim",
   previousSeasonEarnings: 18950,
   competitionActive: true,

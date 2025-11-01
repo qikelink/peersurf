@@ -11,6 +11,7 @@ import 'swiper/swiper-bundle.css';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { useEffect } from 'react';
+import CountUp from 'react-countup';
 
 // Custom styles for testimonial swiper
 const swiperStyles = `
@@ -38,6 +39,30 @@ const swiperStyles = `
     .testimonial-swiper .swiper-slide {
       width: 280px !important;
     }
+  }
+  
+  .logo-swiper {
+    overflow: hidden !important;
+    width: 100%;
+  }
+  
+  .logo-swiper .swiper-wrapper {
+    transition-timing-function: linear !important;
+    display: flex !important;
+    align-items: center !important;
+    will-change: transform !important;
+  }
+  
+  .logo-swiper .swiper-slide {
+    width: auto !important;
+    flex-shrink: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  .logo-swiper.swiper-loop > .swiper-wrapper {
+    transition-timing-function: linear !important;
   }
 `;
 
@@ -139,18 +164,125 @@ const HomePage = () => {
   // Create extended testimonials array for infinite scroll
   const extendedTestimonials = [...testimonials, ...testimonials, ...testimonials];
 
+  // Company logos data
+  const companyLogos = [
+    { name: 'LisarStake', className: 'text-gray-900 dark:text-gray-100 font-bold italic tracking-tight text-lg md:text-xl lg:text-lg', id: 1 },
+    { name: 'Gwid.io', className: 'text-gray-700 dark:text-gray-300 font-light uppercase tracking-widest text-sm md:text-base lg:text-lg', id: 2 }
+  ];
+
+  // Create extended logos array for infinite scroll (repeat many times for seamless continuous scrolling)
+  const extendedLogos = [...companyLogos, ...companyLogos, ...companyLogos, ...companyLogos, ...companyLogos, ...companyLogos, ...companyLogos, ...companyLogos];
+
   return (
-    <div className="min-h-screen text-foreground bg-background">
-      <style>{swiperStyles}</style>
-      <Navbar />
+    <>
+    <style>{swiperStyles}</style>
+    <Navbar />
+    <div className="min-h-screen text-foreground bg-background overflow-x-hidden">
+      
       
       {/* Hero Section */}
       <Hero />
 
+      {/* Metrics Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-12 bg-background overflow-x-hidden" data-aos="fade-up">
+        <div className="max-w-7xl mx-auto w-full">
+          {/* Company Logos Row - Scrolling Carousel */}
+          <div className="mb-16 overflow-hidden">
+            <Swiper
+              modules={[Autoplay]}
+              spaceBetween={60}
+              slidesPerView="auto"
+              autoplay={{
+                delay: 0,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: false,
+                reverseDirection: false,
+              }}
+              speed={4000}
+              loop={true}
+              loopAdditionalSlides={20}
+              allowTouchMove={false}
+              className="logo-swiper"
+            >
+              {extendedLogos.map((company, index) => (
+                <SwiperSlide key={`logo-${company.id}-${index}`} className="!w-auto">
+                  <div className="text-center px-4">
+                    <div className={`whitespace-nowrap ${company.className}`}>
+                      {company.name}
+                    </div>
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+
+          {/* Metric Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+            {[
+              {
+                value: 100,
+                prefix: '',
+                suffix: '+',
+                description: 'Talents and Contributors Onboarded'
+              },
+              {
+                value: 4,
+                prefix: '',
+                suffix: '+',
+                description: 'SPE Actively Using The Platform'
+              },
+              {
+                value: 500,
+                prefix: '$',
+                suffix: '+',
+                description: 'Total Contest Amount Posted'
+              },
+              {
+                value: 100,
+                prefix: '',
+                suffix: '%',
+                description: 'Average uptime'
+              }
+            ].map((metric, index) => (
+              <div
+                key={index}
+                className="bg-[#f0f9f7] dark:bg-green-900/10 rounded-xl p-8 md:p-10 text-center shadow-lg hover:shadow-xl transition-shadow relative"
+              >
+                {/* Real-time indicator dot */}
+                <div className="absolute top-3 right-3 flex items-center justify-center">
+                  <div className="relative">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-ping absolute inset-0 opacity-75"></div>
+                  </div>
+                </div>
+                <div className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+                  <CountUp
+                    key={`countup-${index}-${metric.value}`}
+                    start={0}
+                    end={metric.value}
+                    duration={2.5}
+                    decimals={0}
+                    separator=","
+                    prefix={metric.prefix}
+                    suffix={metric.suffix}
+                    enableScrollSpy={true}
+                    scrollSpyOnce={false}
+                    redraw={true}
+                  />
+                </div>
+                <div className="text-xs md:text-sm uppercase tracking-wide text-gray-600 dark:text-gray-400 font-medium leading-relaxed max-w-[200px] mx-auto">
+                  {metric.description}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Efficient and Integrated Ecosystem Services Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-12" >
+      <section className="py-16 px-4 sm:px-6 lg:px-12 overflow-x-hidden" data-aos="fade-up">
         <div className="max-w-7xl mx-auto bg-green-50 dark:bg-green-900/20 rounded-2xl p-12 shadow-lg border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100">
-          <div className="text-center mb-12" data-aos="fade-up">
+          <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 ">Streamlined Ecosystem Coordination</h2>
             <p className="text-lg max-w-2xl mx-auto">
               Unify bounty discovery, contributor reputation, and payment workflows across the Livepeer ecosystem.
@@ -190,7 +322,7 @@ const HomePage = () => {
                 description: "Seasonal leaderboards that reset to encourage new contributors"
               }
             ].map((service, index) => (
-              <div key={index} className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700 hover:border-green-300 dark:hover:border-green-600 transition-colors shadow-sm backdrop-blur-sm cursor-pointer" data-aos="fade-up" data-aos-delay={index * 100}>
+              <div key={index} className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700 hover:border-green-300 dark:hover:border-green-600 transition-colors shadow-sm backdrop-blur-sm cursor-pointer">
                   <div className="flex items-center justify-between mb-4">
                   <div className="text-2xl">{service.icon}</div>
                   <ArrowUpRight className="w-5 h-5 text-gray-900 dark:text-gray-100" />
@@ -204,11 +336,11 @@ const HomePage = () => {
       </section>
 
       {/* Key Benefits Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-12 bg-background">
+      <section className="py-16 px-4 sm:px-6 lg:px-12 bg-background overflow-x-hidden" data-aos="fade-up">
         <div className="max-w-7xl mx-auto p-12 rounded-2xl border border-green-200 dark:border-green-900/20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Column - GIF */}
-            <div className="order-2 lg:order-1" data-aos="fade-right">
+            <div className="order-2 lg:order-1">
               <div className="flex justify-center">
                 <img 
                   src="https://res.cloudinary.com/dgbreoalg/image/upload/v1761478393/G25-NGjW8AAz_H1_rc1jdx.jpg"
@@ -219,7 +351,7 @@ const HomePage = () => {
             </div>
             
             {/* Right Column - Text Content */}
-            <div className="order-1 lg:order-2" data-aos="fade-left">
+            <div className="order-1 lg:order-2">
               <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">Powering the Livepeer Ecosystem By</h2>
               <p className=" text-muted-foreground mb-8">Our platform accelerates contributor onboarding, streamlines coordination, and drives ecosystem growth.</p>
               
@@ -238,7 +370,7 @@ const HomePage = () => {
                     description: "Smart chatbot for opportunity discovery and personalized Livepeer documentation assistance"
                   }
                 ].map((benefit, index) => (
-                  <div key={index} className="flex items-start gap-4" data-aos="fade-up" data-aos-delay={index * 200}>
+                  <div key={index} className="flex items-start gap-4">
                     <div className="flex-shrink-0 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center mt-1">
                       <div className="w-2 h-2 bg-white rounded-full"></div>
                     </div>
@@ -256,9 +388,9 @@ const HomePage = () => {
 
       
       {/* Testimonials Section */}
-      <section className="py-16 pb-20 px-4 sm:px-6 lg:px-12" >
+      <section className="py-16 pb-20 px-4 sm:px-6 lg:px-12 overflow-x-hidden" data-aos="fade-up">
         <div className="max-w-7xl mx-auto rounded-2xl py-12 shadow-lg text-gray-900 dark:text-gray-100 bg-[#00796B] dark:bg-green-800">
-          <div className="text-center mb-12" data-aos="fade-up">
+          <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">What the Community Says</h2>
             <p className="text-lg text-white/90 max-w-2xl mx-auto">
               Hear from ecosystem members already using the platform
@@ -266,7 +398,7 @@ const HomePage = () => {
           </div>
           
           {/* Dual Row Swiper Carousel */}
-          <div className="space-y-3" data-aos="fade-up" data-aos-delay="200">
+          <div className="space-y-3">
             {/* Row 1 - Left to Right */}
             <div className="overflow-hidden">
               <Swiper
@@ -336,7 +468,7 @@ const HomePage = () => {
             </div>
 
             {/* Row 2 - Right to Left (offset slightly) - Hidden on mobile */}
-            <div className="ml-8 hidden md:block overflow-hidden">
+            <div className="ml-0 md:ml-8 hidden md:block overflow-hidden">
               <Swiper
                 modules={[Autoplay]}
                 spaceBetween={20}
@@ -409,13 +541,13 @@ const HomePage = () => {
       
 
       {/* From Idea to Impact Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-12" >
-        <div className="max-w-7xl mx-auto text-center bg-green-50 dark:bg-green-900/20 rounded-2xl py-12 shadow-lg" data-aos="fade-up">
+      <section className="py-16 px-4 sm:px-6 lg:px-12 overflow-x-hidden" data-aos="fade-up">
+        <div className="max-w-7xl mx-auto text-center bg-green-50 dark:bg-green-900/20 rounded-2xl py-12 shadow-lg">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900 dark:text-gray-100">From Idea to Impact in Days</h2>
           <p className="text-lg text-gray-700 dark:text-gray-300 max-w-2xl mx-auto mb-8">
             Accelerate your contribution to the Livepeer ecosystem. Find opportunities, build reputation, and get paid for your work. Start your journey today!
           </p>
-          <Button className="bg-[#00796B]  dark:bg-green-600 dark:hover:bg-green-700 text-white px-8 py-6" data-aos="zoom-in" data-aos-delay="300">
+          <Button className="bg-[#00796B]  dark:bg-green-600 dark:hover:bg-green-700 text-white px-8 py-6">
             Start Contributing
           </Button>
         </div>
@@ -423,6 +555,8 @@ const HomePage = () => {
 
       <Footer />
     </div>
+    </>
+    
   );
 };
 
