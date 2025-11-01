@@ -3,6 +3,10 @@ import Footer from "../footer";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Autoplay } from 'swiper/modules';
+import 'swiper/swiper-bundle.css';
+import { useRef } from 'react';
 import { 
   Twitter, 
   Github, 
@@ -18,10 +22,14 @@ import {
   Heart,
   ArrowRight,
   Star,
-  Award
+  Award,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 
 const CommunityPage = () => {
+  // Swiper navigation refs
+  const roadmapSwiperRef = useRef<any>(null);
   // Livepeer social media handles and links
   const socialPlatforms = [
     {
@@ -97,10 +105,10 @@ const CommunityPage = () => {
     {
       id: 1,
       title: "Livepeer Community Call",
-      date: "Every Tuesday",
-      time: "2:00 PM EST",
+      date: "Every Monday & Wed",
+      time: "8pm and 6pm UTC+1",
       type: "Community Call",
-      description: "Weekly community updates and Q&A sessions",
+      description: "Weekly Watercooler and Fireside sessions",
       platform: "Discord",
       status: "Ongoing"
     },
@@ -132,25 +140,29 @@ const CommunityPage = () => {
       label: "Total Community Members",
       value: "650+",
       icon: Users,
-      color: "text-green-400"
+      color: "text-green-400",
+      bgColor: "bg-green-500/10"
     },
     {
       label: "Active Developers",
       value: "25+",
       icon: Github,
-      color: "text-blue-400"
+      color: "text-blue-400",
+      bgColor: "bg-blue-500/10"
     },
     {
       label: "Projects Built",
       value: "15+",
       icon: Zap,
-      color: "text-purple-400"
+      color: "text-purple-400",
+      bgColor: "bg-purple-500/10"
     },
     {
       label: "Community Events",
       value: "2+",
       icon: Calendar,
-      color: "text-orange-400"
+      color: "text-orange-400",
+      bgColor: "bg-orange-500/10"
     }
   ];
 
@@ -189,7 +201,7 @@ const CommunityPage = () => {
           <div className="flex items-center justify-center gap-3 mb-6">
             <Heart className="w-8 h-8 text-red-400 animate-pulse" />
             <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent">
-              Livepeer Community
+              PeerSurf - Livepeer
             </h1>
             <Heart className="w-8 h-8 text-red-400 animate-pulse" />
           </div>
@@ -213,24 +225,253 @@ const CommunityPage = () => {
         </div>
       </section>
 
-      {/* Community Stats */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {communityStats.map((stat, index) => (
-            <Card key={index} className="relative overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
-              <CardContent className="p-2 flex items-center gap-4">
-                <div className={`w-12 h-12 flex-2 rounded-full ${stat.bgColor} flex items-center justify-center flex-shrink-0`}>
-                  <stat.icon className={`w-6 h-6 ${stat.color}`} />
-                </div>
-                <div className="flex-2">
-                  <div className="text-2xl font-bold mb-1">{stat.value}</div>
-                  <div className="text-sm text-muted-foreground">{stat.label}</div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+      {/* Strategic Roadmap Section */}
+      <section className="py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-background">
+        <div className="relative">
+          {/* Timeline Banner */}
+          <div className="flex items-center justify-center my-12 relative">
+            {/* Left triangle edge */}
+            <div className="relative flex-1 h-1 bg-foreground/20">
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0 h-0 border-r-8 border-r-foreground/20 border-t-4 border-t-transparent border-b-4 border-b-transparent"></div>
+            </div>
+            {/* Central label with pointed sides */}
+            <div className="flex items-center">
+              {/* Left Point */}
+              <div className="w-0 h-0 border-t-8 border-t-transparent border-b-8 border-b-transparent border-r-8 border-r-primary"></div>
+              <div className="px-6 py-2 bg-primary">
+                <span className="text-white font-bold text-sm md:text-base uppercase tracking-wide">
+                  12-Month Strategic Roadmap
+                </span>
+              </div>
+              {/* Right Point */}
+              <div className="w-0 h-0 border-t-8 border-t-transparent border-b-8 border-b-transparent border-l-8 border-l-primary"></div>
+            </div>
+            {/* Right triangle edge */}
+            <div className="relative flex-1 h-1 bg-foreground/20">
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-0 h-0 border-l-8 border-l-foreground/20 border-t-4 border-t-transparent border-b-4 border-b-transparent"></div>
+            </div>
+          </div>
+
+          {/* Roadmap Carousel */}
+          <div className="relative">
+            <Swiper
+              modules={[Navigation, Autoplay]}
+              spaceBetween={4}
+              slidesPerView={1}
+              loop={true}
+              autoplay={{
+                delay: 3000,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: true,
+              }}
+              speed={800}
+              breakpoints={{
+                640: {
+                  slidesPerView: 2,
+                  spaceBetween: 8,
+                },
+                768: {
+                  slidesPerView: 3,
+                  spaceBetween: 8,
+                },
+                1024: {
+                  slidesPerView: 4,
+                  spaceBetween: 8,
+                },
+              }}
+              onSwiper={(swiper) => {
+                roadmapSwiperRef.current = swiper;
+              }}
+              className="roadmap-swiper"
+            >
+              {[
+                {
+                  period: "October 2025",
+                  phaseTitle: "FOUNDATION",
+                  phaseSubtitle: "Launch & Validation",
+                  objectives: [
+                    "Ship the foundation: Launch MVP with core discovery, profiles, and applications live",
+                    "Validate with fireSide: Demo to Livepeer leadership, secure \"highest impact\" recognition",
+                    "Gather intel: Collect feedback from early SPEs and contributors to guide next moves"
+                  ],
+                  color: "from-green-500 to-green-600",
+                  status: "✅"
+                },
+                {
+                  period: "November 2025",
+                  phaseTitle: "CORE FEATURES",
+                  phaseSubtitle: "Payments & Growth",
+                  objectives: [
+                    "Nail the basics: Ship automated payments, enhanced profiles, and reputation tracking",
+                    "Activate the flywheel: Onboard 5-10 SPEs posting real opportunities, get 50+ talents registered",
+                    "Prove it works: Close 10+ completed transactions from post to payment"
+                  ],
+                  color: "from-green-600 to-green-700",
+                  status: "🔄"
+                },
+                {
+                  period: "December 2025",
+                  phaseTitle: "INTELLIGENCE",
+                  phaseSubtitle: "AI & Integration",
+                  objectives: [
+                    "Go smart: Launch AI matching algorithm connecting right talents to right opportunities",
+                    "Integrate everything: Deploy Discord bot, GitHub sync, and multi-payment options",
+                    "Build trust systems: Roll out comprehensive reputation, endorsements, and on-chain credentials"
+                  ],
+                  color: "from-green-700 to-green-800"
+                },
+                {
+                  period: "January 2026",
+                  phaseTitle: "SCALING",
+                  phaseSubtitle: "Growth & Expansion",
+                  objectives: [
+                    "Scale the engine: Hit 50+ monthly transactions with 15+ active SPEs",
+                    "Expand opportunity types: Support quick bounties, long-term roles, and grants",
+                    "Own the narrative: Launch content marketing engine and referral programs"
+                  ],
+                  color: "from-green-800 to-green-900"
+                },
+                {
+                  period: "February 2026",
+                  phaseTitle: "INFRASTRUCTURE",
+                  phaseSubtitle: "Default Tool",
+                  objectives: [
+                    "Become default infrastructure: Reach 80%+ SPE adoption as primary talent tool",
+                    "Ship analytics dashboards: Give SPEs and talents data-driven insights on performance",
+                    "Integrate into official docs: Get featured in Livepeer's core documentation"
+                  ],
+                  color: "from-green-900 to-teal-700"
+                },
+                {
+                  period: "March 2026",
+                  phaseTitle: "CRITICAL MASS",
+                  phaseSubtitle: "Scale & Mobile",
+                  objectives: [
+                    "Hit critical mass: Achieve 75+ monthly transactions with 500+ registered talents",
+                    "Launch mobile: Ship iOS and Android apps for on-the-go coordination",
+                    "Build community programs: Start grants, mentorship matching, and ambassador network"
+                  ],
+                  color: "from-teal-700 to-teal-800"
+                },
+                {
+                  period: "April 2026",
+                  phaseTitle: "GLOBAL EXPANSION",
+                  phaseSubtitle: "Worldwide Reach",
+                  objectives: [
+                    "Go global: Add multi-language support and expand contributor base worldwide",
+                    "Ship advanced tools: Deploy team formation, dispute resolution, and project management suite",
+                    "Expand SPE capabilities: Launch custom templates, bulk posting, and pipeline management"
+                  ],
+                  color: "from-teal-800 to-blue-700"
+                },
+                {
+                  period: "May 2026",
+                  phaseTitle: "DOMINANCE",
+                  phaseSubtitle: "Ecosystem Leadership",
+                  objectives: [
+                    "Dominate the ecosystem: Process 80%+ of all Livepeer opportunities through PeerSurf",
+                    "Launch public API: Enable third-party integrations and ecosystem extensions",
+                    "Scale marketing: Partner with Web3 influencers, sponsor major events, launch YouTube series"
+                  ],
+                  color: "from-blue-700 to-blue-800"
+                },
+                {
+                  period: "June 2026",
+                  phaseTitle: "SUSTAINABILITY",
+                  phaseSubtitle: "Self-Sustaining",
+                  objectives: [
+                    "Hit 100+ monthly transactions: Process $1M+ total payment volume",
+                    "Achieve sustainability: Implement revenue model and reach self-sustaining operations",
+                    "Establish thought leadership: Publish white papers, speak at conferences, position as DAO coordination blueprint"
+                  ],
+                  color: "from-blue-800 to-indigo-700"
+                },
+                {
+                  period: "Q3 2026",
+                  phaseTitle: "IRREPLACEABLE",
+                  phaseSubtitle: "Standard Infrastructure",
+                  objectives: [
+                    "Become irreplaceable: Every active Livepeer SPE uses PeerSurf as standard infrastructure",
+                    "Explore multi-chain: Research expansion to 3+ adjacent ecosystems",
+                    "Ship AI innovation: Deploy predictive analytics and automated skill gap identification"
+                  ],
+                  color: "from-indigo-700 to-indigo-800"
+                },
+                {
+                  period: "Q4 2026 & Beyond",
+                  phaseTitle: "CROSS-CHAIN",
+                  phaseSubtitle: "Multi-Protocol Future",
+                  objectives: [
+                    "Go cross-chain: Successfully deploy PeerSurf in 3+ other protocol ecosystems",
+                    "Build network effects: Enable portable reputation across chains and protocols",
+                    "Scale to $10M+ impact: Facilitate massive contributor earnings, explore DAO governance and Web3 talent marketplace infrastructure"
+                  ],
+                  color: "from-indigo-800 to-purple-700"
+                }
+              ].map((phase, index) => (
+                <SwiperSlide key={index}>
+                  <Card className="h-full hover:shadow-lg transition-shadow border-2 py-0 overflow-hidden">
+                    {/* Period Badge */}
+                    <div className={`bg-gradient-to-r ${phase.color} p-4 text-white`}>
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-yellow-400 rounded flex items-center justify-center font-bold text-foreground text-sm">
+                          {index + 1}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <p className="font-medium text-sm md:text-base">{phase.period}</p>
+                          {phase.status && <span className="text-lg">{phase.status}</span>}
+                        </div>
+                      </div>
+                    </div>
+                    <CardContent className="p-4">
+                      <div className="mb-4">
+                        <p className="text-xs uppercase tracking-wider text-muted-foreground mb-2">
+                          {phase.phaseTitle}
+                        </p>
+                        <h3 className="text-xl md:text-2xl font-bold text-foreground">
+                          {phase.phaseSubtitle}
+                        </h3>
+                      </div>
+                      <ul className="space-y-3">
+                        {phase.objectives.map((objective, objIndex) => (
+                          <li key={objIndex} className="flex items-start gap-3">
+                            <div className="flex-shrink-0 w-2 h-2 rounded-full bg-primary mt-2"></div>
+                            <p className="text-sm text-muted-foreground leading-relaxed">
+                              {objective}
+                            </p>
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+
+            {/* Navigation Controls - Bottom Right */}
+            <div className="flex items-center justify-end gap-2 mt-6">
+              <Button
+                variant="outline"
+                size="icon"
+                className="rounded-full w-10 h-10 hover:bg-primary hover:text-primary-foreground transition-colors"
+                onClick={() => roadmapSwiperRef.current?.slidePrev()}
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                className="rounded-full w-10 h-10 hover:bg-primary hover:text-primary-foreground transition-colors"
+                onClick={() => roadmapSwiperRef.current?.slideNext()}
+              >
+                <ChevronRight className="w-5 h-5" />
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
+
+      
 
       {/* Social Media Platforms */}
       <section className=" px-4 sm:px-6 lg:px-8 bg-muted/20 max-w-7xl mx-auto">
@@ -242,7 +483,7 @@ const CommunityPage = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {socialPlatforms.map((platform, index) => (
+          {socialPlatforms.map((platform) => (
             <Card 
               key={platform.name} 
               className={`hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer group ${platform.borderColor} border-2`}
@@ -287,7 +528,7 @@ const CommunityPage = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {communityEvents.map((event, index) => (
+          {communityEvents.map((event) => (
             <Card key={event.id} className="hover:shadow-lg transition-shadow">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between mb-2">
@@ -333,7 +574,7 @@ const CommunityPage = () => {
         </div>
         
         <div className="space-y-6">
-          {communityHighlights.map((highlight, index) => (
+          {communityHighlights.map((highlight) => (
             <Card key={highlight.id} className="hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
                 <div className="flex items-start gap-4">

@@ -76,10 +76,10 @@ const Navbar = () => {
               Talent Hub
             </Link>
             <Link 
-              to="/community" 
-              className={`transition-colors ${getActiveStyles(isActive("/community"))}`}
+              to="/about" 
+              className={`transition-colors ${getActiveStyles(isActive("/about"))}`}
             >
-              Community
+              About
             </Link>
           </div>
 
@@ -200,11 +200,11 @@ const Navbar = () => {
                 <span className="font-medium">Talent Hub</span>
               </Link>
               <Link
-                to="/community"
-                className={`block px-4 py-3 rounded-xl transition-all duration-200 ${getMobileActiveStyles(isActive("/community"))}`}
+                to="/about"
+                className={`block px-4 py-3 rounded-xl transition-all duration-200 ${getMobileActiveStyles(isActive("/about"))}`}
                 onClick={() => setMobileMenuOpen(false)}
               >
-                <span className="font-medium">Community</span>
+                <span className="font-medium">About</span>
               </Link>
             </div>
             

@@ -45,7 +45,7 @@ const routes = [
     element: <TalentPage />,
   },
   {
-    path: "/community",
+    path: "/about",
     element: <CommunityPage />,
   },
   {
