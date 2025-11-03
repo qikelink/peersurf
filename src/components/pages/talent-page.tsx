@@ -258,7 +258,7 @@ const TalentPage = () => {
                 </div>
                   )}
                 </div>
-                <h3 className="text-sm font-bold text-foreground">{talent.name}</h3>
+                <h3 className="text-sm font-bold text-foreground">Upcoming</h3>
               </div>
               
               {/* Right side: Trophy */}
@@ -273,15 +273,15 @@ const TalentPage = () => {
             <div className="space-y-1 w-full">
               <div className="flex justify-between items-center">
                 <span className="text-xs text-muted-foreground">Earnings</span>
-                <span className="text-xs font-semibold text-green-500">{formatCurrency(talent.totalEarnings)}</span>
+                <span className="text-xs font-semibold text-green-500">-</span>
                 </div>
               <div className="flex justify-between items-center">
                 <span className="text-xs text-muted-foreground">Projects</span>
-                <span className="text-xs font-semibold">{talent.projectsCompleted}</span>
+                <span className="text-xs font-semibold">-</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-xs text-muted-foreground">Success</span>
-                <span className="text-xs font-semibold text-green-500">{talent.successRate}%</span>
+                <span className="text-xs font-semibold text-green-500">-</span>
               </div>
             </div>
           </div>
@@ -342,19 +342,19 @@ const TalentPage = () => {
                           </AvatarFallback>
                         </Avatar>
                           <div>
-                            <div className="font-semibold text-foreground">{talent.name}</div>
-                            <div className="text-sm text-muted-foreground">{talent.username}</div>
+                            <div className="font-semibold text-foreground">Upcoming</div>
+                            <div className="text-sm text-muted-foreground">-</div>
                           </div>
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="font-bold text-green-500">{formatCurrency(talent.totalEarnings)}</div>
+                        <div className="font-bold text-green-500">-</div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="font-semibold">{talent.projectsCompleted}</div>
+                        <div className="font-semibold">-</div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="font-semibold text-green-500">{talent.successRate}%</div>
+                        <div className="font-semibold text-green-500">-</div>
                       </td>
                       <td className="px-4 py-3">
                         <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r ${talent.tierColor} text-white`}>
