@@ -309,6 +309,20 @@ const OpportuniesPage = () => {
   const categories = ["All", "Content", "Design", "Development", "Events", "Other"];
   const tabs = ["All", "Bounties", "RFPs"];
 
+  // Helper function to check if a deadline date is past
+  const isDeadlinePast = (deadline: string): boolean => {
+    if (!deadline) return false;
+    try {
+      const deadlineDate = new Date(deadline);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      deadlineDate.setHours(0, 0, 0, 0);
+      return deadlineDate < today;
+    } catch (error) {
+      return false;
+    }
+  };
+
   // Carousel functionality
   const nextCard = () => {
     setCurrentCard((prev) => (prev + 1) % sponsorCards.length);
@@ -509,7 +523,11 @@ const OpportuniesPage = () => {
                             </span>
                           )} 
                           {opportunity.deadline && (
-                            <span className="text-muted-foreground font-semibold px-3 py-1.5 rounded-full">
+                            <span className={`font-semibold px-3 py-1.5 rounded-full ${
+                              isDeadlinePast(opportunity.deadline) 
+                                ? "text-red-500 opacity-70" 
+                                : "text-muted-foreground"
+                            }`}>
                               Due: {opportunity.deadline}
                             </span>
                           )}

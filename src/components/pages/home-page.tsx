@@ -178,7 +178,9 @@ const HomePage = () => {
   // Company logos data
   const companyLogos = [
     { name: 'LisarStake', className: 'text-gray-900 dark:text-gray-100 font-bold italic tracking-tight text-lg md:text-xl lg:text-lg', id: 1 },
-    { name: 'Gwid.io', className: 'text-gray-700 dark:text-gray-300 font-light uppercase tracking-widest text-sm md:text-base lg:text-lg', id: 2 }
+    { name: 'Gwid.io', className: 'text-gray-700 dark:text-gray-300 font-light uppercase tracking-widest text-sm md:text-base lg:text-lg', id: 2 },
+    { name: 'Framework', className: 'text-gray-700 dark:text-gray-300 font-light italic font-cursive tracking-wide text-base md:text-lg lg:text-xl', id: 3 }
+    
   ];
 
   // Create extended logos array for infinite scroll (repeat many times for seamless continuous scrolling)
@@ -231,7 +233,7 @@ const HomePage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             {[
               {
-                value: 100,
+                value: 50,
                 prefix: '',
                 suffix: '+',
                 description: 'Talents and Contributors Onboarded'
@@ -243,7 +245,7 @@ const HomePage = () => {
                 description: 'SPE Actively Using The Platform'
               },
               {
-                value: 500,
+                value: 200,
                 prefix: '$',
                 suffix: '+',
                 description: 'Total Contest Amount Posted'
