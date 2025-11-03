@@ -134,38 +134,6 @@ const CommunityPage = () => {
     }
   ];
 
-  // Community stats
-  const communityStats = [
-    {
-      label: "Total Community Members",
-      value: "650+",
-      icon: Users,
-      color: "text-green-400",
-      bgColor: "bg-green-500/10"
-    },
-    {
-      label: "Active Developers",
-      value: "25+",
-      icon: Github,
-      color: "text-blue-400",
-      bgColor: "bg-blue-500/10"
-    },
-    {
-      label: "Projects Built",
-      value: "15+",
-      icon: Zap,
-      color: "text-purple-400",
-      bgColor: "bg-purple-500/10"
-    },
-    {
-      label: "Community Events",
-      value: "2+",
-      icon: Calendar,
-      color: "text-orange-400",
-      bgColor: "bg-orange-500/10"
-    }
-  ];
-
   // Recent community highlights
   const communityHighlights = [
    

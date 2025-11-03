@@ -1,7 +1,6 @@
 import React from "react";
 import EmptyState from "../ui/empty-state";
 import { ArrowLeft, Bell, CheckCircle2, Info, Link2, Trash2 } from "lucide-react";
-import ActionButtons from "../ui/action-buttons";
 import { useNotifications } from "../../contexts/NotificationsContext";
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";

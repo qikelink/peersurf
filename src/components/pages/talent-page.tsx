@@ -2,21 +2,20 @@ import { useState, useEffect } from 'react';
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { Input } from '../ui/input';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '../ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { 
-  Trophy, 
+   
   Crown, 
   Medal, 
   Star, 
-  Search, 
-  TrendingUp, 
+   
+   
   Users, 
-  DollarSign,
+ 
   Calendar,
   Award,
-  Save,
+ 
   Bookmark
 } from 'lucide-react';
 import Navbar from '../nav-bar';
@@ -237,7 +236,6 @@ const TalentPage = () => {
   ) : (
     sortedTalent.slice(0, 3).map((talent, index) => {
       const trophyColors = ['text-yellow-500', 'text-gray-400', 'text-amber-600'];
-      const trophySizes = ['w-12 h-12', 'w-10 h-10', 'w-8 h-8'];
       return (
         <Card key={talent.id} className={`p-3 ${index === 0 ? 'ring-2 ring-yellow-500/50' : ''}`}>
           <div className="flex flex-col">
