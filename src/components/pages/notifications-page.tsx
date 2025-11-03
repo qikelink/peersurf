@@ -91,8 +91,7 @@ const NotificationsPage: React.FC = () => {
           </div>
         )}
       </div>
-      {/* Action Buttons - Fixed at bottom */}
-      <ActionButtons />
+      
     </div>
   );
 };

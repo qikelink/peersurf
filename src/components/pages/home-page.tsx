@@ -132,6 +132,17 @@ const HomePage = () => {
       platform: "facebook" as const,
       likes: "1k",
       comments: "500"
+    },
+    {
+      name: "Jason || everest-node.eth",
+      handle: "@everest-node.eth",
+      date: "23/10/2025",
+      time: "10:45 PM",
+      avatar: "https://cdn.discordapp.com/avatars/851029949056942091/a_3a57957301e926615dd5502cd5611f1e.webp",
+      message: "Great project by the way. In there past we had bounty board in github and it was quite a hassle managing the communication and coordination. This is a step in the right direction.",
+      platform: "twitter" as const,
+      likes: "1k",
+      comments: "500"
     }
   ];
 

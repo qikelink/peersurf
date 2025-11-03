@@ -26,7 +26,6 @@ import { getUserProfile } from "../../lib/auth";
 import { listSubmissionsForOpportunity } from "../../lib/submissions";
 import Navbar from "../nav-bar";
 import { Skeleton } from "../ui/skeleton";
-import { FileText } from "lucide-react";
 
 // Mock data for opportunities (keeping only RFPs)
 const mockRFPs = [
@@ -127,22 +126,22 @@ Timeline:
   }
 ];
 
-const mockRecentEarners = [
+const mockRecentSubmissions = [
   {
     name: "Alex Chen",
-    avatar: "https://github.com/shadcn.png",
-    description: "Built Livepeer analytics dashboard",
+    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
+    description: "Wrote Viral PeerSurf Content for X (Twi",
     earned: "800 USDC"
   },
   {
     name: "Sarah Kim",
-    avatar: "https://github.com/shadcn.png",
-    description: "Designed PeerSurf mobile UI",
+    avatar: "https://randomuser.me/api/portraits/women/44.jpg",
+    description: "Wrote Viral PeerSurf Content for X (Twi",
     earned: "600 USDC"
   },
   {
     name: "Mike Johnson",
-    avatar: "https://github.com/shadcn.png",
+    avatar: "https://randomuser.me/api/portraits/men/54.jpg",
     description: "Wrote Livepeer ecosystem guide",
     earned: "400 USDC"
   }
@@ -725,7 +724,7 @@ const OpportuniesPage = () => {
                       <div>
                         <div className="text-base text-muted-foreground font-medium">Total Value Earned</div>
                         <div className={`font-bold ${isDark ? 'text-white' : 'text-foreground'} text-sm bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent`}>
-                          $7,654,510 USD
+                           USD
                         </div>
                       </div>
                     </div>
@@ -800,11 +799,11 @@ const OpportuniesPage = () => {
               )}
             </div>
 
-            {/* Recent Earners */}
+            {/* Recent Submissions */}
             <div>
               <div className="flex items-center justify-between mb-6">
                 <h3 className={`font-bold ${isDark ? 'text-white' : 'text-foreground'} text-sm bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent`}>
-                  RECENT EARNERS
+                  RECENT SUBMISSIONS
                 </h3>
                 <Link to="/opportunities#leaderboard" className="text-green-400 text-sm font-medium hover:text-green-300 transition-colors duration-300 hover:underline">
                   Leaderboard
@@ -825,23 +824,23 @@ const OpportuniesPage = () => {
                 </div>
               ) : (
                 <div className="space-y-2">
-                  {mockRecentEarners.map((earner, index) => (
+                  {mockRecentSubmissions.map((submission, index) => (
                     <div key={index} className={`group flex items-center gap-4 p-4 ${isDark ? 'bg-gray-900/50 border-gray-700/50' : 'bg-card/50 border-border/50'} rounded-2xl backdrop-blur-sm border transition-all duration-300 hover:border-green-500/30 hover:shadow-lg hover:shadow-green-500/10 hover:scale-[1.02]`}>
                       <Avatar className="w-12 h-12 ring-2 ring-green-500/20 group-hover:ring-green-500/40 transition-all duration-300">
-                        <AvatarImage src={earner.avatar} />
+                        <AvatarImage src={submission.avatar} />
                         <AvatarFallback className="bg-gradient-to-r from-green-600 to-green-700 text-white text-sm font-bold">
-                          {earner.name.split(' ').map(n => n[0]).join('')}
+                          {submission.name.split(' ').map(n => n[0]).join('')}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
                         <div className={`font-semibold ${isDark ? 'text-white' : 'text-foreground'} text-xs truncate group-hover:text-green-400 transition-colors duration-300`}>
-                          {earner.name}
+                            {submission.name}
                         </div>
-                        <div className="text-muted-foreground text-xs truncate">{earner.description}</div>
+                        <div className="text-muted-foreground text-xs truncate">{submission.description}</div>
                       </div>
-                      <div className="text-green-400 text-xs font-bold bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent">
-                        {earner.earned}
-                      </div>
+                      {/* <div className="text-green-400 text-xs font-bold bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent">
+                        {submission.earned}
+                      </div> */}
                     </div>
                   ))}
                 </div>
