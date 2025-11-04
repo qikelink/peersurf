@@ -8,42 +8,6 @@ const checkSupabaseConfig = () => {
   }
 };
 
-// Check if email exists in Supabase backend by attempting a sign-in
-// This is the most reliable way to check if email exists without direct DB access
-const checkEmailExistsInBackend = async (email: string): Promise<boolean> => {
-  try {
-    // Try to sign in with a dummy password - if email exists, we'll get "wrong password"
-    // If email doesn't exist, we'll get "user not found" or similar
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password: '___DUMMY_CHECK_PASSWORD_12345___',
-    });
-    
-    if (error) {
-      const errorMsg = error.message?.toLowerCase() || '';
-      // These errors indicate email EXISTS (wrong password, email not confirmed, etc.)
-      if (
-        errorMsg.includes('invalid login') ||
-        errorMsg.includes('invalid credentials') ||
-        errorMsg.includes('wrong password') ||
-        errorMsg.includes('incorrect password') ||
-        errorMsg.includes('email not confirmed') ||
-        errorMsg.includes('email_not_confirmed')
-      ) {
-        return true; // Email exists
-      }
-      // "User not found" or similar means email doesn't exist
-      return false;
-    }
-    
-    // If no error (unlikely with dummy password), email exists
-    return true;
-  } catch (err) {
-    // On any error, assume email doesn't exist to allow signup attempt
-    return false;
-  }
-};
-
 // Email/password sign up with profile creation
 export const signUp = async (
   email: string,
@@ -52,23 +16,8 @@ export const signUp = async (
 ) => {
   checkSupabaseConfig();
   
-  // CRITICAL: Check backend FIRST before attempting signup
-  // This prevents any redirects for duplicate emails
-  const emailExists = await checkEmailExistsInBackend(email);
-  if (emailExists) {
-    // Ensure we're signed out
-    await supabase.auth.signOut();
-    
-    return {
-      data: null,
-      error: {
-        message: 'An account with this email already exists. Please sign in instead, or use a different email address.',
-        status: 400,
-      },
-    };
-  }
-  
-  // Important: Sign out any existing session first to prevent auto-login
+  // Sign out any existing session first to prevent auto-login
+  // Supabase will handle duplicate email detection at the database level
   await supabase.auth.signOut();
   
   // Disable email confirmation requirement by setting emailRedirectTo to null
