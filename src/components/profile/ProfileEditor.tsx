@@ -54,8 +54,19 @@ const ProfileEditor = ({
     );
   }
 
+  // Check if profile is incomplete
+  const isProfileIncomplete = !profile.full_name || !profile.username || !profile.bio || !profile.avatar_url;
+
   return (
-    <Card className="mb-6">
+    <>
+      {isProfileIncomplete && (
+        <div className="bg-green-200 dark:bg-green-900/30 border border-green-300 dark:border-green-700 rounded-lg p-4 mb-6">
+          <p className="text-green-800 dark:text-green-200 text-sm font-medium">
+            ⚠️ Please complete your profile to use the platform. Add your full name, username, bio, and profile image.
+          </p>
+        </div>
+      )}
+      <Card className="mb-6">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span className="flex items-center gap-2">
@@ -241,7 +252,7 @@ const ProfileEditor = ({
                 >
                   SPE
                 </button>
-                <button
+                <button disabled
                   type="button"
                   onClick={() => setEditedProfile({ ...editedProfile, role: "admin" })}
                   className={`px-3 py-2 rounded-lg border text-sm ${editedProfile.role === "admin" ? "border-green-500 bg-green-500/10 text-green-300" : "border-border bg-muted text-foreground"}`}
@@ -293,6 +304,7 @@ const ProfileEditor = ({
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };
 
