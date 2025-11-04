@@ -71,21 +71,23 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.log('Provider:', user.app_metadata?.provider);
       console.log('================================');
       
-      // Check if profile exists, if not create one with OAuth data
+      // Check if profile exists, if not create one with user data
       const createProfileIfNeeded = async () => {
         const { data: existingProfile, error } = await getUserProfile(user.id);
         console.log('Existing Profile:', existingProfile);
         console.log('Profile Error:', error);
         
         if (error || !existingProfile) {
-          // Profile doesn't exist, create one with OAuth data
+          // Profile doesn't exist, create one with user metadata
+          // This handles both OAuth users and email/password users who confirmed their email
           const profileData = {
             id: user.id,
-            username: user.user_metadata?.full_name?.split(' ')[0] || user.email?.split('@')[0] || 'user',
+            username: user.user_metadata?.username || user.user_metadata?.full_name?.split(' ')[0] || user.email?.split('@')[0] || 'user',
             full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
             avatar_url: user.user_metadata?.avatar_url || user.user_metadata?.picture || '',
-            bio: null,
-            role: 'talent' as const
+            bio: user.user_metadata?.bio || null,
+            // Use role from user_metadata if available, otherwise default to 'talent'
+            role: (user.user_metadata?.role as 'talent' | 'SPE' | 'admin' | undefined) || 'talent' as const
           };
           
           console.log('Creating profile with data:', profileData);
@@ -93,16 +95,24 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
           console.log('Profile creation result:', createdProfile);
           console.log('Profile creation error:', createError);
         } else {
-          // Backfill missing avatar_url from OAuth metadata
+          // Backfill missing data from user metadata
           const oauthAvatar = user.user_metadata?.avatar_url || user.user_metadata?.picture || '';
-          console.log('OAuth Avatar URL:', oauthAvatar);
-          console.log('Existing Profile Avatar URL:', existingProfile.avatar_url);
+          const updates: Partial<typeof existingProfile> = {};
           
           if (!existingProfile.avatar_url && oauthAvatar) {
-            console.log('Backfilling avatar URL...');
-            const { data: updatedProfile, error: updateError } = await updateUserProfile(user.id, { avatar_url: oauthAvatar });
-            console.log('Avatar update result:', updatedProfile);
-            console.log('Avatar update error:', updateError);
+            updates.avatar_url = oauthAvatar;
+          }
+          
+          // Update role if it's missing or different from metadata (but only if metadata has a role)
+          if (user.user_metadata?.role && existingProfile.role !== user.user_metadata.role) {
+            updates.role = user.user_metadata.role as 'talent' | 'SPE' | 'admin';
+          }
+          
+          if (Object.keys(updates).length > 0) {
+            console.log('Backfilling profile data...', updates);
+            const { data: updatedProfile, error: updateError } = await updateUserProfile(user.id, updates);
+            console.log('Profile update result:', updatedProfile);
+            console.log('Profile update error:', updateError);
           }
         }
         
@@ -153,7 +163,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  // Wrap signUp to also create a profile
+  // Wrap signUp to also create a profile (only if user is confirmed)
   const signUp = async (
     email: string,
     password: string,
@@ -168,14 +178,23 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     const { data, error } = await supabaseSignUp(email, password, { role });
+    
+    // Always create profile immediately - don't wait for email confirmation
+    // This ensures users can log in right after signup
     if (!error && data?.user) {
-      // Create profile row
-      await createUserProfile({
+      const { error: profileError } = await createUserProfile({
         id: data.user.id,
         role: role ?? null,
-        // Optionally add username: data.user.user_metadata?.username
+        username: data.user.user_metadata?.username || email.split('@')[0],
+        full_name: data.user.user_metadata?.full_name || email.split('@')[0],
       });
+      
+      if (profileError) {
+        console.error('Error creating profile during signup:', profileError);
+        // Don't fail signup if profile creation fails - it will be created on first login
+      }
     }
+    
     return { data, error };
   };
 

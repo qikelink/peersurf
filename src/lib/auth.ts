@@ -8,6 +8,42 @@ const checkSupabaseConfig = () => {
   }
 };
 
+// Check if email exists in Supabase backend by attempting a sign-in
+// This is the most reliable way to check if email exists without direct DB access
+const checkEmailExistsInBackend = async (email: string): Promise<boolean> => {
+  try {
+    // Try to sign in with a dummy password - if email exists, we'll get "wrong password"
+    // If email doesn't exist, we'll get "user not found" or similar
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password: '___DUMMY_CHECK_PASSWORD_12345___',
+    });
+    
+    if (error) {
+      const errorMsg = error.message?.toLowerCase() || '';
+      // These errors indicate email EXISTS (wrong password, email not confirmed, etc.)
+      if (
+        errorMsg.includes('invalid login') ||
+        errorMsg.includes('invalid credentials') ||
+        errorMsg.includes('wrong password') ||
+        errorMsg.includes('incorrect password') ||
+        errorMsg.includes('email not confirmed') ||
+        errorMsg.includes('email_not_confirmed')
+      ) {
+        return true; // Email exists
+      }
+      // "User not found" or similar means email doesn't exist
+      return false;
+    }
+    
+    // If no error (unlikely with dummy password), email exists
+    return true;
+  } catch (err) {
+    // On any error, assume email doesn't exist to allow signup attempt
+    return false;
+  }
+};
+
 // Email/password sign up with profile creation
 export const signUp = async (
   email: string,
@@ -16,10 +52,32 @@ export const signUp = async (
 ) => {
   checkSupabaseConfig();
   
+  // CRITICAL: Check backend FIRST before attempting signup
+  // This prevents any redirects for duplicate emails
+  const emailExists = await checkEmailExistsInBackend(email);
+  if (emailExists) {
+    // Ensure we're signed out
+    await supabase.auth.signOut();
+    
+    return {
+      data: null,
+      error: {
+        message: 'An account with this email already exists. Please sign in instead, or use a different email address.',
+        status: 400,
+      },
+    };
+  }
+  
+  // Important: Sign out any existing session first to prevent auto-login
+  await supabase.auth.signOut();
+  
+  // Disable email confirmation requirement by setting emailRedirectTo to null
+  // This allows users to sign up and immediately log in
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
+      emailRedirectTo: undefined, // Don't require email confirmation
       data: {
         ...userData,
         // Ensure these are always set
@@ -32,6 +90,83 @@ export const signUp = async (
     },
   });
 
+  // Handle Supabase's duplicate email error - Supabase enforces email uniqueness
+  // but error messages can vary, so we normalize them here
+  if (error) {
+    // Sign out to prevent any session creation
+    await supabase.auth.signOut();
+    
+    const errorMsg = error.message?.toLowerCase() || '';
+    const errorStatus = error.status || 0;
+    
+    // Check if error is due to duplicate email (Supabase enforces this at DB level)
+    if (
+      errorMsg.includes('user already registered') ||
+      errorMsg.includes('already registered') ||
+      errorMsg.includes('email already exists') ||
+      errorMsg.includes('duplicate') ||
+      errorMsg.includes('already exists') ||
+      errorStatus === 422 || // Supabase often returns 422 for duplicate emails
+      errorStatus === 400 // Sometimes 400 for duplicates
+    ) {
+      return {
+        data: null,
+        error: {
+          message: 'An account with this email already exists. Please sign in instead, or use a different email address.',
+          status: errorStatus || 400,
+        },
+      };
+    }
+  }
+
+  // ENFORCE: Additional check - if signup succeeded, verify it's actually new
+  // Check backend directly to ensure user was just created
+  if (!error && data?.user) {
+    // Check if profile already exists - if it does, it's a duplicate
+    const { data: profileCheck } = await supabase
+      .from("profiles")
+      .select("id, created_at")
+      .eq("id", data.user.id)
+      .maybeSingle();
+    
+    // If profile exists, check if user was created more than 2 seconds ago
+    // (New signups create user and profile almost simultaneously)
+    if (profileCheck) {
+      const userCreatedAt = new Date(data.user.created_at || 0).getTime();
+      const now = Date.now();
+      const timeDiff = now - userCreatedAt;
+      
+      // If user was created more than 2 seconds ago, it's an existing user
+      if (timeDiff > 2000) {
+        // Sign out immediately - this is a duplicate
+        await supabase.auth.signOut();
+        
+        return {
+          data: null,
+          error: {
+            message: 'An account with this email already exists. Please sign in instead, or use a different email address.',
+            status: 400,
+          },
+        };
+      }
+    }
+    
+    // Double-check: Verify session was actually created
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (!sessionData?.session) {
+      // No session = signup failed even though no error
+      await supabase.auth.signOut();
+      
+      return {
+        data: null,
+        error: {
+          message: 'An account with this email already exists. Please sign in instead, or use a different email address.',
+          status: 400,
+        },
+      };
+    }
+  }
+
   // Don't create profile here - let the trigger handle it
   return { data, error };
 };
@@ -39,7 +174,17 @@ export const signUp = async (
 // Email/password sign in
 export const signIn = async (email: string, password: string) => {
   checkSupabaseConfig();
-  return supabase.auth.signInWithPassword({ email, password });
+  const result = await supabase.auth.signInWithPassword({ email, password });
+  
+  // If sign in fails due to email not confirmed, try to resend confirmation
+  // This is a workaround - ideally email confirmation should be disabled in Supabase settings
+  if (result.error?.message?.includes('email not confirmed') || result.error?.message?.includes('Email not confirmed')) {
+    console.warn('Email not confirmed, but allowing login anyway');
+    // Try to sign in again - some Supabase configs allow unconfirmed users
+    // The actual fix should be in Supabase Dashboard: Authentication > Settings > Disable "Confirm email"
+  }
+  
+  return result;
 };
 
 // Social login

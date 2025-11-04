@@ -11,6 +11,7 @@ import { useUser } from "../../contexts/UserContext";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import Loader from "../ui/loader";
+import { supabase } from "../../lib/supabase";
 
 
 type SocialProvider = {
@@ -100,7 +101,7 @@ const AuthPage = () => {
     return r === "talent" || r === "SPE" || r === "admin" ? r : "";
   });
   const [loading, setLoading] = useState<boolean>(false);
-  const { signIn, signUp, signInWithProvider, user } = useUser();
+  const { signIn, signUp, signOut, signInWithProvider, user } = useUser();
   const { isDark } = useTheme();
   const navigate = useNavigate();
 
@@ -112,10 +113,26 @@ const AuthPage = () => {
     if (r === "talent" || r === "SPE" || r === "admin") setRole(r as "talent" | "SPE" | "admin");
   }, [location.search]);
 
-  // Redirect if already logged in
+  // Redirect if already logged in (but ONLY if we're not on signup page and not processing auth)
   useEffect(() => {
-    if (user) navigate("/opportunities");
-  }, [user, navigate]);
+    // NEVER redirect during signup/signin processing or if there's an error
+    // Only redirect if:
+    // 1. User exists
+    // 2. Not currently loading/processing auth
+    // 3. Not in signup mode (to prevent redirect during duplicate email check)
+    // 4. No error message
+    if (user && !loading && !isSignUp && !error) {
+      // Double-check: Verify session exists before redirecting
+      // This prevents redirects for duplicate emails
+      const checkSession = async () => {
+        const { data: sessionData } = await supabase.auth.getSession();
+        if (sessionData?.session) {
+          navigate("/opportunities");
+        }
+      };
+      checkSession();
+    }
+  }, [user, navigate, loading, isSignUp, error]);
 
   const handleSubmit = async (
     e: FormEvent<HTMLButtonElement> | FormEvent<HTMLFormElement>
@@ -133,11 +150,61 @@ const AuthPage = () => {
         result = await signIn(email, password);
       }
       if (result.error) {
-        setError(result.error.message || "Authentication failed");
+        // CRITICAL: Sign out any session that might have been created
+        // This prevents auto-redirect when there's an error
+        await signOut();
+        
+        // Provide clearer error messages
+        let errorMessage = result.error.message || "Authentication failed";
+        const errorMsgLower = errorMessage.toLowerCase();
+        
+        // Handle email already exists / duplicate email error
+        if (
+          errorMsgLower.includes('already exists') ||
+          errorMsgLower.includes('already registered') ||
+          errorMsgLower.includes('user already registered') ||
+          errorMsgLower.includes('email already exists') ||
+          errorMsgLower.includes('duplicate') ||
+          result.error.status === 422 ||
+          result.error.status === 400
+        ) {
+          errorMessage = "An account with this email already exists. Please sign in instead, or use a different email address.";
+        }
+        // Handle email not confirmed error with helpful message
+        else if (
+          errorMsgLower.includes('email not confirmed') || 
+          errorMsgLower.includes('email_not_confirmed')
+        ) {
+          errorMessage = "Email confirmation is required. Please check your email and confirm your account, or disable email confirmation in Supabase Dashboard settings.";
+        }
+        // Handle invalid credentials
+        else if (
+          errorMsgLower.includes('invalid login') ||
+          errorMsgLower.includes('invalid credentials') ||
+          errorMsgLower.includes('wrong password') ||
+          errorMsgLower.includes('incorrect password')
+        ) {
+          errorMessage = "Invalid email or password. Please check your credentials and try again.";
+        }
+        
+        setError(errorMessage);
         setLoading(false);
+        
+        // ENFORCE: Never navigate if there's an error - return immediately
+        return;
       } else {
-        setLoading(false);
-        navigate("/opportunities");
+        // Only navigate if signup was successful and no errors
+        // Verify session exists before navigating
+        const { data: sessionData } = await supabase.auth.getSession();
+        if (sessionData?.session) {
+          setLoading(false);
+          navigate("/opportunities");
+        } else {
+          // No session = signup failed, show error
+          await signOut();
+          setError("Signup failed. Please try again.");
+          setLoading(false);
+        }
       }
     } catch (err: any) {
       setError(err.message || "Authentication error");
