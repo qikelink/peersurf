@@ -13,7 +13,8 @@ import {
   Target,
   TrendingUp,
   User,
-  Wallet
+  Wallet,
+  BadgeCheck
 } from "lucide-react";
 import HeroCarousel from "../opportunities/HeroCarousel";
 import { useEffect, useState } from "react";
@@ -695,16 +696,28 @@ const OpportuniesPage = () => {
                     <h3 className={`font-bold ${isDark ? 'text-white' : 'text-foreground'} text-base`}>
                       {profile?.role === 'SPE' ? 'Sponsorship' : 'Become a Sponsor'}
                     </h3>
-                </div>
-                  <p className="text-muted-foreground text-sm mb-6 leading-relaxed">
-                  Create your profile -- Complete your bio -- Post your opportunities 
-                </p>
+                  </div>
+                  <ul className="text-muted-foreground text-sm mb-6 leading-relaxed space-y-3 pl-4">
+                    <li className="flex items-center gap-2 pl-1">
+                      <BadgeCheck className="w-4 h-4 text-green-600" />
+                      Create your profile
+                    </li>
+                    <li className="flex items-center gap-2 pl-1">
+                      <BadgeCheck className="w-4 h-4 text-green-600" />
+                      Complete your bio
+                    </li>
+                    <li className="flex items-center gap-2 pl-1">
+                      <BadgeCheck className="w-4 h-4 text-green-600" />
+                      Post your opportunities
+                    </li>
+                  </ul>
+                  
                   <Button 
                     onClick={() => navigate(profile?.role === 'SPE' ? '/profile' : '/auth?mode=signup&role=SPE')} 
                     className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-semibold py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-green-500/25"
                   >
-                  Get Started
-                </Button>
+                    Get Started
+                  </Button>
                 </div>
               </Card>
             )}
