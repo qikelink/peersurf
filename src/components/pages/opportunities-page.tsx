@@ -697,7 +697,7 @@ const OpportuniesPage = () => {
                     </h3>
                 </div>
                   <p className="text-muted-foreground text-sm mb-6 leading-relaxed">
-                  Reach 50,000+ crypto talent from one single dashboard.
+                  Create your profile -- Complete your bio -- Post your opportunities 
                 </p>
                   <Button 
                     onClick={() => navigate(profile?.role === 'SPE' ? '/sponsor' : '/auth?mode=signup&role=SPE')} 

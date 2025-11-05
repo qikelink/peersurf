@@ -8,6 +8,8 @@ import SponsorDashboard from "@/components/pages/sponsor-dashboard";
 import NotificationsPage from "../components/pages/notifications-page";
 import OpportunityDetailPage from "../components/pages/opportunity-detail";
 import { useUser } from "../contexts/UserContext";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 // Auth guard component - only used for pages that require authentication
 function AuthGuard({ children }: { children: React.ReactNode }) {
@@ -26,6 +28,35 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
 
   if (!user) {
     return <AuthPage />;
+  }
+
+  return <>{children}</>;
+}
+
+// Guest guard component - redirects authenticated users away from auth pages
+function GuestGuard({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useUser();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && user) {
+      navigate("/profile", { replace: true });
+    }
+  }, [user, loading, navigate]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-background text-foreground">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500 mx-auto mb-4"></div>
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (user) {
+    return null; // Will redirect in useEffect
   }
 
   return <>{children}</>;
@@ -56,7 +87,11 @@ const routes = [
  
   {
     path: "/auth",
-    element: <AuthPage />,
+    element: (
+      <GuestGuard>
+        <AuthPage />
+      </GuestGuard>
+    ),
   },
   {
     path: "/profile",

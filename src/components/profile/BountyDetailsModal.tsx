@@ -109,7 +109,7 @@ const BountyDetailsModal = ({ isOpen, onClose, bounty }: BountyDetailsModalProps
 
           {/* Acceptance Criteria */}
           <div>
-            <h3 className="text-base font-semibold mb-2">Acceptance Criteria</h3>
+            <h3 className="text-base font-semibold mb-2">Acceptance Criteria</h3><span className="italic text-sm">(Optional)</span>
             <div className="bg-muted p-4 rounded-lg">
               <p className="whitespace-pre-wrap">{bounty.acceptance_criteria}</p>
             </div>

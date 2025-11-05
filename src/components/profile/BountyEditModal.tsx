@@ -88,10 +88,7 @@ const BountyEditModal = ({ isOpen, onClose, bounty, onSuccess }: BountyEditModal
       setError("Deliverables are required.");
       return;
     }
-    if (!formData.acceptance_criteria.trim()) {
-      setError("Acceptance criteria are required.");
-      return;
-    }
+    
     if (formData.budget_amount <= 0) {
       setError("Budget amount must be greater than 0.");
       return;
@@ -168,13 +165,9 @@ const BountyEditModal = ({ isOpen, onClose, bounty, onSuccess }: BountyEditModal
                 onChange={(e) => handleInputChange('category', e.target.value)}
                 className="w-full bg-background border border-border rounded-lg px-3 py-2 text-foreground"
               >
-                <option value="Frontend">Frontend</option>
-                <option value="Backend">Backend</option>
-                <option value="Fullstack">Fullstack</option>
-                <option value="DevOps">DevOps</option>
-                <option value="Research">Research</option>
-                <option value="Design">Design</option>
-                <option value="Docs">Docs</option>
+                <option value="Contents">Contents</option>
+                <option value="Code">Code</option>
+                <option value="Others">Others</option>
               </select>
             </div>
 
@@ -209,7 +202,7 @@ const BountyEditModal = ({ isOpen, onClose, bounty, onSuccess }: BountyEditModal
 
             <div className="space-y-2">
               <label className="block text-sm font-medium flex items-center gap-2">
-                <Globe className="w-4 h-4" /> Repository / Reference URL
+                <Globe className="w-4 h-4" /> Your Github_Repo or Website
               </label>
               <input
                 type="url"
@@ -261,7 +254,7 @@ const BountyEditModal = ({ isOpen, onClose, bounty, onSuccess }: BountyEditModal
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium">Acceptance Criteria</label>
+              <label className="block text-sm font-medium">Acceptance Criteria (Optional)</label>
               <textarea
                 rows={4}
                 required

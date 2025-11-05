@@ -127,7 +127,7 @@ const AuthPage = () => {
       const checkSession = async () => {
         const { data: sessionData } = await supabase.auth.getSession();
         if (sessionData?.session) {
-          navigate("/opportunities");
+          navigate("/profile", { replace: true });
         }
       };
       checkSession();
@@ -158,17 +158,16 @@ const AuthPage = () => {
         let errorMessage = result.error.message || "Authentication failed";
         const errorMsgLower = errorMessage.toLowerCase();
         
-        // Handle email already exists / duplicate email error
+        // Handle invalid credentials FIRST (especially for sign-in)
         if (
-          errorMsgLower.includes('already exists') ||
-          errorMsgLower.includes('already registered') ||
-          errorMsgLower.includes('user already registered') ||
-          errorMsgLower.includes('email already exists') ||
-          errorMsgLower.includes('duplicate') ||
-          result.error.status === 422 ||
-          result.error.status === 400
+          errorMsgLower.includes('invalid login') ||
+          errorMsgLower.includes('invalid credentials') ||
+          errorMsgLower.includes('wrong password') ||
+          errorMsgLower.includes('incorrect password') ||
+          (errorMsgLower.includes('invalid') && errorMsgLower.includes('password')) ||
+          (errorMsgLower.includes('invalid') && errorMsgLower.includes('email'))
         ) {
-          errorMessage = "An account with this email already exists. Please sign in instead, or use a different email address.";
+          errorMessage = "Invalid email or password. Please check your credentials and try again.";
         }
         // Handle email not confirmed error with helpful message
         else if (
@@ -177,13 +176,22 @@ const AuthPage = () => {
         ) {
           errorMessage = "Email confirmation is required. Please check your email and confirm your account, or disable email confirmation in Supabase Dashboard settings.";
         }
-        // Handle invalid credentials
+        // Handle email already exists / duplicate email error (ONLY during sign-up)
         else if (
-          errorMsgLower.includes('invalid login') ||
-          errorMsgLower.includes('invalid credentials') ||
-          errorMsgLower.includes('wrong password') ||
-          errorMsgLower.includes('incorrect password')
+          isSignUp && (
+            errorMsgLower.includes('already exists') ||
+            errorMsgLower.includes('already registered') ||
+            errorMsgLower.includes('user already registered') ||
+            errorMsgLower.includes('email already exists') ||
+            errorMsgLower.includes('duplicate') ||
+            result.error.status === 422 ||
+            result.error.status === 400
+          )
         ) {
+          errorMessage = "An account with this email already exists. Please sign in instead, or use a different email address.";
+        }
+        // For sign-in, if we get a 400/422 without specific error message, treat as invalid credentials
+        else if (!isSignUp && (result.error.status === 400 || result.error.status === 422)) {
           errorMessage = "Invalid email or password. Please check your credentials and try again.";
         }
         
@@ -198,7 +206,7 @@ const AuthPage = () => {
         const { data: sessionData } = await supabase.auth.getSession();
         if (sessionData?.session) {
           setLoading(false);
-          navigate("/opportunities");
+          navigate("/profile", { replace: true });
         } else {
           // No session = signup failed, show error
           await signOut();
@@ -270,7 +278,7 @@ const AuthPage = () => {
             autoComplete="off"
           >
             {isSignUp && (
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
                   onClick={() => setRole("talent")}
@@ -285,13 +293,7 @@ const AuthPage = () => {
                 >
                   SPE
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setRole("admin")}
-                  className={`p-3 rounded-xl border text-sm ${role === "admin" ? "border-green-500 bg-green-500/10 text-green-300" : "border-border bg-card text-foreground"}`}
-                >
-                  Admin
-                </button>
+                
               </div>
             )}
             <div>

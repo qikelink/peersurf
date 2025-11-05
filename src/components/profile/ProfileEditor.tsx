@@ -236,6 +236,13 @@ const ProfileEditor = ({
             <label className="block text-sm font-medium text-foreground mb-2">
               Role
             </label>
+            <p className="text-xs text-muted-foreground mb-3">
+              {isEditing && (
+                <>
+                  <span className="font-semibold">Talent</span> can only apply for bounties. <span className="font-semibold">SPE</span> can post and manage bounties. <span className="font-semibold">Admin</span> conducts and oversees all platform affairs.
+                </>
+              )}
+            </p>
             {isEditing ? (
               <div className="flex gap-3">
                 <button

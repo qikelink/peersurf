@@ -27,8 +27,8 @@ const Sidebar = ({
   const getNavigationItems = () => {
     const baseItems = [
       { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-      { id: "bounties", label: "Bounties", icon: Target },
-      { id: "grants", label: "Grants", icon: Briefcase },
+      { id: "bounties", label: "Post Bounty", icon: Target },
+      { id: "grants", label: "Post Grant", icon: Briefcase },
       { id: "talent-hub", label: "Talent Hub", icon: Users },
     ];
 

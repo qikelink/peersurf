@@ -55,10 +55,6 @@ const BountyForm = ({ onSuccess }: BountyFormProps) => {
       setError("Deliverables are required.");
       return;
     }
-    if (!formData.acceptance_criteria.trim()) {
-      setError("Acceptance criteria are required.");
-      return;
-    }
     if (formData.budget_amount <= 0) {
       setError("Budget amount must be greater than 0.");
       return;
@@ -123,13 +119,9 @@ const BountyForm = ({ onSuccess }: BountyFormProps) => {
                 onChange={(e) => handleInputChange('category', e.target.value)}
                 className="w-full bg-background border border-border rounded-lg px-3 py-2 text-foreground"
               >
-                <option value="Frontend">Frontend</option>
-                <option value="Backend">Backend</option>
-                <option value="Fullstack">Fullstack</option>
-                <option value="DevOps">DevOps</option>
-                <option value="Research">Research</option>
-                <option value="Design">Design</option>
-                <option value="Docs">Docs</option>
+                <option value="Contents">Contents</option>
+                <option value="Code">Code</option>
+                <option value="others">Others</option>
               </select>
             </div>
 
@@ -180,7 +172,7 @@ const BountyForm = ({ onSuccess }: BountyFormProps) => {
                 type="url"
                 value={formData.repository_url}
                 onChange={(e) => handleInputChange('repository_url', e.target.value)}
-                placeholder="https://github.com/org/repo"
+                placeholder="Your Github_Repo or Website"
                 className="w-full bg-background border border-border rounded-lg px-3 py-2 text-foreground"
               />
             </div>
@@ -212,7 +204,7 @@ const BountyForm = ({ onSuccess }: BountyFormProps) => {
             </div>
 
             <div className="space-y-2">
-              <label className="block text-sm font-medium">Acceptance Criteria</label>
+              <label className="block text-sm font-medium">Acceptance Criteria (Optional)</label>
               <textarea
                 rows={4}
                 required
@@ -246,17 +238,14 @@ const BountyForm = ({ onSuccess }: BountyFormProps) => {
                 onChange={(e) => handleInputChange('bounty_type', e.target.value)}
                 className="w-full bg-background border border-border rounded-lg px-3 py-2 text-foreground"
               >
-                <option value="Solo">Solo</option>
-                <option value="Team">Team</option>
+                <option value="Solo Winner">Solo Winner</option>
                 <option value="Multiple Winners">Multiple Winners</option>
               </select>
             </div>
           </div>
 
           <div className="flex items-center gap-3 pt-2">
-            <Button type="button" variant="outline" className="border-border">
-              Preview
-            </Button>
+            
             <Button 
               type="submit" 
               disabled={isSubmitting}
@@ -264,6 +253,7 @@ const BountyForm = ({ onSuccess }: BountyFormProps) => {
             >
               {isSubmitting ? "Creating..." : "Submit Bounty"}
             </Button>
+            <span className="text-sm text-muted-foreground">*Note: You will be able to edit the bounty after it is created.</span>
           </div>
         </form>
       </div>
