@@ -107,7 +107,7 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ user, profile, sponsorCards
                       </div>
 
                       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                        <Link to={profile?.role === 'SPE' ? '/sponsor' : '/auth?mode=signup&role=SPE'} className="w-full sm:w-auto">
+                        <Link to={profile?.role === 'SPE' ? '/profile' : '/auth?mode=signup&role=SPE'} className="w-full sm:w-auto">
                           <Button className="bg-white text-black hover:bg-white/90 px-8 py-3 rounded-xl font-semibold w-full sm:w-auto transition-all duration-300 hover:scale-105">
                             {card.cta}
                           </Button>

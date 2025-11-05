@@ -53,4 +53,21 @@ export const getAllGrants = async (): Promise<Grant[]> => {
   }
 };
 
+// Delete a grant
+export const deleteGrant = async (grantId: string): Promise<void> => {
+  try {
+    const { error } = await supabase
+      .from('grants')
+      .delete()
+      .eq('id', grantId);
+
+    if (error) {
+      throw new Error(`Failed to delete grant: ${error.message}`);
+    }
+  } catch (error) {
+    console.error('Error deleting grant:', error);
+    throw error;
+  }
+};
+
 

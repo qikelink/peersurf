@@ -4,7 +4,7 @@ import { Badge } from "../ui/badge";
 import { 
   DollarSign, Target, 
   Briefcase,
-  UserCheck, UserX, Activity, UserCog, FileText, Users, TrendingUp, CheckCircle2, XCircle, Clock
+  UserCheck, UserX, Activity, UserCog, FileText, Users, TrendingUp, CheckCircle2, XCircle, Clock, Trash2
 } from "lucide-react";
 import BountyForm from "./BountyForm";
 import GrantForm from "./GrantForm";
@@ -14,6 +14,8 @@ import BountyEditModal from "./BountyEditModal";
 import GrantDetailsModal from "./GrantDetailsModal";
 import GrantSubmissionsModal from "./GrantSubmissionsModal";
 import GrantEditModal from "./GrantEditModal";
+import { deleteBounty } from "../../lib/bounties";
+import { deleteGrant } from "../../lib/grants";
 import { useState } from "react";
 
 interface DashboardData {
@@ -84,6 +86,8 @@ const DashboardContent = ({ activeSection, profile, dashboardData, handleRoleAct
   onBountySuccess?: () => void;
   onGrantSuccess?: () => void;
 }) => {
+  const [deletingBountyId, setDeletingBountyId] = useState<string | null>(null);
+  const [deletingGrantId, setDeletingGrantId] = useState<string | null>(null);
   const [selectedBounty, setSelectedBounty] = useState<any>(null);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [submissionsModalOpen, setSubmissionsModalOpen] = useState(false);
@@ -131,6 +135,42 @@ const DashboardContent = ({ activeSection, profile, dashboardData, handleRoleAct
   const handleGrantEditSuccess = () => {
     onGrantSuccess?.();
     setGrantEditModalOpen(false);
+  };
+
+  const handleDeleteBounty = async (bountyId: string) => {
+    if (!window.confirm('Are you sure you want to delete this bounty? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      setDeletingBountyId(bountyId);
+      await deleteBounty(bountyId);
+      // Refresh the data after deletion
+      onBountySuccess?.();
+    } catch (error: any) {
+      console.error('Error deleting bounty:', error);
+      alert(`Failed to delete bounty: ${error.message || 'Unknown error'}`);
+    } finally {
+      setDeletingBountyId(null);
+    }
+  };
+
+  const handleDeleteGrant = async (grantId: string) => {
+    if (!window.confirm('Are you sure you want to delete this grant? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      setDeletingGrantId(grantId);
+      await deleteGrant(grantId);
+      // Refresh the data after deletion
+      onGrantSuccess?.();
+    } catch (error: any) {
+      console.error('Error deleting grant:', error);
+      alert(`Failed to delete grant: ${error.message || 'Unknown error'}`);
+    } finally {
+      setDeletingGrantId(null);
+    }
   };
   const renderDashboardContent = () => {
     switch (activeSection) {
@@ -287,7 +327,16 @@ const DashboardContent = ({ activeSection, profile, dashboardData, handleRoleAct
                             <Activity className="w-4 h-4 mr-1" />
                             Edit
                           </Button>
-                          
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => handleDeleteBounty(bounty.id)}
+                            disabled={deletingBountyId === bounty.id}
+                            className="text-red-500 border-red-500 hover:bg-red-50 hover:text-red-600"
+                          >
+                            <Trash2 className="w-4 h-4 mr-1" />
+                            {deletingBountyId === bounty.id ? 'Deleting...' : 'Delete'}
+                          </Button>
                         </div>
                       </div>
                     ))
@@ -369,7 +418,16 @@ const DashboardContent = ({ activeSection, profile, dashboardData, handleRoleAct
                             <Activity className="w-4 h-4 mr-1" />
                             Edit
                           </Button>
-                          
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => handleDeleteGrant(grant.id)}
+                            disabled={deletingGrantId === grant.id}
+                            className="text-red-500 border-red-500 hover:bg-red-50 hover:text-red-600"
+                          >
+                            <Trash2 className="w-4 h-4 mr-1" />
+                            {deletingGrantId === grant.id ? 'Deleting...' : 'Delete'}
+                          </Button>
                         </div>
                       </div>
                     ))

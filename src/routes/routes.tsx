@@ -4,7 +4,6 @@ import TalentPage from "@/components/pages/talent-page";
 import CommunityPage from "@/components/pages/community-page";
 import AuthPage from "@/components/pages/auth-page";
 import ProfilePage from "@/components/pages/profile-page";
-import SponsorDashboard from "@/components/pages/sponsor-dashboard";
 import NotificationsPage from "../components/pages/notifications-page";
 import OpportunityDetailPage from "../components/pages/opportunity-detail";
 import { useUser } from "../contexts/UserContext";
@@ -100,10 +99,6 @@ const routes = [
         <ProfilePage />
       </AuthGuard>
     ),
-  },
-  {
-    path: "/sponsor",
-    element: <SponsorDashboard />,
   },
   {
     path: "/notifications",

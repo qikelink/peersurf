@@ -102,3 +102,20 @@ export const updateBountyStatus = async (bountyId: string, status: string): Prom
     throw error;
   }
 };
+
+// Delete a bounty
+export const deleteBounty = async (bountyId: string): Promise<void> => {
+  try {
+    const { error } = await supabase
+      .from('bounties')
+      .delete()
+      .eq('id', bountyId);
+
+    if (error) {
+      throw new Error(`Failed to delete bounty: ${error.message}`);
+    }
+  } catch (error) {
+    console.error('Error deleting bounty:', error);
+    throw error;
+  }
+};

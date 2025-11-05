@@ -63,20 +63,28 @@ const Sidebar = ({
       </div>
 
       <nav className="space-y-2">
-        {getNavigationItems().baseItems.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => item.id === "talent-hub" ? navigate("/talent") : setActiveSection(item.id)}
-            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
-              activeSection === item.id
-                ? "bg-green-600 text-white"
-                : "text-muted-foreground hover:text-foreground hover:bg-muted"
-            }`}
-          >
-            <item.icon className="w-4 h-4" />
-            {item.label}
-          </button>
-        ))}
+        {getNavigationItems().baseItems
+          .filter((item) => {
+            // Hide "Post Bounty" and "Post Grant" for talent users
+            if (profile?.role === "talent" && (item.id === "bounties" || item.id === "grants")) {
+              return false;
+            }
+            return true;
+          })
+          .map((item) => (
+            <button
+              key={item.id}
+              onClick={() => item.id === "talent-hub" ? navigate("/talent") : setActiveSection(item.id)}
+              className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
+                activeSection === item.id
+                  ? "bg-green-600 text-white"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
+              }`}
+            >
+              <item.icon className="w-4 h-4" />
+              {item.label}
+            </button>
+          ))}
 
         {profile?.role === "talent" && (
           <>

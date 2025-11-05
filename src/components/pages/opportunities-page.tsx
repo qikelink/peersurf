@@ -700,7 +700,7 @@ const OpportuniesPage = () => {
                   Create your profile -- Complete your bio -- Post your opportunities 
                 </p>
                   <Button 
-                    onClick={() => navigate(profile?.role === 'SPE' ? '/sponsor' : '/auth?mode=signup&role=SPE')} 
+                    onClick={() => navigate(profile?.role === 'SPE' ? '/profile' : '/auth?mode=signup&role=SPE')} 
                     className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-semibold py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-green-500/25"
                   >
                   Get Started
