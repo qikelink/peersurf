@@ -77,9 +77,10 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.log('Existing Profile:', existingProfile);
         console.log('Profile Error:', error);
         
-        if (error || !existingProfile) {
-          // Profile doesn't exist, create one with user metadata
-          // This handles both OAuth users and email/password users who confirmed their email
+        // CRITICAL FIX: Only create profile if it truly doesn't exist (no error AND no data)
+        // Don't create on network/database errors - that would overwrite existing data!
+        if (!existingProfile && !error) {
+          // Profile doesn't exist and no error - safe to create
           const profileData = {
             id: user.id,
             username: user.user_metadata?.username || user.user_metadata?.full_name?.split(' ')[0] || user.email?.split('@')[0] || 'user',
@@ -94,17 +95,18 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const { data: createdProfile, error: createError } = await createUserProfile(profileData);
           console.log('Profile creation result:', createdProfile);
           console.log('Profile creation error:', createError);
-        } else {
-          // Backfill missing data from user metadata
+        } else if (existingProfile) {
+          // Profile exists - only backfill missing data, NEVER overwrite existing data
           const oauthAvatar = user.user_metadata?.avatar_url || user.user_metadata?.picture || '';
           const updates: Partial<typeof existingProfile> = {};
           
+          // Only update if field is MISSING in existing profile
           if (!existingProfile.avatar_url && oauthAvatar) {
             updates.avatar_url = oauthAvatar;
           }
           
-          // Update role if it's missing or different from metadata (but only if metadata has a role)
-          if (user.user_metadata?.role && existingProfile.role !== user.user_metadata.role) {
+          // Only update role if it's MISSING (don't overwrite existing role)
+          if (!existingProfile.role && user.user_metadata?.role) {
             updates.role = user.user_metadata.role as 'talent' | 'SPE' | 'admin';
           }
           
@@ -114,6 +116,12 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
             console.log('Profile update result:', updatedProfile);
             console.log('Profile update error:', updateError);
           }
+        } else if (error) {
+          // There was an error fetching profile - DON'T create/overwrite!
+          // The profile might exist but we couldn't fetch it due to network/DB issues
+          console.error('Error fetching profile:', error);
+          console.warn('Profile might exist but could not be fetched. Will not create new profile to avoid data loss.');
+          // Don't call createUserProfile here - it would overwrite existing data!
         }
         
         // Refresh profile after potential creation/backfill

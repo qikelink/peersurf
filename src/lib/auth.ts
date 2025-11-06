@@ -228,11 +228,20 @@ export const updateStake = async (stakeId: string, updates: Partial<Stake>) => {
 };
 
 export const createUserProfile = async (profile: Partial<Profile>) => {
+  // Use insert instead of upsert to prevent overwriting existing profiles
+  // If profile already exists, this will fail safely
   const { data, error } = await supabase
     .from("profiles")
-    .upsert(profile, { onConflict: "id" }) // Use upsert instead of insert
+    .insert(profile)
     .select()
     .single();
+
+  // If error is due to duplicate (profile already exists), that's okay - fetch it instead
+  if (error?.code === '23505') {
+    // 23505 is PostgreSQL unique violation - profile already exists
+    const { data: existingData, error: fetchError } = await getUserProfile(profile.id!);
+    return { data: existingData, error: fetchError };
+  }
 
   return { data, error };
 };
