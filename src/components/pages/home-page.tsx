@@ -179,7 +179,8 @@ const HomePage = () => {
   const companyLogos = [
     { name: 'LisarStake', className: 'text-gray-900 dark:text-gray-100 font-bold italic tracking-tight text-lg md:text-xl lg:text-lg', id: 1 },
     { name: 'Gwid.io', className: 'text-gray-700 dark:text-gray-300 font-light uppercase tracking-widest text-sm md:text-base lg:text-lg', id: 2 },
-    { name: 'Framework', className: 'text-gray-700 dark:text-gray-300 font-light italic font-cursive tracking-wide text-base md:text-lg lg:text-xl', id: 3 }
+    { name: 'Framework', className: 'text-gray-700 dark:text-gray-300 font-light italic font-cursive tracking-wide text-base md:text-lg lg:text-xl', id: 3 },
+    { name: 'Cedra', className: 'text-gray-700 dark:text-gray-300 font-light italic font-cursive tracking-wide text-base md:text-lg lg:text-xl', id: 4 }
     
   ];
 
@@ -236,13 +237,13 @@ const HomePage = () => {
                 value: 50,
                 prefix: '',
                 suffix: '+',
-                description: 'Talents and Contributors Onboarded'
+                description: 'Talents Onboarded'
               },
               {
                 value: 4,
                 prefix: '',
                 suffix: '+',
-                description: 'SPE Actively Using The Platform'
+                description: 'Sponsors Actively Posting Bounties'
               },
               {
                 value: 200,
@@ -306,12 +307,12 @@ const HomePage = () => {
             {[
               {
                 icon: "🎯",
-                title: "Bounty Discovery",
+                title: "Opportunity Feed",
                 description: "Unified feed aggregating opportunities from GitHub, Discord, and forums"
               },
               {
                 icon: "⭐",
-                title: "Reputation System",
+                title: "Proof-of-Impact",
                 description: "On-chain attestation system with multi-signal scoring for contributors"
               },
               {
@@ -321,17 +322,17 @@ const HomePage = () => {
               },
               {
                 icon: "💰",
-                title: "Payment Processing",
+                title: "Instant Payouts",
                 description: "SAFE multisig integration for automated, secure payments"
               },
               {
                 icon: "📊",
-                title: "SPE Dashboards",
+                title: "Sponsor Dashboards",
                 description: "Powerful tools for opportunity posting and contributor management"
               },
               {
                 icon: "🏆",
-                title: "Leaderboards & Competition",
+                title: "Impact Ranking",
                 description: "Seasonal leaderboards that reset to encourage new contributors"
               }
             ].map((service, index) => (

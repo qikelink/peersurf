@@ -41,7 +41,7 @@ const Hero = () => {
           <span>Opportunities on</span>
           <br />
           <span className="inline-block relative">
-            Livepeer Ecosystem
+            Blockchain Ecosystem
             <span
               className="absolute left-0 right-0 -bottom-1 h-1 bg-green-500 rounded"
               style={{ zIndex: -1 }}
@@ -51,9 +51,8 @@ const Hero = () => {
 
         {/* Subtitle */}
         <p className="text-lg md:text-lg text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed">
-          Join the talent layer of
-          livepeer. Contribute as a developer, creator, artist or writer. Earn rewards and
-          help shape the future of decentralized video.
+        Earn reputation. Ship impact. Get paid instantly.
+        Bounties from GitHub, Discord, and forums — unified in one dashboard.
         </p>
 
         {/* CTA Buttons */}

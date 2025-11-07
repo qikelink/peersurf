@@ -8,7 +8,7 @@ import NotificationsPage from "../components/pages/notifications-page";
 import OpportunityDetailPage from "../components/pages/opportunity-detail";
 import { useUser } from "../contexts/UserContext";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 // Auth guard component - only used for pages that require authentication
 function AuthGuard({ children }: { children: React.ReactNode }) {
@@ -36,12 +36,20 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
 function GuestGuard({ children }: { children: React.ReactNode }) {
   const { user, loading } = useUser();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    if (!loading && user) {
+    // Check if we're in password reset mode BEFORE redirecting
+    const hash = location.hash;
+    const search = location.search;
+    const hasRecoveryToken = hash.includes("type=recovery") || hash.includes("access_token");
+    const isResetMode = search.includes("mode=reset-password") || hasRecoveryToken;
+    
+    // DON'T redirect if user is resetting password
+    if (!loading && user && !isResetMode) {
       navigate("/profile", { replace: true });
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, location.hash, location.search]);
 
   if (loading) {
     return (
@@ -54,7 +62,13 @@ function GuestGuard({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (user) {
+  // Also check here before returning null
+  const hash = location.hash;
+  const search = location.search;
+  const hasRecoveryToken = hash.includes("type=recovery") || hash.includes("access_token");
+  const isResetMode = search.includes("mode=reset-password") || hasRecoveryToken;
+
+  if (user && !isResetMode) {
     return null; // Will redirect in useEffect
   }
 

@@ -12,6 +12,7 @@ import { useTheme } from "../../contexts/ThemeContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import Loader from "../ui/loader";
 import { supabase } from "../../lib/supabase";
+import { sendPasswordResetEmail, updatePassword } from "../../lib/auth";
 
 
 type SocialProvider = {
@@ -91,6 +92,16 @@ const Button = ({
 const AuthPage = () => {
   const location = useLocation();
   const initialMode = new URLSearchParams(location.search).get("mode");
+  
+  // Check for password reset mode from both query string and hash fragment
+  // Supabase puts recovery tokens in the hash: #access_token=...&type=recovery
+  const checkResetMode = () => {
+    const mode = new URLSearchParams(location.search).get("mode");
+    const hash = location.hash;
+    const hasRecoveryToken = hash.includes("type=recovery") || hash.includes("access_token");
+    return mode === "reset-password" || hasRecoveryToken;
+  };
+  
   const [isSignUp, setIsSignUp] = useState<boolean>(initialMode === "signup");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -101,27 +112,63 @@ const AuthPage = () => {
     return r === "talent" || r === "SPE" || r === "admin" ? r : "";
   });
   const [loading, setLoading] = useState<boolean>(false);
+  const [isForgotPassword, setIsForgotPassword] = useState<boolean>(false);
+  const [resetEmailSent, setResetEmailSent] = useState<boolean>(false);
+  const [isResettingPassword, setIsResettingPassword] = useState<boolean>(checkResetMode());
+  const [newPassword, setNewPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [showNewPassword, setShowNewPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const [passwordResetSuccess, setPasswordResetSuccess] = useState<boolean>(false);
   const { signIn, signUp, signOut, signInWithProvider, user } = useUser();
   const { isDark } = useTheme();
   const navigate = useNavigate();
 
-  // Update mode from query string when it changes
+  // Update mode from query string and hash when it changes
   useEffect(() => {
     const mode = new URLSearchParams(location.search).get("mode");
     setIsSignUp(mode === "signup");
+    
+    // Check if we're in password reset mode (from query string or hash fragment)
+    const hash = location.hash;
+    const hasRecoveryToken = hash.includes("type=recovery") || hash.includes("access_token");
+    const isResetMode = mode === "reset-password" || hasRecoveryToken;
+    
+    if (isResetMode) {
+      setIsResettingPassword(true);
+      // Check if there's a session (user clicked reset link)
+      const checkResetSession = async () => {
+        const { data: sessionData } = await supabase.auth.getSession();
+        if (!sessionData?.session) {
+          // No session means invalid or expired reset link
+          setError("Invalid or expired password reset link. Please request a new one.");
+          setIsResettingPassword(false);
+        }
+      };
+      checkResetSession();
+    } else {
+      setIsResettingPassword(false);
+    }
+    
     const r = new URLSearchParams(location.search).get("role");
     if (r === "talent" || r === "SPE" || r === "admin") setRole(r as "talent" | "SPE" | "admin");
-  }, [location.search]);
+  }, [location.search, location.hash]);
 
   // Redirect if already logged in (but ONLY if we're not on signup page and not processing auth)
   useEffect(() => {
-    // NEVER redirect during signup/signin processing or if there's an error
+    // NEVER redirect during signup/signin processing, password reset, or if there's an error
     // Only redirect if:
     // 1. User exists
     // 2. Not currently loading/processing auth
     // 3. Not in signup mode (to prevent redirect during duplicate email check)
-    // 4. No error message
-    if (user && !loading && !isSignUp && !error) {
+    // 4. Not in password reset mode (check both state and URL to prevent race condition)
+    // 5. No error message
+    const hash = location.hash;
+    const hasRecoveryToken = hash.includes("type=recovery") || hash.includes("access_token");
+    const mode = new URLSearchParams(location.search).get("mode");
+    const isInResetMode = isResettingPassword || mode === "reset-password" || hasRecoveryToken;
+    
+    if (user && !loading && !isSignUp && !error && !isInResetMode) {
       // Double-check: Verify session exists before redirecting
       // This prevents redirects for duplicate emails
       const checkSession = async () => {
@@ -132,7 +179,7 @@ const AuthPage = () => {
       };
       checkSession();
     }
-  }, [user, navigate, loading, isSignUp, error]);
+  }, [user, navigate, loading, isSignUp, error, isResettingPassword, location.search, location.hash]);
 
   const handleSubmit = async (
     e: FormEvent<HTMLButtonElement> | FormEvent<HTMLFormElement>
@@ -233,6 +280,74 @@ const AuthPage = () => {
     }
   };
 
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setError("Please enter your email address");
+      return;
+    }
+    
+    setError(null);
+    setLoading(true);
+    
+    try {
+      const { error } = await sendPasswordResetEmail(email);
+      
+      if (error) {
+        setError(error.message || "Failed to send reset email");
+        setLoading(false);
+      } else {
+        setResetEmailSent(true);
+        setLoading(false);
+      }
+    } catch (err: any) {
+      setError(err.message || "Failed to send reset email");
+      setLoading(false);
+    }
+  };
+
+  const handlePasswordReset = async (e: FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    
+    // Validation
+    if (!newPassword || !confirmPassword) {
+      setError("Please enter and confirm your new password");
+      return;
+    }
+    
+    if (newPassword.length < 6) {
+      setError("Password must be at least 6 characters long");
+      return;
+    }
+    
+    if (newPassword !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+    
+    setLoading(true);
+    
+    try {
+      const { error: updateError } = await updatePassword(newPassword);
+      
+      if (updateError) {
+        setError(updateError.message || "Failed to reset password");
+        setLoading(false);
+      } else {
+        setPasswordResetSuccess(true);
+        setLoading(false);
+        // Sign out after successful password reset and redirect to sign in
+        setTimeout(async () => {
+          await signOut();
+          navigate("/auth", { replace: true });
+        }, 2000);
+      }
+    } catch (err: any) {
+      setError(err.message || "Failed to reset password");
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <div className="flex-1 px-6 flex flex-col justify-center items-center">
@@ -240,134 +355,311 @@ const AuthPage = () => {
         <div className={`${isDark ? 'bg-gray-950 border-gray-700' : 'bg-card border-border'} rounded-2xl shadow-lg border p-8 relative z-10 max-w-md w-full mt-1`}>
           <div className="text-center mb-8">
             <h2 className="text-2xl font-bold mb-2">
-              {isSignUp ? "Create Account" : "Sign In"}
+              {isResettingPassword
+                ? "Reset Your Password"
+                : isForgotPassword 
+                ? "Reset Password" 
+                : isSignUp 
+                ? "Create Account" 
+                : "Sign In"}
             </h2>
             <p className="text-muted-foreground">
-              {isSignUp
+              {isResettingPassword
+                ? "Enter your new password below"
+                : isForgotPassword
+                ? "Enter your email to receive a password reset link"
+                : isSignUp
                 ? "Join the decentralized video network"
                 : "Welcome back, let's get started"}
             </p>
           </div>
 
-          {/* Social Login Buttons */}
-          <div className="space-y-3 mb-6">
-            {socialProviders.map((provider) => (
-              <Button
-                key={provider.id}
-                className="w-full flex items-center justify-center gap-3 bg-card border border-border hover:bg-muted text-foreground"
-                onClick={() => handleSocial(provider.id)}
-                type="button"
-              >
-                {provider.icon}
-                <span className={`${isDark ? 'text-gray-300' : 'text-foreground'}`}>Continue with {provider.name}</span>
-              </Button>
-            ))}
-          </div>
+          {/* Social Login Buttons - only show when not in forgot password or reset password mode */}
+          {!isForgotPassword && !isResettingPassword && (
+            <>
+              <div className="space-y-3 mb-6">
+                {socialProviders.map((provider) => (
+                  <Button
+                    key={provider.id}
+                    className="w-full flex items-center justify-center gap-3 bg-card border border-border hover:bg-muted text-foreground"
+                    onClick={() => handleSocial(provider.id)}
+                    type="button"
+                  >
+                    {provider.icon}
+                    <span className={`${isDark ? 'text-gray-300' : 'text-foreground'}`}>Continue with {provider.name}</span>
+                  </Button>
+                ))}
+              </div>
 
-          {/* Divider */}
-            <div className="flex items-center mb-6">
-              <div className="flex-1 border-t border-border" />
-              <span className="mx-3 text-muted-foreground text-sm">or</span>
-              <div className="flex-1 border-t border-border" />
-          </div>
+              {/* Divider */}
+              <div className="flex items-center mb-6">
+                <div className="flex-1 border-t border-border" />
+                <span className="mx-3 text-muted-foreground text-sm">or</span>
+                <div className="flex-1 border-t border-border" />
+              </div>
+            </>
+          )}
 
-          {/* Email/Password Form */}
-          <form
-            className="space-y-4"
-            onSubmit={handleSubmit}
-            autoComplete="off"
-          >
-            {isSignUp && (
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setRole("talent")}
-                  className={`p-3 rounded-xl border text-sm ${role === "talent" ? "border-green-500 bg-green-500/10 text-green-300" : "border-border bg-card text-foreground"}`}
-                >
-                  Talent
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setRole("SPE")}
-                  className={`p-3 rounded-xl border text-sm ${role === "SPE" ? "border-green-500 bg-green-500/10 text-green-300" : "border-border bg-card text-foreground"}`}
-                >
-                  SPE
-                </button>
+          {/* Email/Password Form or Password Reset Form */}
+          {isResettingPassword ? (
+            // Password Reset Form (when user clicks email link)
+            passwordResetSuccess ? (
+              <div className={`p-4 rounded-xl ${isDark ? 'bg-green-500/10 border-green-700' : 'bg-green-50 border-green-200'} border`}>
+                <p className={`text-sm ${isDark ? 'text-green-400' : 'text-green-600'}`}>
+                  Password reset successfully! Redirecting to sign in...
+                </p>
+              </div>
+            ) : (
+              <form className="space-y-4" onSubmit={handlePasswordReset}>
+                <div className={`p-3 rounded-xl ${isDark ? 'bg-blue-500/10 border-blue-700' : 'bg-blue-50 border-blue-200'} border`}>
+                  <p className={`text-sm ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
+                    Please enter your new password below.
+                  </p>
+                </div>
                 
-              </div>
-            )}
-            <div>
-              <input
-                type="email"
-                placeholder="Email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full p-4 border border-border rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background bg-background text-foreground placeholder:text-muted-foreground/70"
-                required
-              />
-            </div>
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full p-4 pr-12 border border-border rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background bg-background text-foreground placeholder:text-muted-foreground/70"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className={`absolute right-4 top-1/2 transform -translate-y-1/2 ${isDark ? 'text-gray-400 hover:text-gray-300' : 'text-muted-foreground hover:text-foreground'}`}
-                tabIndex={-1}
-              >
-                {showPassword ? (
-                  <EyeOff className="h-5 w-5" />
-                ) : (
-                  <Eye className="h-5 w-5" />
+                <div className="relative">
+                  <input
+                    type={showNewPassword ? "text" : "password"}
+                    placeholder="New Password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    className="w-full p-4 pr-12 border border-border rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background bg-background text-foreground placeholder:text-muted-foreground/70"
+                    required
+                    minLength={6}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNewPassword(!showNewPassword)}
+                    className={`absolute right-4 top-1/2 transform -translate-y-1/2 ${isDark ? 'text-gray-400 hover:text-gray-300' : 'text-muted-foreground hover:text-foreground'}`}
+                    tabIndex={-1}
+                  >
+                    {showNewPassword ? (
+                      <EyeOff className="h-5 w-5" />
+                    ) : (
+                      <Eye className="h-5 w-5" />
+                    )}
+                  </button>
+                </div>
+
+                <div className="relative">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="Confirm New Password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="w-full p-4 pr-12 border border-border rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background bg-background text-foreground placeholder:text-muted-foreground/70"
+                    required
+                    minLength={6}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className={`absolute right-4 top-1/2 transform -translate-y-1/2 ${isDark ? 'text-gray-400 hover:text-gray-300' : 'text-muted-foreground hover:text-foreground'}`}
+                    tabIndex={-1}
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff className="h-5 w-5" />
+                    ) : (
+                      <Eye className="h-5 w-5" />
+                    )}
+                  </button>
+                </div>
+
+                {error && (
+                  <div className={`p-3 rounded-xl ${isDark ? 'bg-red-500/10 border-red-700' : 'bg-red-50 border-red-200'} border`}>
+                    <p className={`text-sm ${isDark ? 'text-red-400' : 'text-red-600'}`}>{error}</p>
+                  </div>
                 )}
-              </button>
-            </div>
 
-            {error && (
-              <div className={`p-3 rounded-xl ${isDark ? 'bg-red-500/10 border-red-700' : 'bg-red-50 border-red-200'} border`}>
-                <p className={`text-sm ${isDark ? 'text-red-400' : 'text-red-600'}`}>{error}</p>
-              </div>
-            )}
-
-            <Button
-              onClick={
-                handleSubmit as (e: MouseEvent<HTMLButtonElement>) => void
-              }
-              className="w-full font-semibold bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600"
-              disabled={loading}
-              type="submit"
+                <Button
+                  type="submit"
+                  className="w-full font-semibold bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600"
+                  disabled={loading}
+                >
+                  {loading ? "Resetting..." : "Reset Password"}
+                </Button>
+              </form>
+            )
+          ) : !isForgotPassword ? (
+            <form
+              className="space-y-4"
+              onSubmit={handleSubmit}
+              autoComplete="off"
             >
-              {loading
-                ? "Please wait..."
-                : isSignUp
-                ? "Create Account"
-                : "Sign In"}
-            </Button>
-          </form>
+              {isSignUp && (
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setRole("talent")}
+                    className={`p-3 rounded-xl border text-sm ${role === "talent" ? "border-green-500 bg-green-500/10 text-green-300" : "border-border bg-card text-foreground"}`}
+                  >
+                    Talent
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRole("SPE")}
+                    className={`p-3 rounded-xl border text-sm ${role === "SPE" ? "border-green-500 bg-green-500/10 text-green-300" : "border-border bg-card text-foreground"}`}
+                  >
+                    SPE
+                  </button>
+                  
+                </div>
+              )}
+              <div>
+                <input
+                  type="email"
+                  placeholder="Email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full p-4 border border-border rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background bg-background text-foreground placeholder:text-muted-foreground/70"
+                  required
+                />
+              </div>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full p-4 pr-12 border border-border rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background bg-background text-foreground placeholder:text-muted-foreground/70"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className={`absolute right-4 top-1/2 transform -translate-y-1/2 ${isDark ? 'text-gray-400 hover:text-gray-300' : 'text-muted-foreground hover:text-foreground'}`}
+                  tabIndex={-1}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5" />
+                  ) : (
+                    <Eye className="h-5 w-5" />
+                  )}
+                </button>
+              </div>
+
+              {/* Forgot Password link - only show on sign in */}
+              {!isSignUp && (
+                <div className="text-right">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsForgotPassword(true);
+                      setError(null);
+                      setResetEmailSent(false);
+                    }}
+                    className={`text-sm ${isDark ? 'text-gray-400 hover:text-green-400' : 'text-muted-foreground hover:text-primary'} transition-colors`}
+                  >
+                    Forgot password?
+                  </button>
+                </div>
+              )}
+
+              {error && (
+                <div className={`p-3 rounded-xl ${isDark ? 'bg-red-500/10 border-red-700' : 'bg-red-50 border-red-200'} border`}>
+                  <p className={`text-sm ${isDark ? 'text-red-400' : 'text-red-600'}`}>{error}</p>
+                </div>
+              )}
+
+              <Button
+                onClick={
+                  handleSubmit as (e: MouseEvent<HTMLButtonElement>) => void
+                }
+                className="w-full font-semibold bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600"
+                disabled={loading}
+                type="submit"
+              >
+                {loading
+                  ? "Please wait..."
+                  : isSignUp
+                  ? "Create Account"
+                  : "Sign In"}
+              </Button>
+            </form>
+          ) : (
+            <div className="space-y-4">
+              {!resetEmailSent ? (
+                <>
+                  <div className={`p-3 rounded-xl ${isDark ? 'bg-blue-500/10 border-blue-700' : 'bg-blue-50 border-blue-200'} border`}>
+                    <p className={`text-sm ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>
+                      Enter your email address and we'll send you a link to reset your password.
+                    </p>
+                  </div>
+                  <div>
+                    <input
+                      type="email"
+                      placeholder="Email address"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full p-4 border border-border rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background bg-background text-foreground placeholder:text-muted-foreground/70"
+                      required
+                    />
+                  </div>
+                  {error && (
+                    <div className={`p-3 rounded-xl ${isDark ? 'bg-red-500/10 border-red-700' : 'bg-red-50 border-red-200'} border`}>
+                      <p className={`text-sm ${isDark ? 'text-red-400' : 'text-red-600'}`}>{error}</p>
+                    </div>
+                  )}
+                  <Button
+                    onClick={handleForgotPassword}
+                    className="w-full font-semibold bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600"
+                    disabled={loading}
+                    type="button"
+                  >
+                    {loading ? "Sending..." : "Send Reset Link"}
+                  </Button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsForgotPassword(false);
+                      setError(null);
+                      setResetEmailSent(false);
+                    }}
+                    className={`text-sm w-full text-center ${isDark ? 'text-gray-400 hover:text-gray-300' : 'text-muted-foreground hover:text-foreground'} transition-colors`}
+                  >
+                    Back to sign in
+                  </button>
+                </>
+              ) : (
+                <div className={`p-4 rounded-xl ${isDark ? 'bg-green-500/10 border-green-700' : 'bg-green-50 border-green-200'} border`}>
+                  <p className={`text-sm ${isDark ? 'text-green-400' : 'text-green-600'}`}>
+                    Password reset email sent! Please check your inbox and follow the instructions to reset your password.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsForgotPassword(false);
+                      setError(null);
+                      setResetEmailSent(false);
+                    }}
+                    className={`mt-4 text-sm w-full text-center ${isDark ? 'text-gray-400 hover:text-gray-300' : 'text-muted-foreground hover:text-foreground'} transition-colors`}
+                  >
+                    Back to sign in
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
 
           {loading && <Loader />}
 
-          {/* Toggle Sign Up/In */}
-          <div className="mt-6 text-center">
-            <button
-              className="text-sm text-muted-foreground hover:text-primary transition-colors"
-              onClick={() => {
-                setIsSignUp(!isSignUp);
-                setError(null);
-              }}
-              type="button"
-            >
-              {isSignUp
-                ? "Already have an account? Sign in"
-                : "Don't have an account? Sign up"}
-            </button>
-          </div>
+          {/* Toggle Sign Up/In - only show when not in forgot password or reset password mode */}
+          {!isForgotPassword && !isResettingPassword && (
+            <div className="mt-6 text-center">
+              <button
+                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                onClick={() => {
+                  setIsSignUp(!isSignUp);
+                  setError(null);
+                }}
+                type="button"
+              >
+                {isSignUp
+                  ? "Already have an account? Sign in"
+                  : "Don't have an account? Sign up"}
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Footer */}

@@ -147,6 +147,23 @@ export const signInWithProvider = async (provider: "google" | "twitter") => {
   });
 };
 
+// Send password reset email (for users who forgot their password)
+export const sendPasswordResetEmail = async (email: string) => {
+  checkSupabaseConfig();
+  return supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${window.location.origin}/auth?mode=reset-password`,
+  });
+};
+
+// Update password (for password reset flow)
+export const updatePassword = async (newPassword: string) => {
+  checkSupabaseConfig();
+  const { data, error } = await supabase.auth.updateUser({
+    password: newPassword,
+  });
+  return { data, error };
+};
+
 // Sign out
 export const signOut = async () => {
   checkSupabaseConfig();
