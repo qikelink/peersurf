@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
-import { User, Calendar, FileText, CheckCircle, XCircle } from "lucide-react";
+import { User, FileText, CheckCircle, XCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "../../lib/supabase";
 
@@ -47,31 +47,43 @@ const BountySubmissionsModal = ({ isOpen, onClose, bounty }: BountySubmissionsMo
     setLoading(true);
     setError(null);
     try {
-      // Try new bounty_submissions table first
-      const { data, error } = await supabase
+      // Fetch submissions without join (PostgREST can't find the relationship)
+      const { data: submissionsData, error: submissionsError } = await supabase
         .from('bounty_submissions')
-        .select(`
-          *,
-          profiles:user_id(username, full_name, avatar_url)
-        `)
+        .select('*')
         .eq('bounty_id', bounty.id)
         .order('created_at', { ascending: false });
 
-      if (error) {
+      if (submissionsError) {
+        // Log the full error for debugging
+        console.error('Error fetching bounty_submissions:', {
+          message: submissionsError.message,
+          details: submissionsError.details,
+          hint: submissionsError.hint,
+          code: submissionsError.code,
+          error: submissionsError
+        });
+
         // If new table doesn't exist, try legacy submissions table
-        if (error.message.includes('relation "bounty_submissions" does not exist') || 
-            error.message.includes('permission denied')) {
+        if (submissionsError.message.includes('relation "bounty_submissions" does not exist') || 
+            submissionsError.message.includes('permission denied')) {
           console.log('Falling back to legacy submissions table');
           const { data: legacyData, error: legacyError } = await supabase
             .from('submissions')
-            .select(`
-              *,
-              profiles:user_id(username, full_name)
-            `)
+            .select('*')
             .eq('opportunity_id', bounty.id)
             .order('created_at', { ascending: false });
           
-          if (legacyError) throw legacyError;
+          if (legacyError) {
+            console.error('Error fetching legacy submissions:', {
+              message: legacyError.message,
+              details: legacyError.details,
+              hint: legacyError.hint,
+              code: legacyError.code,
+              error: legacyError
+            });
+            throw legacyError;
+          }
           
           // Transform legacy data to match new format
           const transformedData = legacyData?.map(sub => ({
@@ -81,17 +93,79 @@ const BountySubmissionsModal = ({ isOpen, onClose, bounty }: BountySubmissionsMo
             project_url: sub.links,
             description: sub.proposal,
             attachments: null,
-            profiles: sub.profiles
+            profiles: undefined // Will fetch separately
           })) || [];
           
-          setSubmissions(transformedData);
+          // Fetch profiles for legacy submissions
+          const userIds = [...new Set(transformedData.map(sub => sub.user_id))];
+          if (userIds.length > 0) {
+            const { data: profilesData } = await supabase
+              .from('profiles')
+              .select('id, username, full_name, avatar_url')
+              .in('id', userIds);
+            
+            const profilesMap = new Map(profilesData?.map(p => [p.id, p]) || []);
+            
+            const submissionsWithProfiles = transformedData.map(sub => ({
+              ...sub,
+              profiles: profilesMap.get(sub.user_id) || undefined
+            }));
+            
+            setSubmissions(submissionsWithProfiles);
+          } else {
+            setSubmissions(transformedData);
+          }
           return;
         }
-        throw error;
+        throw submissionsError;
       }
       
-      setSubmissions(data || []);
+      if (!submissionsData || submissionsData.length === 0) {
+        setSubmissions([]);
+        return;
+      }
+      
+      // Fetch profiles separately and join them
+      const userIds = [...new Set(submissionsData.map(sub => sub.user_id))];
+      const { data: profilesData, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, username, full_name, avatar_url')
+        .in('id', userIds);
+      
+      if (profilesError) {
+        console.error('Error fetching profiles:', {
+          message: profilesError.message,
+          details: profilesError.details,
+          hint: profilesError.hint,
+          code: profilesError.code
+        });
+        // Continue without profiles if there's an error
+      }
+      
+      // Create a map of user_id to profile for quick lookup
+      const profilesMap = new Map(profilesData?.map(p => [p.id, p]) || []);
+      
+      // Join submissions with profiles
+      const submissionsWithProfiles = submissionsData.map(submission => ({
+        ...submission,
+        profiles: profilesMap.get(submission.user_id) || undefined
+      }));
+      
+      // Log successful data fetch for debugging
+      console.log('Successfully fetched submissions:', {
+        count: submissionsWithProfiles.length,
+        submissionsWithProfiles: submissionsWithProfiles
+      });
+      
+      setSubmissions(submissionsWithProfiles);
     } catch (err) {
+      // Log the full error object
+      console.error('Exception in fetchSubmissions:', {
+        error: err,
+        message: err instanceof Error ? err.message : 'Unknown error',
+        stack: err instanceof Error ? err.stack : undefined
+      });
+      
       setError(err instanceof Error ? err.message : 'Failed to fetch submissions');
     } finally {
       setLoading(false);
@@ -110,6 +184,15 @@ const BountySubmissionsModal = ({ isOpen, onClose, bounty }: BountySubmissionsMo
         .eq('id', submissionId);
 
       if (error) {
+        console.error('Error updating bounty_submission:', {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code,
+          submissionId,
+          action
+        });
+
         // If new table fails, try legacy table
         if (error.message.includes('relation "bounty_submissions" does not exist') || 
             error.message.includes('permission denied')) {
@@ -122,7 +205,15 @@ const BountySubmissionsModal = ({ isOpen, onClose, bounty }: BountySubmissionsMo
             })
             .eq('id', submissionId);
           
-          if (legacyError) throw legacyError;
+          if (legacyError) {
+            console.error('Error updating legacy submission:', {
+              message: legacyError.message,
+              details: legacyError.details,
+              hint: legacyError.hint,
+              code: legacyError.code
+            });
+            throw legacyError;
+          }
         } else {
           throw error;
         }
@@ -131,6 +222,13 @@ const BountySubmissionsModal = ({ isOpen, onClose, bounty }: BountySubmissionsMo
       // Refresh submissions
       await fetchSubmissions();
     } catch (err) {
+      console.error('Exception in handleSubmissionAction:', {
+        error: err,
+        message: err instanceof Error ? err.message : 'Unknown error',
+        submissionId,
+        action
+      });
+      
       setError(err instanceof Error ? err.message : `Failed to ${action} submission`);
     }
   };

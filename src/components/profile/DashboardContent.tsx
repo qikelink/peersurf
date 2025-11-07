@@ -14,6 +14,7 @@ import BountyEditModal from "./BountyEditModal";
 import GrantDetailsModal from "./GrantDetailsModal";
 import GrantSubmissionsModal from "./GrantSubmissionsModal";
 import GrantEditModal from "./GrantEditModal";
+import SubmissionManagement from "./SubmissionManagement";
 import { deleteBounty } from "../../lib/bounties";
 import { deleteGrant } from "../../lib/grants";
 import { useState } from "react";
@@ -78,13 +79,14 @@ interface DashboardData {
   }>;
 }
 
-const DashboardContent = ({ activeSection, profile, dashboardData, handleRoleAction, onBountySuccess, onGrantSuccess }: {
+const DashboardContent = ({ activeSection, profile, dashboardData, handleRoleAction, onBountySuccess, onGrantSuccess, userId }: {
   activeSection: string;
   profile: any;
   dashboardData: DashboardData;
   handleRoleAction: (requestId: string, action: 'approve' | 'deny') => Promise<void>;
   onBountySuccess?: () => void;
   onGrantSuccess?: () => void;
+  userId?: string;
 }) => {
   const [deletingBountyId, setDeletingBountyId] = useState<string | null>(null);
   const [deletingGrantId, setDeletingGrantId] = useState<string | null>(null);
@@ -605,6 +607,11 @@ const DashboardContent = ({ activeSection, profile, dashboardData, handleRoleAct
             </Card>
           </div>
         );
+
+      case "submission-management":
+        return userId ? (
+          <SubmissionManagement userId={userId} />
+        ) : null;
 
       default:
         return null;

@@ -541,7 +541,7 @@ const ProfilePage = () => {
                 </div>
               )}
               {/* Profile Editor */}
-              {activeSection !== "bounties" && activeSection !== "grants" && activeSection !== "bounty-management" && activeSection !== "grant-management" && activeSection !== "user-management" && activeSection !== "ecosystem-analytics" && activeSection !== "talent-progress" && activeSection !== "password" && (
+              {activeSection !== "bounties" && activeSection !== "grants" && activeSection !== "bounty-management" && activeSection !== "grant-management" && activeSection !== "user-management" && activeSection !== "ecosystem-analytics" && activeSection !== "talent-progress" && activeSection !== "submission-management" && activeSection !== "password" && (
                 <ProfileEditor
                   profile={profile}
                   editedProfile={editedProfile}
@@ -576,6 +576,7 @@ const ProfilePage = () => {
                   handleRoleAction={handleRoleAction}
                   onBountySuccess={handleBountySuccess}
                   onGrantSuccess={handleGrantSuccess}
+                  userId={user?.id}
                 />
               )}
             </div>

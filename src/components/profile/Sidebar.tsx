@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import { 
   LogOut, Bell, 
   LayoutDashboard, Target, 
-  Users, BarChart3, Shield, Crown, UserCog, Briefcase, TrendingUp, Key
+  Users, BarChart3, Shield, Crown, UserCog, Briefcase, TrendingUp, Key, Trophy
 } from "lucide-react";
 
 const Sidebar = ({ 
@@ -35,6 +35,7 @@ const Sidebar = ({
     const speItems = [
       { id: "bounty-management", label: "Bounty Management", icon: Target },
       { id: "grant-management", label: "Grant Management", icon: Users },
+      { id: "submission-management", label: "Submissions", icon: Trophy },
     ];
 
     const adminItems = [
