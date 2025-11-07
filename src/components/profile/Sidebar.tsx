@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import { 
   LogOut, Bell, 
   LayoutDashboard, Target, 
-  Users, BarChart3, Shield, Crown, UserCog, Briefcase, TrendingUp
+  Users, BarChart3, Shield, Crown, UserCog, Briefcase, TrendingUp, Key
 } from "lucide-react";
 
 const Sidebar = ({ 
@@ -188,6 +188,15 @@ const Sidebar = ({
       )}
 
       <div className="mt-8 space-y-2">
+        <Button
+          variant={activeSection === "password" ? "default" : "outline"}
+          size="sm"
+          className={`w-full justify-start ${activeSection === "password" ? "bg-green-600 text-white" : ""}`}
+          onClick={() => setActiveSection("password")}
+        >
+          <Key className="w-4 h-4 mr-2" />
+          Change Password
+        </Button>
         <Button
           variant="outline"
           size="sm"

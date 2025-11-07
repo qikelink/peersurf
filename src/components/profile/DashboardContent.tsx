@@ -607,17 +607,7 @@ const DashboardContent = ({ activeSection, profile, dashboardData, handleRoleAct
         );
 
       default:
-        return (
-          <Card>
-            <CardContent className="p-6">
-              <div className="text-center text-muted-foreground">
-                <Activity className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <h3 className="text-lg font-semibold mb-2">Coming Soon</h3>
-                <p>This section is under development.</p>
-              </div>
-            </CardContent>
-          </Card>
-        );
+        return null;
     }
   };
 

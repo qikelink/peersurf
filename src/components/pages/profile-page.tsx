@@ -7,6 +7,7 @@ import Navbar from "../nav-bar";
 import Sidebar from "../profile/Sidebar";
 import ProfileEditor from "../profile/ProfileEditor";
 import DashboardContent from "../profile/DashboardContent";
+import PasswordChange from "../profile/PasswordChange";
 import { useEffect, useState } from "react";
 
 // Types
@@ -540,7 +541,7 @@ const ProfilePage = () => {
                 </div>
               )}
               {/* Profile Editor */}
-              {activeSection !== "bounties" && activeSection !== "grants" && activeSection !== "bounty-management" && activeSection !== "grant-management" && activeSection !== "user-management" && activeSection !== "ecosystem-analytics" && activeSection !== "talent-progress" && (
+              {activeSection !== "bounties" && activeSection !== "grants" && activeSection !== "bounty-management" && activeSection !== "grant-management" && activeSection !== "user-management" && activeSection !== "ecosystem-analytics" && activeSection !== "talent-progress" && activeSection !== "password" && (
                 <ProfileEditor
                   profile={profile}
                   editedProfile={editedProfile}
@@ -557,6 +558,13 @@ const ProfilePage = () => {
                   onImageSelect={(file) => setSelectedImageFile(file)}
                   isUploading={isUploading}
                 />
+              )}
+
+              {/* Password Change Section */}
+              {activeSection === "password" && (
+                <div className="bg-card border border-border rounded-xl p-6">
+                  <PasswordChange />
+                </div>
               )}
 
               {/* Dashboard Content */}
