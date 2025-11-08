@@ -263,10 +263,10 @@ const TalentPage = () => {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
           {/* Countdown timer - Top right */}
           <div className="flex justify-end mb-4">
-            <div className="inline-flex items-center gap-2 ">
+            <div className="inline-flex flex-wrap items-center gap-2">
               <Calendar className="w-4 h-4 text-green-500" />
-              <span className="text-sm text-muted-foreground">Leaderboard resets in:</span>
-              <span className="text-sm font-bold text-green-500 bg-background/80 backdrop-blur-sm rounded-lg border border-border  px-3 py-1.5">{seasonStats.daysUntilReset} days</span>
+              <span className="text-xs md:text-sm text-muted-foreground">Leaderboard resets in:</span>
+              <span className="text-xs md:text-sm font-bold text-green-500 bg-background/80 backdrop-blur-sm rounded-lg border border-border px-2 md:px-3 py-1 md:py-1.5">{seasonStats.daysUntilReset} days</span>
             </div>
           </div>
 
@@ -332,7 +332,7 @@ const TalentPage = () => {
             </div>
 
             {/* Right-aligned action buttons */}
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex sm:flex-row gap-3">
               <Button variant="outline" className="border-green-500 text-green-500 hover:bg-green-500 hover:text-white">
                 <Bookmark className="w-4 h-4 " />
               </Button>
@@ -408,19 +408,21 @@ const TalentPage = () => {
 
       {/* Filter/Navigation Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div className="flex items-center justify-between gap-8">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-8">
           {/* Category Tabs - Left side */}
-          <Tabs value={activeCategory} onValueChange={(value) => setActiveCategory(value as TalentCategory)}>
-            <TabsList className="bg-muted">
-              <TabsTrigger value="Referral Program">Referral Program</TabsTrigger>
-              <TabsTrigger value="Content Creators">Content Creators</TabsTrigger>
-              <TabsTrigger value="Developers">Developers</TabsTrigger>
-              <TabsTrigger value="Others">Others</TabsTrigger>
-            </TabsList>
-          </Tabs>
+          <div className="w-full md:w-auto overflow-x-auto">
+            <Tabs value={activeCategory} onValueChange={(value) => setActiveCategory(value as TalentCategory)}>
+              <TabsList className="bg-muted">
+                <TabsTrigger value="Referral Program" className="whitespace-nowrap">Referral Program</TabsTrigger>
+                <TabsTrigger value="Content Creators" className="whitespace-nowrap"> Creators</TabsTrigger>
+                <TabsTrigger value="Developers" className="whitespace-nowrap">Developers</TabsTrigger>
+                <TabsTrigger value="Others" className="whitespace-nowrap">Others</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
 
-          {/* Right side filters */}
-          <div className="flex items-center gap-4">
+          {/* Right side filters - Hidden on mobile */}
+          <div className="hidden md:flex items-center gap-4">
             {/* Time Range Filters */}
             <Tabs value={timeRange} onValueChange={setTimeRange}>
               <TabsList className="bg-muted">
@@ -542,30 +544,30 @@ const TalentPage = () => {
             {/* General Leaderboard Table */}
             <Card className="overflow-hidden">
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full min-w-[640px]">
                   <thead className="bg-muted/50">
                     <tr>
-                      <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Place</th>
-                      <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Player Name</th>
-                      <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Username</th>
-                      <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Points</th>
-                      <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Joined</th>
+                      <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium text-muted-foreground">Place</th>
+                      <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium text-muted-foreground">Player Name</th>
+                      <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium text-muted-foreground">Username</th>
+                      <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium text-muted-foreground">Points</th>
+                      <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium text-muted-foreground">Joined</th>
                     </tr>
                   </thead>
                   <tbody>
                     {profilesLoading ? (
                       Array.from({ length: 7 }).map((_, i) => (
                         <tr key={i} className="border-t border-border">
-                          <td className="px-4 py-3"><Skeleton className="h-4 w-8" /></td>
-                          <td className="px-4 py-3">
-                            <div className="flex items-center gap-3">
-                              <Skeleton className="w-8 h-8 rounded-full" />
-                              <Skeleton className="h-4 w-24" />
+                          <td className="px-2 sm:px-4 py-2 sm:py-3"><Skeleton className="h-4 w-8" /></td>
+                          <td className="px-2 sm:px-4 py-2 sm:py-3">
+                            <div className="flex items-center gap-2 sm:gap-3">
+                              <Skeleton className="w-6 h-6 sm:w-8 sm:h-8 rounded-full" />
+                              <Skeleton className="h-4 w-20 sm:w-24" />
                             </div>
                           </td>
-                          <td className="px-4 py-3"><Skeleton className="h-4 w-16" /></td>
-                          <td className="px-4 py-3"><Skeleton className="h-4 w-12" /></td>
-                          <td className="px-4 py-3"><Skeleton className="h-4 w-16" /></td>
+                          <td className="px-2 sm:px-4 py-2 sm:py-3"><Skeleton className="h-4 w-12 sm:w-16" /></td>
+                          <td className="px-2 sm:px-4 py-2 sm:py-3"><Skeleton className="h-4 w-10 sm:w-12" /></td>
+                          <td className="px-2 sm:px-4 py-2 sm:py-3"><Skeleton className="h-4 w-12 sm:w-16" /></td>
                         </tr>
                       ))
                     ) : filteredProfiles.length === 0 ? (
@@ -592,15 +594,15 @@ const TalentPage = () => {
                         
                         return (
                         <tr key={profile.id} className="border-t border-border hover:bg-muted/30 transition-colors">
-                          <td className="px-4 py-3">
+                          <td className="px-2 sm:px-4 py-2 sm:py-3">
                             <div className="flex items-center gap-2">
                               {getRankIcon(rank)}
-                              <span className="font-bold text-sm">{rank}</span>
+                              <span className="font-bold text-xs sm:text-sm">{rank}</span>
                             </div>
                           </td>
-                          <td className="px-4 py-3">
-                            <div className="flex items-center gap-3">
-                              <Avatar className="w-8 h-8">
+                          <td className="px-2 sm:px-4 py-2 sm:py-3">
+                            <div className="flex items-center gap-2 sm:gap-3">
+                              <Avatar className="w-6 h-6 sm:w-8 sm:h-8">
                                 <AvatarImage src={profile.avatar_url || undefined} />
                                 <AvatarFallback className="bg-gradient-to-br from-green-500 to-blue-500 text-white text-xs">
                                   {profile.full_name?.split(' ').map((n: string) => n[0]).join('') || 
@@ -609,30 +611,30 @@ const TalentPage = () => {
                                 </AvatarFallback>
                               </Avatar>
                               <div>
-                                <div className="font-semibold text-foreground">
+                                <div className="font-semibold text-xs sm:text-sm text-foreground">
                                   {profile.full_name || 'No name'}
                                 </div>
                                 {profile.bio && (
-                                  <div className="text-xs text-muted-foreground line-clamp-1">
+                                  <div className="text-xs text-muted-foreground line-clamp-1 hidden sm:block">
                                     {profile.bio}
                                   </div>
                                 )}
                               </div>
                             </div>
                           </td>
-                          <td className="px-4 py-3">
-                            <div className="text-sm text-muted-foreground">
+                          <td className="px-2 sm:px-4 py-2 sm:py-3">
+                            <div className="text-xs sm:text-sm text-muted-foreground">
                               @{profile.username || 'no-username'}
                             </div>
                           </td>
-                          <td className="px-4 py-3">
-                            <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-green-500 to-green-600 text-white">
-                              <Star className="w-3 h-3" />
+                          <td className="px-2 sm:px-4 py-2 sm:py-3">
+                            <div className="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-xs font-medium bg-gradient-to-r from-green-500 to-green-600 text-white">
+                              <Star className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                               {profile.points || 0} pts
                             </div>
                           </td>
-                          <td className="px-4 py-3">
-                            <div className="text-sm text-muted-foreground">
+                          <td className="px-2 sm:px-4 py-2 sm:py-3">
+                            <div className="text-xs sm:text-sm text-muted-foreground">
                               {profile.created_at 
                                 ? new Date(profile.created_at).toLocaleDateString()
                                 : '-'}
@@ -647,8 +649,8 @@ const TalentPage = () => {
               </div>
               {/* Pagination Controls */}
               {currentTableData.length > 0 && totalPages > 1 && (
-                <div className="flex items-center justify-between px-4 py-3 border-t border-border">
-                  <div className="text-sm text-muted-foreground">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 border-t border-border">
+                  <div className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left">
                     Showing {startIndex + 1} to {Math.min(endIndex, currentTableData.length)} of {currentTableData.length} results
                   </div>
                   <div className="flex items-center gap-2">
@@ -657,6 +659,7 @@ const TalentPage = () => {
                       size="sm"
                       onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                       disabled={currentPage === 1}
+                      className="h-8 w-8 p-0"
                     >
                       <ChevronLeft className="w-4 h-4" />
                     </Button>
@@ -667,7 +670,7 @@ const TalentPage = () => {
                           variant={currentPage === page ? "default" : "outline"}
                           size="sm"
                           onClick={() => setCurrentPage(page)}
-                          className="w-8 h-8 p-0"
+                          className="h-8 w-8 p-0 text-xs sm:text-sm"
                         >
                           {page}
                         </Button>
@@ -678,6 +681,7 @@ const TalentPage = () => {
                       size="sm"
                       onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                       disabled={currentPage === totalPages}
+                      className="h-8 w-8 p-0"
                     >
                       <ChevronRight className="w-4 h-4" />
                     </Button>
@@ -767,32 +771,32 @@ const TalentPage = () => {
         {/* General Leaderboard Table */}
         <Card className="overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full min-w-[640px]">
               <thead className="bg-muted/50">
                 <tr>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Place</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Player Name</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Earnings</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Projects</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Success Rate</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Tier</th>
+                  <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium text-muted-foreground">Place</th>
+                  <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium text-muted-foreground">Player Name</th>
+                  <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium text-muted-foreground">Earnings</th>
+                  <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium text-muted-foreground">Projects</th>
+                  <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium text-muted-foreground">Success Rate</th>
+                  <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-medium text-muted-foreground">Tier</th>
                 </tr>
               </thead>
               <tbody>
               {loading ? (
                   Array.from({ length: 7 }).map((_, i) => (
                     <tr key={i} className="border-t border-border">
-                      <td className="px-4 py-3"><Skeleton className="h-4 w-8" /></td>
-                      <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <Skeleton className="w-8 h-8 rounded-full" />
-                          <Skeleton className="h-4 w-24" />
+                      <td className="px-2 sm:px-4 py-2 sm:py-3"><Skeleton className="h-4 w-8" /></td>
+                      <td className="px-2 sm:px-4 py-2 sm:py-3">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <Skeleton className="w-6 h-6 sm:w-8 sm:h-8 rounded-full" />
+                          <Skeleton className="h-4 w-20 sm:w-24" />
                       </div>
                       </td>
-                      <td className="px-4 py-3"><Skeleton className="h-4 w-16" /></td>
-                      <td className="px-4 py-3"><Skeleton className="h-4 w-12" /></td>
-                      <td className="px-4 py-3"><Skeleton className="h-4 w-12" /></td>
-                      <td className="px-4 py-3"><Skeleton className="h-4 w-16" /></td>
+                      <td className="px-2 sm:px-4 py-2 sm:py-3"><Skeleton className="h-4 w-12 sm:w-16" /></td>
+                      <td className="px-2 sm:px-4 py-2 sm:py-3"><Skeleton className="h-4 w-10 sm:w-12" /></td>
+                      <td className="px-2 sm:px-4 py-2 sm:py-3"><Skeleton className="h-4 w-10 sm:w-12" /></td>
+                      <td className="px-2 sm:px-4 py-2 sm:py-3"><Skeleton className="h-4 w-12 sm:w-16" /></td>
                     </tr>
                 ))
               ) : currentTableData.length === 0 ? (
@@ -813,38 +817,38 @@ const TalentPage = () => {
                     
                     return (
                     <tr key={talent.id} className="border-t border-border hover:bg-muted/30 transition-colors">
-                      <td className="px-4 py-3">
+                      <td className="px-2 sm:px-4 py-2 sm:py-3">
                         <div className="flex items-center gap-2">
                         {getRankIcon(rank)}
-                          <span className="font-bold text-sm">{rank}</span>
+                          <span className="font-bold text-xs sm:text-sm">{rank}</span>
                       </div>
                       </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-3">
-                          <Avatar className="w-8 h-8">
+                      <td className="px-2 sm:px-4 py-2 sm:py-3">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <Avatar className="w-6 h-6 sm:w-8 sm:h-8">
                           <AvatarImage src={talent.avatar} />
                             <AvatarFallback className="bg-gradient-to-br from-green-500 to-blue-500 text-white text-xs">
                             {talent.name.split(' ').map((n: string) => n[0]).join('')}
                           </AvatarFallback>
                         </Avatar>
                           <div>
-                            <div className="font-semibold text-foreground">Upcoming</div>
-                            <div className="text-sm text-muted-foreground">-</div>
+                            <div className="font-semibold text-xs sm:text-sm text-foreground">Upcoming</div>
+                            <div className="text-xs sm:text-sm text-muted-foreground hidden sm:block">-</div>
                           </div>
                         </div>
                       </td>
-                      <td className="px-4 py-3">
-                        <div className="font-bold text-green-500">-</div>
+                      <td className="px-2 sm:px-4 py-2 sm:py-3">
+                        <div className="font-bold text-xs sm:text-sm text-green-500">-</div>
                       </td>
-                      <td className="px-4 py-3">
-                        <div className="font-semibold">-</div>
+                      <td className="px-2 sm:px-4 py-2 sm:py-3">
+                        <div className="font-semibold text-xs sm:text-sm">-</div>
                       </td>
-                      <td className="px-4 py-3">
-                        <div className="font-semibold text-green-500">-</div>
+                      <td className="px-2 sm:px-4 py-2 sm:py-3">
+                        <div className="font-semibold text-xs sm:text-sm text-green-500">-</div>
                       </td>
-                      <td className="px-4 py-3">
-                        <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r ${talent.tierColor} text-white`}>
-                          <Star className="w-3 h-3" />
+                      <td className="px-2 sm:px-4 py-2 sm:py-3">
+                        <div className={`inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-xs font-medium bg-gradient-to-r ${talent.tierColor} text-white`}>
+                          <Star className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                           {talent.tier}
                         </div>
                       </td>
@@ -857,8 +861,8 @@ const TalentPage = () => {
           </div>
           {/* Pagination Controls */}
           {currentTableData.length > 0 && totalPages > 1 && (
-            <div className="flex items-center justify-between px-4 py-3 border-t border-border">
-              <div className="text-sm text-muted-foreground">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 border-t border-border">
+              <div className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left">
                 Showing {startIndex + 1} to {Math.min(endIndex, currentTableData.length)} of {currentTableData.length} results
               </div>
               <div className="flex items-center gap-2">
@@ -867,6 +871,7 @@ const TalentPage = () => {
                   size="sm"
                   onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                   disabled={currentPage === 1}
+                  className="h-8 w-8 p-0"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </Button>
@@ -877,7 +882,7 @@ const TalentPage = () => {
                       variant={currentPage === page ? "default" : "outline"}
                       size="sm"
                       onClick={() => setCurrentPage(page)}
-                      className="w-8 h-8 p-0"
+                      className="h-8 w-8 p-0 text-xs sm:text-sm"
                     >
                       {page}
                     </Button>
@@ -888,6 +893,7 @@ const TalentPage = () => {
                   size="sm"
                   onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                   disabled={currentPage === totalPages}
+                  className="h-8 w-8 p-0"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </Button>
