@@ -16,14 +16,35 @@ import {
   Calendar,
   Award,
  
-  Bookmark
+  Bookmark,
+  Gift,
+  ChevronLeft,
+  ChevronRight,
+  Copy,
+  Check
 } from 'lucide-react';
 import Navbar from '../nav-bar';
 import { Skeleton } from '../ui/skeleton';
 import Footer from '../footer';
+import {
+  type CarouselApi,
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from '../ui/carousel';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '../ui/dialog';
+import { supabase } from '../../lib/supabase';
+import type { Profile } from '../../lib/supabase';
+import { useUser } from '../../contexts/UserContext';
 
 // Simplified talent data
-type TalentCategory = 'Developers' | 'Content Creators' | 'Others';
+type TalentCategory = 'Referral Program' | 'Developers' | 'Content Creators' | 'Others';
 
 const mockTalentData = [
   { id: 1, rank: 1, category: 'Developers' as TalentCategory, name: "Alex Chen", username: "@alexchen", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face", totalEarnings: 15420, projectsCompleted: 23, successRate: 98, tier: "Diamond", tierColor: "from-blue-500 to-purple-600" },
@@ -60,16 +81,95 @@ const TalentPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('earnings');
   const [filterTier, setFilterTier] = useState('All');
-  const [activeCategory, setActiveCategory] = useState<TalentCategory>('Developers');
+  const [activeCategory, setActiveCategory] = useState<TalentCategory>('Referral Program');
   const [timeRange, setTimeRange] = useState('Seasonal');
   const [filterBy, setFilterBy] = useState('all');
   const [loading, setLoading] = useState(true);
+  const [api, setApi] = useState<CarouselApi>();
+  const [allProfiles, setAllProfiles] = useState<Profile[]>([]);
+  const [profilesLoading, setProfilesLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+  const [showReferralModal, setShowReferralModal] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const { profile, user } = useUser();
 
   // Simulate loading
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 1000);
     return () => clearTimeout(timer);
   }, []);
+
+  // Reset to page 1 when category changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeCategory]);
+
+  // Fetch all profiles when Referral Program tab is active
+  useEffect(() => {
+    const fetchAllProfiles = async () => {
+      if (activeCategory === 'Referral Program') {
+        setProfilesLoading(true);
+        try {
+          // Try to fetch with points ordering first
+          let { data, error } = await supabase
+            .from('profiles')
+            .select('*')
+            .order('points', { ascending: false })
+            .order('created_at', { ascending: false });
+
+          // If ordering by points fails (column doesn't exist), try without it
+          if (error && (error.message?.includes('column') || error.code === '42703')) {
+            console.warn('Points column not found, fetching without points ordering');
+            const result = await supabase
+              .from('profiles')
+              .select('*')
+              .order('created_at', { ascending: false });
+            data = result.data;
+            error = result.error;
+          }
+
+          if (error) {
+            console.error('Error fetching profiles:', error);
+            console.error('Error details:', {
+              message: error.message,
+              details: error.details,
+              hint: error.hint,
+              code: error.code
+            });
+            // Set empty array on error so UI shows empty state
+            setAllProfiles([]);
+          } else {
+            console.log('Fetched profiles:', data?.length || 0);
+            // Ensure points default to 0 if not present
+            const profilesWithPoints = (data || []).map(profile => ({
+              ...profile,
+              points: (profile as any).points ?? 0
+            }));
+            setAllProfiles(profilesWithPoints);
+          }
+        } catch (err) {
+          console.error('Exception fetching profiles:', err);
+          setAllProfiles([]);
+        } finally {
+          setProfilesLoading(false);
+        }
+      }
+    };
+
+    fetchAllProfiles();
+  }, [activeCategory]);
+
+  // Auto-scroll carousel
+  useEffect(() => {
+    if (!api) return;
+
+    const interval = setInterval(() => {
+      api.scrollNext();
+    }, 4000); // Change slide every 4 seconds
+
+    return () => clearInterval(interval);
+  }, [api]);
 
   const tiers = ['All', 'Diamond', 'Platinum', 'Gold', 'Silver', 'Bronze'];
 
@@ -79,6 +179,15 @@ const TalentPage = () => {
     const matchesTier = filterTier === 'All' || talent.tier === filterTier;
     const matchesCategory = talent.category === activeCategory;
     return matchesSearch && matchesTier && matchesCategory;
+  });
+
+  // Filter profiles for referral program
+  const filteredProfiles = allProfiles.filter(profile => {
+    const searchLower = searchTerm.toLowerCase();
+    const matchesSearch = 
+      (profile.username?.toLowerCase().includes(searchLower) || false) ||
+      (profile.full_name?.toLowerCase().includes(searchLower) || false);
+    return matchesSearch;
   });
 
   const sortedTalent = [...filteredTalent].sort((a, b) => {
@@ -103,6 +212,19 @@ const TalentPage = () => {
     return <span className="w-5 h-5 flex items-center justify-center text-muted-foreground font-bold">{rank}</span>;
   };
 
+  // Pagination calculations
+  const tableDataForReferral = filteredProfiles.slice(3); // Skip top 3
+  const tableDataForOther = sortedTalent.slice(3); // Skip top 3
+  
+  const currentTableData = activeCategory === 'Referral Program' 
+    ? tableDataForReferral 
+    : tableDataForOther;
+  
+  const totalPages = Math.ceil(currentTableData.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedData = currentTableData.slice(startIndex, endIndex);
+
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -110,6 +232,18 @@ const TalentPage = () => {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
+  };
+
+  const copyReferralCode = async () => {
+    if (profile?.referral_code) {
+      try {
+        await navigator.clipboard.writeText(profile.referral_code);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        console.error('Failed to copy:', err);
+      }
+    }
   };
 
   return (
@@ -137,25 +271,64 @@ const TalentPage = () => {
           </div>
 
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-            {/* Left-aligned club/community info */}
-            <div className="flex items-center gap-4 md:gap-6">
-              {/* Circular avatar/logo */}
-              <div className="relative">
-                <div className="w-18 h-18 md:w-20 md:h-20 bg-gradient-to-br from-green-500 to-blue-500 rounded-lg flex items-center justify-center shadow-lg">
-                  <img src="trophy.png" alt="Livepeer Logo" className="w-12 h-12" />
-                </div>
+            {/* Carousel with leaderboard and referral campaign */}
+            <div className="flex-1 w-full">
+              <Carousel
+                setApi={setApi}
+                opts={{
+                  align: "start",
+                  loop: true,
+                }}
+                className="w-full"
+              >
+                <CarouselContent>
+                  {/* Slide 1: Season Leaderboard */}
+                  <CarouselItem>
+                    <div className="flex items-center gap-4 md:gap-6">
+                      {/* Circular avatar/logo */}
+                      <div className="relative">
+                        <div className="w-18 h-18 md:w-20 md:h-20 bg-gradient-to-br from-green-500 to-blue-500 rounded-lg flex items-center justify-center shadow-lg">
+                          <img src="trophy.png" alt="Livepeer Logo" className="w-12 h-12" />
+                        </div>
+                      </div>
+                      
+                      {/* Title and description */}
+                      <div>
+                        <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground mb-2">
+                          Season Leaderboard
+                        </h1>
+                        <p className="text-sm md:text-base text-muted-foreground max-w-md">
+                          The Livepeer ecosystem talent competition. Find top contributors and compete for rewards.
+                        </p>
+                      </div>
+                    </div>
+                  </CarouselItem>
+
+                  {/* Slide 2: Referral Campaign */}
+                  <CarouselItem>
+                    <div className="flex items-center gap-4 md:gap-6">
+                      {/* Circular avatar/logo */}
+                      <div className="relative">
+                        <div className="w-18 h-18 md:w-20 md:h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center shadow-lg">
+                        <img src="trophy.png" alt="Livepeer Logo" className="w-12 h-12" />
+
+                        </div>
+                      </div>
+                      
+                      {/* Title and description */}
+                      <div>
+                        <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground mb-2">
+                          Refer to Earn Points
+                        </h1>
+                        <p className="text-sm md:text-base text-muted-foreground max-w-md">
+                          Grow in the community and hopefully become an ambassador. Refer friends to earn points.
+                        </p>
+                      </div>
+                    </div>
+                  </CarouselItem>
+                </CarouselContent>
                 
-            </div>
-              
-              {/* Title and description */}
-              <div>
-                <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground mb-2">
-                  Season Leaderboard
-                </h1>
-                <p className="text-sm md:text-base text-muted-foreground max-w-md">
-                  The Livepeer ecosystem talent competition. Find top contributors and compete for rewards.
-                </p>
-            </div>
+              </Carousel>
             </div>
 
             {/* Right-aligned action buttons */}
@@ -163,7 +336,10 @@ const TalentPage = () => {
               <Button variant="outline" className="border-green-500 text-green-500 hover:bg-green-500 hover:text-white">
                 <Bookmark className="w-4 h-4 " />
               </Button>
-              <Button className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white">
+              <Button 
+                onClick={() => setShowReferralModal(true)}
+                className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white"
+              >
                 <Users className="w-4 h-4 mr-2" />
                 Invite Talent
               </Button>
@@ -172,14 +348,73 @@ const TalentPage = () => {
         </div>
       </section>
 
+      {/* Referral Code Modal */}
+      <Dialog open={showReferralModal} onOpenChange={setShowReferralModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Invite Talent</DialogTitle>
+            <DialogDescription>
+              Share your referral code to earn points when others join!
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            {profile?.referral_code ? (
+              <>
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 p-4 bg-muted rounded-lg border-2 border-dashed border-green-500">
+                    <div className="text-sm text-muted-foreground mb-1">Your Referral Code</div>
+                    <div className="text-2xl font-bold text-foreground font-mono">
+                      {profile.referral_code}
+                    </div>
+                  </div>
+                  <Button
+                    onClick={copyReferralCode}
+                    variant="outline"
+                    size="icon"
+                    className="h-12 w-12"
+                  >
+                    {copied ? (
+                      <Check className="w-5 h-5 text-green-500" />
+                    ) : (
+                      <Copy className="w-5 h-5" />
+                    )}
+                  </Button>
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  <p className="mb-2">Share this code with others:</p>
+                  <ul className="list-disc list-inside space-y-1 ml-2">
+                    <li>You earn <strong className="text-green-500">10 points</strong> for each successful referral</li>
+                    <li>They must use your code when signing up</li>
+                    <li>Your points are updated automatically</li>
+                  </ul>
+                </div>
+                <div className="pt-2 border-t">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Your Current Points:</span>
+                    <span className="font-bold text-green-500">{profile.points || 0} pts</span>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="text-center py-4">
+                <div className="text-muted-foreground">
+                  {user ? 'Loading your referral code...' : 'Please sign in to get your referral code'}
+                </div>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* Filter/Navigation Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center justify-between gap-8">
           {/* Category Tabs - Left side */}
           <Tabs value={activeCategory} onValueChange={(value) => setActiveCategory(value as TalentCategory)}>
             <TabsList className="bg-muted">
-              <TabsTrigger value="Developers">Developers</TabsTrigger>
+              <TabsTrigger value="Referral Program">Referral Program</TabsTrigger>
               <TabsTrigger value="Content Creators">Content Creators</TabsTrigger>
+              <TabsTrigger value="Developers">Developers</TabsTrigger>
               <TabsTrigger value="Others">Others</TabsTrigger>
             </TabsList>
           </Tabs>
@@ -215,8 +450,246 @@ const TalentPage = () => {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
-        {/* Top 3 Players Section (Podium Cards) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
+        {/* Referral Program Content */}
+        {activeCategory === 'Referral Program' ? (
+          <>
+            {/* Top 3 Players Section (Podium Cards) */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
+              {profilesLoading ? (
+                Array.from({ length: 3 }).map((_, i) => (
+                  <Card key={i} className="p-6">
+                    <div className="flex flex-col items-center text-center">
+                      <Skeleton className="w-16 h-16 rounded-full mb-4" />
+                      <Skeleton className="h-6 w-24 mb-2" />
+                      <Skeleton className="h-4 w-16 mb-4" />
+                      <Skeleton className="w-12 h-12 mb-4" />
+                      <div className="space-y-2 w-full">
+                        <Skeleton className="h-3 w-full" />
+                        <Skeleton className="h-3 w-full" />
+                        <Skeleton className="h-3 w-full" />
+                      </div>
+                    </div>
+                  </Card>
+                ))
+              ) : filteredProfiles.length === 0 ? (
+                <div className="col-span-3 text-center py-8 text-muted-foreground">
+                  No users found.
+                </div>
+              ) : (
+                filteredProfiles.slice(0, 3).map((profile, index) => {
+                  const trophyColors = ['text-yellow-500', 'text-gray-400', 'text-amber-600'];
+                  return (
+                    <Card key={profile.id} className={`p-3 ${index === 0 ? 'ring-2 ring-yellow-500/50' : ''}`}>
+                      <div className="flex flex-col">
+                        {/* Top Row: Avatar/Name on left, Trophy on right */}
+                        <div className="flex items-center justify-between w-full mb-4">
+                          {/* Left side: Avatar and Name */}
+                          <div className="flex items-center gap-2">
+                            <div className="relative">
+                              <Avatar className="w-12 h-12">
+                                <AvatarImage src={profile.avatar_url || undefined} />
+                                <AvatarFallback className="bg-gradient-to-br from-green-500 to-blue-500 text-white text-sm">
+                                  {profile.full_name?.split(' ').map(n => n[0]).join('') || 
+                                   profile.username?.charAt(0).toUpperCase() || 
+                                   'U'}
+                                </AvatarFallback>
+                              </Avatar>
+                              {index === 0 && (
+                                <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-500 rounded-full flex items-center justify-center">
+                                  <Crown className="w-2 h-2 text-white" />
+                                </div>
+                              )}
+                            </div>
+                            <h3 className="text-sm font-bold text-foreground">
+                              {profile.full_name || profile.username || 'No name'}
+                            </h3>
+                          </div>
+                          
+                          {/* Right side: Trophy */}
+                          <div className={`${trophyColors[index]}`}>
+                            {index === 0 && <img src="/trophy.png" alt="Trophy" className="w-12 h-12" />}
+                            {index === 1 && <img src="/ice-hockey.png" alt="Ice Hockey" className="w-12 h-12" />}
+                            {index === 2 && <img src="/water-polo.png" alt="Water Polo" className="w-12 h-12" />}
+                          </div>
+                        </div>
+
+                        {/* Stats */}
+                        <div className="space-y-1 w-full">
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs text-muted-foreground">Username</span>
+                            <span className="text-xs font-semibold text-green-500">@{profile.username || 'N/A'}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs text-muted-foreground">Points</span>
+                            <span className="text-xs font-semibold text-green-500">{profile.points || 0}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs text-muted-foreground">Joined</span>
+                            <span className="text-xs font-semibold text-green-500">
+                              {profile.created_at 
+                                ? new Date(profile.created_at).toLocaleDateString()
+                                : '-'}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  );
+                })
+              )}
+            </div>
+
+            {/* General Leaderboard Table */}
+            <Card className="overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-muted/50">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Place</th>
+                      <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Player Name</th>
+                      <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Username</th>
+                      <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Points</th>
+                      <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Joined</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {profilesLoading ? (
+                      Array.from({ length: 7 }).map((_, i) => (
+                        <tr key={i} className="border-t border-border">
+                          <td className="px-4 py-3"><Skeleton className="h-4 w-8" /></td>
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-3">
+                              <Skeleton className="w-8 h-8 rounded-full" />
+                              <Skeleton className="h-4 w-24" />
+                            </div>
+                          </td>
+                          <td className="px-4 py-3"><Skeleton className="h-4 w-16" /></td>
+                          <td className="px-4 py-3"><Skeleton className="h-4 w-12" /></td>
+                          <td className="px-4 py-3"><Skeleton className="h-4 w-16" /></td>
+                        </tr>
+                      ))
+                    ) : filteredProfiles.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">
+                          No users found.
+                        </td>
+                      </tr>
+                    ) : currentTableData.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">
+                          All users are displayed above.
+                        </td>
+                      </tr>
+                    ) : (
+                      paginatedData.map((item, index) => {
+                        const actualIndex = startIndex + index;
+                        const rank = actualIndex + 4; // +4 because top 3 are shown in cards
+                        // Type guard to check if it's a Profile
+                        const isProfile = 'avatar_url' in item || 'points' in item;
+                        const profile = isProfile ? item as Profile : null;
+                        
+                        if (!profile) return null;
+                        
+                        return (
+                        <tr key={profile.id} className="border-t border-border hover:bg-muted/30 transition-colors">
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-2">
+                              {getRankIcon(rank)}
+                              <span className="font-bold text-sm">{rank}</span>
+                            </div>
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-3">
+                              <Avatar className="w-8 h-8">
+                                <AvatarImage src={profile.avatar_url || undefined} />
+                                <AvatarFallback className="bg-gradient-to-br from-green-500 to-blue-500 text-white text-xs">
+                                  {profile.full_name?.split(' ').map((n: string) => n[0]).join('') || 
+                                   profile.username?.charAt(0).toUpperCase() || 
+                                   'U'}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <div className="font-semibold text-foreground">
+                                  {profile.full_name || 'No name'}
+                                </div>
+                                {profile.bio && (
+                                  <div className="text-xs text-muted-foreground line-clamp-1">
+                                    {profile.bio}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="text-sm text-muted-foreground">
+                              @{profile.username || 'no-username'}
+                            </div>
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-green-500 to-green-600 text-white">
+                              <Star className="w-3 h-3" />
+                              {profile.points || 0} pts
+                            </div>
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="text-sm text-muted-foreground">
+                              {profile.created_at 
+                                ? new Date(profile.created_at).toLocaleDateString()
+                                : '-'}
+                            </div>
+                          </td>
+                        </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+              {/* Pagination Controls */}
+              {currentTableData.length > 0 && totalPages > 1 && (
+                <div className="flex items-center justify-between px-4 py-3 border-t border-border">
+                  <div className="text-sm text-muted-foreground">
+                    Showing {startIndex + 1} to {Math.min(endIndex, currentTableData.length)} of {currentTableData.length} results
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                      disabled={currentPage === 1}
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </Button>
+                    <div className="flex items-center gap-1">
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                        <Button
+                          key={page}
+                          variant={currentPage === page ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setCurrentPage(page)}
+                          className="w-8 h-8 p-0"
+                        >
+                          {page}
+                        </Button>
+                      ))}
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                      disabled={currentPage === totalPages}
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </Card>
+          </>
+        ) : (
+          <>
+            {/* Top 3 Players Section (Podium Cards) */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
   {loading ? (
     Array.from({ length: 3 }).map((_, i) => (
       <Card key={i} className="p-6">
@@ -322,13 +795,28 @@ const TalentPage = () => {
                       <td className="px-4 py-3"><Skeleton className="h-4 w-16" /></td>
                     </tr>
                 ))
-              ) : (
-                  sortedTalent.slice(3).map((talent) => (
+              ) : currentTableData.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">
+                      All players are displayed above.
+                    </td>
+                  </tr>
+                ) : (
+                  paginatedData.map((item, index) => {
+                    const actualIndex = startIndex + index;
+                    const rank = actualIndex + 4; // +4 because top 3 are shown in cards
+                    // Type guard to check if it's a talent (not Profile)
+                    const isTalent = 'avatar' in item || 'tier' in item;
+                    const talent = isTalent ? item as typeof mockTalentData[0] : null;
+                    
+                    if (!talent) return null;
+                    
+                    return (
                     <tr key={talent.id} className="border-t border-border hover:bg-muted/30 transition-colors">
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                        {getRankIcon(talent.rank)}
-                          <span className="font-bold text-sm">{talent.rank}</span>
+                        {getRankIcon(rank)}
+                          <span className="font-bold text-sm">{rank}</span>
                       </div>
                       </td>
                       <td className="px-4 py-3">
@@ -336,7 +824,7 @@ const TalentPage = () => {
                           <Avatar className="w-8 h-8">
                           <AvatarImage src={talent.avatar} />
                             <AvatarFallback className="bg-gradient-to-br from-green-500 to-blue-500 text-white text-xs">
-                            {talent.name.split(' ').map(n => n[0]).join('')}
+                            {talent.name.split(' ').map((n: string) => n[0]).join('')}
                           </AvatarFallback>
                         </Avatar>
                           <div>
@@ -361,11 +849,51 @@ const TalentPage = () => {
                         </div>
                       </td>
                     </tr>
-                  ))
+                    );
+                  })
                 )}
               </tbody>
             </table>
           </div>
+          {/* Pagination Controls */}
+          {currentTableData.length > 0 && totalPages > 1 && (
+            <div className="flex items-center justify-between px-4 py-3 border-t border-border">
+              <div className="text-sm text-muted-foreground">
+                Showing {startIndex + 1} to {Math.min(endIndex, currentTableData.length)} of {currentTableData.length} results
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </Button>
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <Button
+                      key={page}
+                      variant={currentPage === page ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setCurrentPage(page)}
+                      className="w-8 h-8 p-0"
+                    >
+                      {page}
+                    </Button>
+                  ))}
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          )}
         </Card>
 
         {/* Call to Action - Mobile Responsive */}
@@ -388,6 +916,8 @@ const TalentPage = () => {
             </div>
           </Card>
         </div>
+          </>
+        )}
       </div>
 
       <Footer />

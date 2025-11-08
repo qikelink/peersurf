@@ -3,6 +3,7 @@ import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
 import { updateUserProfile, createUserProfile, uploadProfileImage } from "../../lib/auth";
 import { supabase } from "../../lib/supabase";
+import { processReferral } from "../../lib/referrals";
 import Navbar from "../nav-bar";
 import Sidebar from "../profile/Sidebar";
 import ProfileEditor from "../profile/ProfileEditor";
@@ -101,6 +102,35 @@ const ProfilePage = () => {
       setEditedProfile(profile);
     }
   }, [profile]);
+
+  // Check if user was already referred
+  useEffect(() => {
+    const checkReferralStatus = async () => {
+      if (user?.id && profile) {
+        try {
+          const { data: referral } = await supabase
+            .from('referrals')
+            .select('referral_code')
+            .eq('referred_id', user.id)
+            .maybeSingle();
+
+          if (referral) {
+            // User was already referred, update profile state
+            setEditedProfile((prev: any) => ({
+              ...prev,
+              was_referred: true,
+              used_referral_code: referral.referral_code,
+            }));
+          }
+        } catch (err) {
+          // No referral found or error - user hasn't been referred yet
+          console.log('No referral found for user');
+        }
+      }
+    };
+
+    checkReferralStatus();
+  }, [user?.id, profile]);
 
   // Fetch dashboard data from Supabase
   const fetchDashboardData = async () => {
@@ -383,6 +413,44 @@ const ProfilePage = () => {
         }
       }
       
+      // Process referral code if entered and user hasn't been referred yet
+      if (editedProfile.entered_referral_code) {
+        // Check if user was already referred
+        const { data: existingReferral } = await supabase
+          .from('referrals')
+          .select('id')
+          .eq('referred_id', user.id)
+          .maybeSingle();
+
+        if (existingReferral) {
+          setError('You have already used a referral code. It can only be entered once.');
+          setIsUploading(false);
+          return;
+        }
+
+        const referralCode = editedProfile.entered_referral_code.trim().toUpperCase();
+        if (referralCode.length === 5) {
+          const result = await processReferral(referralCode, user.id);
+          if (!result.success) {
+            setError(result.error || 'Invalid referral code. Please check and try again.');
+            setIsUploading(false);
+            return;
+          }
+          // Success - referral processed
+          setSuccessMessage('Referral code applied successfully! You earned 10 points.');
+          // Mark as referred in editedProfile
+          setEditedProfile({
+            ...editedProfile,
+            was_referred: true,
+            used_referral_code: referralCode,
+          });
+        } else {
+          setError('Referral code must be exactly 5 characters.');
+          setIsUploading(false);
+          return;
+        }
+      }
+      
       // Update profile with all fields including avatar_url
       const { data, error } = await updateUserProfile(user.id, {
         full_name: editedProfile.full_name,
@@ -404,7 +472,9 @@ const ProfilePage = () => {
       setIsEditing(false);
       setSelectedImageFile(null); // Clear selected image
       setError(null); // Clear any previous errors
-      setSuccessMessage('Profile updated successfully!');
+      if (!successMessage) {
+        setSuccessMessage('Profile updated successfully!');
+      }
       setTimeout(() => setSuccessMessage(null), 5000);
     } catch (error) {
       console.error('Error saving profile:', error);

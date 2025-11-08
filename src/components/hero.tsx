@@ -41,7 +41,7 @@ const Hero = () => {
           <span>Opportunities on</span>
           <br />
           <span className="inline-block relative">
-            Blockchain Ecosystem
+            Livepeer Ecosystem
             <span
               className="absolute left-0 right-0 -bottom-1 h-1 bg-green-500 rounded"
               style={{ zIndex: -1 }}

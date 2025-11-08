@@ -12,7 +12,8 @@ const checkSupabaseConfig = () => {
 export const signUp = async (
   email: string,
   password: string,
-  userData?: Partial<Profile>
+  userData?: Partial<Profile>,
+  referralCode?: string
 ) => {
   checkSupabaseConfig();
   
@@ -113,6 +114,19 @@ export const signUp = async (
           status: 400,
         },
       };
+    }
+  }
+
+  // Process referral if code provided and signup successful
+  if (!error && data?.user && referralCode) {
+    try {
+      // Wait a bit for profile to be created by trigger
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      const { processReferral } = await import('./referrals');
+      await processReferral(referralCode.trim().toUpperCase(), data.user.id);
+    } catch (err) {
+      console.error('Error processing referral during signup:', err);
+      // Don't fail signup if referral processing fails
     }
   }
 

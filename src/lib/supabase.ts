@@ -17,7 +17,18 @@ export interface Profile {
   role?: 'talent' | 'SPE' | 'admin' | null
   total_staked: number
   total_earned: number
+  points: number
+  referral_code: string | null
   updated_at: string
+  created_at: string
+}
+
+export interface Referral {
+  id: string
+  referrer_id: string
+  referred_id: string
+  referral_code: string
+  points_awarded: number
   created_at: string
 }
 

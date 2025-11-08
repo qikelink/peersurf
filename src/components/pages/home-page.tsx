@@ -180,7 +180,8 @@ const HomePage = () => {
     { name: 'LisarStake', className: 'text-gray-900 dark:text-gray-100 font-bold italic tracking-tight text-lg md:text-xl lg:text-lg', id: 1 },
     { name: 'Gwid.io', className: 'text-gray-700 dark:text-gray-300 font-light uppercase tracking-widest text-sm md:text-base lg:text-lg', id: 2 },
     { name: 'Framework', className: 'text-gray-700 dark:text-gray-300 font-light italic font-cursive tracking-wide text-base md:text-lg lg:text-xl', id: 3 },
-    { name: 'Cedra', className: 'text-gray-700 dark:text-gray-300 font-light italic font-cursive tracking-wide text-base md:text-lg lg:text-xl', id: 4 }
+    { name: 'Cedra', className: 'text-gray-700 dark:text-gray-300 font-light italic font-cursive tracking-wide text-base md:text-lg lg:text-xl', id: 4 },
+    { name: 'AI SPE', className: 'text-gray-700 dark:text-gray-300 font-light italic font-cursive tracking-wide text-base md:text-lg lg:text-xl', id: 5 }
     
   ];
 

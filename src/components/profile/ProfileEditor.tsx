@@ -288,6 +288,50 @@ const ProfileEditor = ({
             </p>
           </div>
 
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-2">
+              Referral Code
+            </label>
+            <p className="text-xs text-muted-foreground mb-2">
+              Enter a referral code to earn points. This can only be done once.
+            </p>
+            {isEditing ? (
+              <input
+                type="text"
+                value={editedProfile.entered_referral_code || ""}
+                onChange={(e) => {
+                  setEditedProfile({ 
+                    ...editedProfile, 
+                    entered_referral_code: e.target.value.toUpperCase().trim() 
+                  });
+                }}
+                disabled={editedProfile.was_referred || profile.was_referred || false}
+                maxLength={5}
+                className={`w-full bg-background border border-border rounded-lg px-3 py-2 text-foreground font-mono uppercase ${
+                  (editedProfile.was_referred || profile.was_referred)
+                    ? 'opacity-50 cursor-not-allowed bg-muted' 
+                    : ''
+                }`}
+                placeholder="Enter 5-character code"
+              />
+            ) : (
+              <div className="flex items-center gap-2">
+                {(editedProfile.was_referred || profile.was_referred) ? (
+                  <p className="text-foreground font-mono text-sm">
+                    {editedProfile.used_referral_code || profile.used_referral_code || "Already used"}
+                  </p>
+                ) : (
+                  <p className="text-muted-foreground text-sm">
+                    Not entered yet
+                  </p>
+                )}
+                {(editedProfile.was_referred || profile.was_referred) && (
+                  <span className="text-xs text-green-500">✓ Used</span>
+                )}
+              </div>
+            )}
+          </div>
+
           {isEditing && (
             <div className="flex gap-3 pt-4">
               <Button 
