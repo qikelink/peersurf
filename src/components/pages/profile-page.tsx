@@ -10,6 +10,7 @@ import ProfileEditor from "../profile/ProfileEditor";
 import DashboardContent from "../profile/DashboardContent";
 import PasswordChange from "../profile/PasswordChange";
 import { useEffect, useState } from "react";
+import { Menu, X } from "lucide-react";
 
 // Types
 interface DashboardData {
@@ -95,6 +96,7 @@ const ProfilePage = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Update editedProfile when profile changes
   useEffect(() => {
@@ -574,22 +576,54 @@ const ProfilePage = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-background text-foreground max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex">
+      <div className="min-h-screen bg-background text-foreground">
+        {/* Mobile Menu Button */}
+        <div className="lg:hidden fixed top-14 md:top-16 left-0 right-0 z-40 bg-background/95 backdrop-blur-sm border-b border-border px-4 py-3 flex items-center justify-between shadow-sm">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="flex items-center gap-2"
+          >
+            {sidebarOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            <span className="hidden sm:inline">{sidebarOpen ? 'Close' : 'Menu'}</span>
+          </Button>
+          <div className="font-semibold text-sm truncate max-w-[200px]">{profile?.full_name || profile?.username || 'Profile'}</div>
+        </div>
+
+        <div className="flex pt-14 md:pt-16 lg:pt-0">
+          {/* Mobile Overlay */}
+          {sidebarOpen && (
+            <div
+              className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+              onClick={() => setSidebarOpen(false)}
+            />
+          )}
+
           {/* Sidebar */}
-          <Sidebar
-            profile={profile}
-            activeSection={activeSection}
-            setActiveSection={setActiveSection}
-            requestedRole={requestedRole}
-            handleRoleRequest={handleRoleRequest}
-            navigate={navigate}
-            signOut={signOut}
-          />
+          <div
+            className={`fixed lg:static inset-y-0 left-0 z-50 lg:z-auto transform transition-transform duration-300 ease-in-out ${
+              sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+            }`}
+          >
+            <Sidebar
+              profile={profile}
+              activeSection={activeSection}
+              setActiveSection={(section) => {
+                setActiveSection(section);
+                setSidebarOpen(false); // Close sidebar on mobile when section changes
+              }}
+              requestedRole={requestedRole}
+              handleRoleRequest={handleRoleRequest}
+              navigate={navigate}
+              signOut={signOut}
+              onClose={() => setSidebarOpen(false)}
+            />
+          </div>
 
           {/* Main Content */}
-          <div className="flex-1">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex-1 w-full lg:w-auto min-w-0">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-8">
               {error && (
                 <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
                   <p className="text-red-400 text-sm">{error}</p>

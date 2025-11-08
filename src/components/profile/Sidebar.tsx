@@ -4,7 +4,8 @@ import { Button } from "../ui/button";
 import { 
   LogOut, Bell, 
   LayoutDashboard, Target, 
-  Users, BarChart3, Shield, Crown, UserCog, Briefcase, TrendingUp, Key, Trophy
+  Users, BarChart3, Shield, Crown, UserCog, Briefcase, TrendingUp, Key, Trophy,
+  X
 } from "lucide-react";
 
 const Sidebar = ({ 
@@ -14,7 +15,8 @@ const Sidebar = ({
   requestedRole, 
   handleRoleRequest, 
   navigate, 
-  signOut 
+  signOut,
+  onClose
 }: {
   profile: any;
   activeSection: string;
@@ -23,6 +25,7 @@ const Sidebar = ({
   handleRoleRequest: (role: string) => void;
   navigate: any;
   signOut: () => Promise<void>;
+  onClose?: () => void;
 }) => {
   const getNavigationItems = () => {
     const baseItems = [
@@ -47,7 +50,21 @@ const Sidebar = ({
   };
 
   return (
-    <div className="w-64 bg-card border-r border-border min-h-screen p-4">
+    <div className="w-64 bg-card border-r border-border min-h-screen p-4 overflow-y-auto shadow-lg lg:shadow-none">
+      {/* Mobile Close Button */}
+      {onClose && (
+        <div className="lg:hidden flex justify-end mb-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onClose}
+            className="h-8 w-8"
+          >
+            <X className="w-4 h-4" />
+          </Button>
+        </div>
+      )}
+
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-4">
           <Avatar className="w-10 h-10">
@@ -56,8 +73,8 @@ const Sidebar = ({
               {profile?.username?.slice(0, 2)?.toUpperCase() || "U"}
             </AvatarFallback>
           </Avatar>
-          <div>
-            <div className="font-semibold text-sm">{profile?.full_name || profile?.username}</div>
+          <div className="flex-1 min-w-0">
+            <div className="font-semibold text-sm truncate">{profile?.full_name || profile?.username}</div>
             <Badge variant="secondary" className="text-xs capitalize">{profile?.role || "Talent"}</Badge>
           </div>
         </div>
@@ -75,7 +92,14 @@ const Sidebar = ({
           .map((item) => (
             <button
               key={item.id}
-              onClick={() => item.id === "talent-hub" ? navigate("/talent") : setActiveSection(item.id)}
+              onClick={() => {
+                if (item.id === "talent-hub") {
+                  navigate("/talent");
+                } else {
+                  setActiveSection(item.id);
+                }
+                if (onClose) onClose(); // Close sidebar on mobile
+              }}
               className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
                 activeSection === item.id
                   ? "bg-green-600 text-white"
@@ -95,7 +119,10 @@ const Sidebar = ({
               </div>
             </div>
             <button
-              onClick={() => setActiveSection("talent-progress")}
+              onClick={() => {
+                setActiveSection("talent-progress");
+                if (onClose) onClose(); // Close sidebar on mobile
+              }}
               className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
                 activeSection === "talent-progress"
                   ? "bg-green-600 text-white"
@@ -118,7 +145,10 @@ const Sidebar = ({
             {getNavigationItems().speItems.map((item) => (
               <button
                 key={item.id}
-                onClick={() => setActiveSection(item.id)}
+                onClick={() => {
+                  setActiveSection(item.id);
+                  if (onClose) onClose(); // Close sidebar on mobile
+                }}
                 className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
                   activeSection === item.id
                     ? "bg-green-600 text-white"
@@ -142,7 +172,10 @@ const Sidebar = ({
             {getNavigationItems().adminItems.map((item) => (
               <button
                 key={item.id}
-                onClick={() => setActiveSection(item.id)}
+                onClick={() => {
+                  setActiveSection(item.id);
+                  if (onClose) onClose(); // Close sidebar on mobile
+                }}
                 className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
                   activeSection === item.id
                     ? "bg-green-600 text-white"
@@ -193,7 +226,10 @@ const Sidebar = ({
           variant={activeSection === "password" ? "default" : "outline"}
           size="sm"
           className={`w-full justify-start ${activeSection === "password" ? "bg-green-600 text-white" : ""}`}
-          onClick={() => setActiveSection("password")}
+          onClick={() => {
+            setActiveSection("password");
+            if (onClose) onClose(); // Close sidebar on mobile
+          }}
         >
           <Key className="w-4 h-4 mr-2" />
           Change Password
@@ -202,7 +238,10 @@ const Sidebar = ({
           variant="outline"
           size="sm"
           className="w-full justify-start"
-          onClick={() => navigate("/notifications")}
+          onClick={() => {
+            navigate("/notifications");
+            if (onClose) onClose(); // Close sidebar on mobile
+          }}
         >
           <Bell className="w-4 h-4 mr-2" />
           Notifications
