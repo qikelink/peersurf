@@ -156,8 +156,8 @@ const sponsorCards = [
     subtitle: "Get high-quality work done across content, development, and design",
     description: "Join 1,780+ sponsors who trust PeerSurf for their project needs",
     icon: Users,
-    gradient: "from-teal-600 to-teal-800",
-    accent: "bg-gradient-to-r from-green-600 to-green-700",
+    gradient: "from-[#3366FF] to-[#101B44]",
+    accent: "bg-gradient-to-r from-[#3366FF] to-[#2952CC]",
     stats: "50K+ Talent",
     cta: "Start Hiring"
   },
@@ -178,7 +178,7 @@ const sponsorCards = [
     subtitle: "Build the future of decentralized media with Livepeer",
     description: "Partner with the leading video infrastructure for the open internet",
     icon: TrendingUp,
-    gradient: "from-green-600 to-green-700",
+    gradient: "from-[#3366FF] to-[#2952CC]",
     accent: "bg-black",
     stats: "Global Reach",
     cta: "Join Now"
@@ -368,7 +368,7 @@ const OpportuniesPage = () => {
                 onClick={() => setShowFilters(!showFilters)}
                 className={`flex items-center gap-2 transition-all duration-300 ${
                   showFilters 
-                    ? "text-white bg-gradient-to-r from-green-600 to-green-700 shadow-lg shadow-green-500/25" 
+                    ? "text-white bg-gradient-to-r from-[#3366FF] to-[#2952CC] shadow-lg shadow-[#3366FF]/25" 
                     : "text-muted-foreground hover:text-foreground bg-muted/50 hover:bg-muted"
                 } px-4 py-2 rounded-xl font-medium`}
               >
@@ -385,7 +385,7 @@ const OpportuniesPage = () => {
                   onClick={() => setActiveTab(tab)}
                   className={`px-4 sm:px-4 py-2 rounded-xl font-semibold transition-all duration-300 whitespace-nowrap ${
                     activeTab === tab
-                      ? "bg-gradient-to-r from-green-600 to-green-700 text-white shadow-lg shadow-green-500/25 transform scale-105"
+                      ? "bg-gradient-to-r from-[#3366FF] to-[#2952CC] text-white shadow-lg shadow-[#3366FF]/25 transform scale-105"
                       : "text-muted-foreground hover:text-foreground bg-muted/30 hover:bg-muted/50 hover:scale-105"
                   }`}
                 >
@@ -403,7 +403,7 @@ const OpportuniesPage = () => {
                     onClick={() => setActiveCategory(category)}
                     className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 whitespace-nowrap ${
                       activeCategory === category
-                        ? "bg-gradient-to-r from-green-600 to-green-700 text-white shadow-lg shadow-green-500/25 transform scale-105"
+                        ? "bg-gradient-to-r from-[#3366FF] to-[#2952CC] text-white shadow-lg shadow-[#3366FF]/25 transform scale-105"
                         : "bg-muted/50 text-muted-foreground hover:text-foreground hover:bg-muted hover:scale-105"
                     }`}
                   >
@@ -463,19 +463,19 @@ const OpportuniesPage = () => {
 
                   return opportunities.map((opportunity: any) => (
                 <Link key={opportunity.id} to={`/opportunity/${opportunity.id}`} state={{ opportunity: { ...opportunity, type: opportunity.type || "Bounty", status: opportunity.status || "Active" } }}>
-                <Card className={`group relative overflow-hidden ${isDark ? 'bg-gray-900/50 border-gray-700/50' : 'bg-card/50 border-border/50'} p-2 sm:p-4 rounded-2xl backdrop-blur-sm border transition-all duration-300 hover:border-green-500/30 hover:shadow-lg hover:shadow-green-500/5`}>
+                <Card className={`group relative overflow-hidden ${isDark ? 'bg-gray-900/50 border-gray-700/50' : 'bg-card/50 border-border/50'} p-2 sm:p-4 rounded-2xl backdrop-blur-sm border transition-all duration-300 hover:border-[#3366FF]/30 hover:shadow-lg hover:shadow-[#3366FF]/5`}>
                   {/* Simple gradient overlay on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-green-600/0 to-green-600/0 group-hover:from-green-600/3 group-hover:to-green-600/3 transition-all duration-300" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#3366FF]/0 to-[#3366FF]/0 group-hover:from-[#3366FF]/3 group-hover:to-[#3366FF]/3 transition-all duration-300" />
                   
                   <div className="relative flex flex-col sm:flex-row sm:items-start justify-between gap-6">
                     <div className="flex items-start gap-6 flex-1">
-                      <div className="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg transition-all duration-300 group-hover:scale-105 bg-[#EAF6F2]">
+                      <div className="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg transition-all duration-300 group-hover:scale-105 bg-[#ECF3FF]">
                         {opportunity.type === "Bounty" ? (
                           // For bounties from Supabase, use poster's avatar
                           opportunity.poster_avatar ? (
                             <img src={opportunity.poster_avatar} alt={opportunity.team} className="w-14 h-14 rounded-full object-cover" />
                           ) : (
-                            <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gradient-to-br from-green-500 to-green-700">
+                            <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gradient-to-br from-[#3366FF] to-[#101B44]">
                               <span className="text-white font-bold text-sm">
                                 {(opportunity.team || "A").charAt(0).toUpperCase()}
                               </span>
@@ -495,10 +495,10 @@ const OpportuniesPage = () => {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-3 mb-2">
-                          <h3 className={`font-bold ${isDark ? 'text-white' : 'text-foreground'} text-base truncate group-hover:text-green-500 transition-colors duration-300`}>
+                          <h3 className={`font-bold ${isDark ? 'text-white' : 'text-foreground'} text-base truncate group-hover:text-[#3366FF] transition-colors duration-300`}>
                             {opportunity.title}
                           </h3>
-                          {opportunity.verified && <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />}
+                          {opportunity.verified && <CheckCircle className="w-4 h-4 text-[#3366FF] flex-shrink-0" />}
                         </div>
                         <p className="text-muted-foreground text-xs mb-3">
                           {opportunity.team || opportunity.issuedBy || "Community Sponsor"}
@@ -536,7 +536,7 @@ const OpportuniesPage = () => {
                       </div>
                     </div>
                     <div className="text-right sm:text-left">
-                      <div className="text-base font-bold bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent">
+                      <div className="text-base font-bold bg-gradient-to-r from-[#3366FF] to-[#2952CC] bg-clip-text text-transparent">
                         {opportunity.reward || opportunity.maxAmount || opportunity.avgAmount || ""}
                       </div>
                     </div>
@@ -603,7 +603,7 @@ const OpportuniesPage = () => {
                         
                         <div className="relative flex flex-col sm:flex-row sm:items-start justify-between gap-6">
                           <div className="flex items-start gap-6 flex-1">
-                            <div className="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg transition-all duration-300 group-hover:scale-105 bg-[#EAF6F2]">
+                            <div className="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg transition-all duration-300 group-hover:scale-105 bg-[#ECF3FF]">
                               {grant.poster_avatar ? (
                                 <img src={grant.poster_avatar} alt={grant.team} className="w-14 h-14 rounded-full object-cover" />
                               ) : (
@@ -666,7 +666,7 @@ const OpportuniesPage = () => {
               <h3 className={`font-semibold ${isDark ? 'text-white' : 'text-foreground'}`}>Menu</h3>
               <button
                 onClick={() => setShowSidebar(false)}
-                className={`p-2 ${isDark ? 'text-gray-300 hover:text-green-400' : 'text-muted-foreground hover:text-primary'} transition-colors`}
+                className={`p-2 ${isDark ? 'text-gray-300 hover:text-[#3366FF]' : 'text-muted-foreground hover:text-[#3366FF]'} transition-colors`}
               >
                 <X className="w-5 h-5" />
               </button>
@@ -686,11 +686,11 @@ const OpportuniesPage = () => {
                 <Skeleton className="h-12 w-full rounded-xl" />
               </Card>
             ) : (
-              <Card className={`group relative overflow-hidden ${isDark ? 'bg-gray-900/50 border-gray-700/50' : 'bg-card/50 border-border/50'} p-4 sm:p-6 mb-8 rounded-2xl backdrop-blur-sm border transition-all duration-500 hover:border-green-500/50 hover:shadow-2xl hover:shadow-green-500/10 hover:scale-[1.02]`}>
-                <div className="absolute inset-0 bg-gradient-to-br from-green-600/0 to-green-600/0 group-hover:from-green-600/5 group-hover:to-green-600/10 transition-all duration-500" />
+              <Card className={`group relative overflow-hidden ${isDark ? 'bg-gray-900/50 border-gray-700/50' : 'bg-card/50 border-border/50'} p-4 sm:p-6 mb-8 rounded-2xl backdrop-blur-sm border transition-all duration-500 hover:border-[#3366FF]/50 hover:shadow-2xl hover:shadow-[#3366FF]/10 hover:scale-[1.02]`}>
+                <div className="absolute inset-0 bg-gradient-to-br from-[#3366FF]/0 to-[#3366FF]/0 group-hover:from-[#3366FF]/5 group-hover:to-[#3366FF]/10 transition-all duration-500" />
                 <div className="relative">
                   <div className="flex items-center gap-4 mb-6">
-                    <div className="w-12 h-12 bg-gradient-to-r from-green-600 to-green-700 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/25">
+                    <div className="w-12 h-12 bg-gradient-to-r from-[#3366FF] to-[#2952CC] rounded-xl flex items-center justify-center shadow-lg shadow-[#3366FF]/25">
                       <Briefcase className="w-6 h-6 text-white" />
                     </div>
                     <h3 className={`font-bold ${isDark ? 'text-white' : 'text-foreground'} text-base`}>
@@ -699,22 +699,22 @@ const OpportuniesPage = () => {
                   </div>
                   <ul className="text-muted-foreground text-sm mb-6 leading-relaxed space-y-3 pl-4">
                     <li className="flex items-center gap-2 pl-1">
-                      <BadgeCheck className="w-4 h-4 text-green-600" />
+                      <BadgeCheck className="w-4 h-4 text-[#3366FF]" />
                       Create your profile
                     </li>
                     <li className="flex items-center gap-2 pl-1">
-                      <BadgeCheck className="w-4 h-4 text-green-600" />
+                      <BadgeCheck className="w-4 h-4 text-[#3366FF]" />
                       Complete your bio
                     </li>
                     <li className="flex items-center gap-2 pl-1">
-                      <BadgeCheck className="w-4 h-4 text-green-600" />
+                      <BadgeCheck className="w-4 h-4 text-[#3366FF]" />
                       Post your opportunities
                     </li>
                   </ul>
                   
                   <Button 
                     onClick={() => navigate(profile?.role === 'SPE' ? '/profile' : '/auth?mode=signup&role=SPE')} 
-                    className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-semibold py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-green-500/25"
+                    className="w-full bg-gradient-to-r from-[#3366FF] to-[#2952CC] hover:from-[#2952CC] hover:to-[#1F3FA3] text-white font-semibold py-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-[#3366FF]/25"
                   >
                     Get Started
                   </Button>
@@ -747,14 +747,14 @@ const OpportuniesPage = () => {
                 </>
               ) : (
                 <>
-                  <div className={`group flex items-center justify-between p-4 sm:p-6 ${isDark ? 'bg-gray-900/50 border-gray-700/50' : 'bg-card/50 border-border/50'} rounded-2xl backdrop-blur-sm border transition-all duration-300 hover:border-green-500/30 hover:shadow-lg hover:shadow-green-500/10`}>
+                  <div className={`group flex items-center justify-between p-4 sm:p-6 ${isDark ? 'bg-gray-900/50 border-gray-700/50' : 'bg-card/50 border-border/50'} rounded-2xl backdrop-blur-sm border transition-all duration-300 hover:border-[#3366FF]/30 hover:shadow-lg hover:shadow-[#3366FF]/10`}>
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-gradient-to-r from-green-600 to-green-700 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/25 group-hover:scale-110 transition-transform duration-300">
+                      <div className="w-12 h-12 bg-gradient-to-r from-[#3366FF] to-[#2952CC] rounded-xl flex items-center justify-center shadow-lg shadow-[#3366FF]/25 group-hover:scale-110 transition-transform duration-300">
                         <DollarSign className="w-6 h-6 text-white" />
                       </div>
                       <div>
                         <div className="text-base text-muted-foreground font-medium">Total Value Earned</div>
-                        <div className={`font-bold ${isDark ? 'text-white' : 'text-foreground'} text-sm bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent`}>
+                        <div className={`font-bold ${isDark ? 'text-white' : 'text-foreground'} text-sm bg-gradient-to-r from-[#3366FF] to-[#2952CC] bg-clip-text text-transparent`}>
                            USD
                         </div>
                       </div>
@@ -836,7 +836,7 @@ const OpportuniesPage = () => {
                 <h3 className={`font-bold ${isDark ? 'text-white' : 'text-foreground'} text-sm bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent`}>
                   RECENT SUBMISSIONS
                 </h3>
-                <Link to="/opportunities#leaderboard" className="text-green-400 text-sm font-medium hover:text-green-300 transition-colors duration-300 hover:underline">
+                <Link to="/opportunities#leaderboard" className="text-[#3366FF] text-sm font-medium hover:text-[#2952CC] transition-colors duration-300 hover:underline">
                   Leaderboard
                 </Link>
               </div>
@@ -856,15 +856,15 @@ const OpportuniesPage = () => {
               ) : (
                 <div className="space-y-2">
                   {mockRecentSubmissions.map((submission, index) => (
-                    <div key={index} className={`group flex items-center gap-4 p-4 ${isDark ? 'bg-gray-900/50 border-gray-700/50' : 'bg-card/50 border-border/50'} rounded-2xl backdrop-blur-sm border transition-all duration-300 hover:border-green-500/30 hover:shadow-lg hover:shadow-green-500/10 hover:scale-[1.02]`}>
-                      <Avatar className="w-12 h-12 ring-2 ring-green-500/20 group-hover:ring-green-500/40 transition-all duration-300">
+                    <div key={index} className={`group flex items-center gap-4 p-4 ${isDark ? 'bg-gray-900/50 border-gray-700/50' : 'bg-card/50 border-border/50'} rounded-2xl backdrop-blur-sm border transition-all duration-300 hover:border-[#3366FF]/30 hover:shadow-lg hover:shadow-[#3366FF]/10 hover:scale-[1.02]`}>
+                      <Avatar className="w-12 h-12 ring-2 ring-[#3366FF]/20 group-hover:ring-[#3366FF]/40 transition-all duration-300">
                         <AvatarImage src={submission.avatar} />
-                        <AvatarFallback className="bg-gradient-to-r from-green-600 to-green-700 text-white text-sm font-bold">
+                        <AvatarFallback className="bg-gradient-to-r from-[#3366FF] to-[#2952CC] text-white text-sm font-bold">
                           {submission.name.split(' ').map(n => n[0]).join('')}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
-                        <div className={`font-semibold ${isDark ? 'text-white' : 'text-foreground'} text-xs truncate group-hover:text-green-400 transition-colors duration-300`}>
+                        <div className={`font-semibold ${isDark ? 'text-white' : 'text-foreground'} text-xs truncate group-hover:text-[#3366FF] transition-colors duration-300`}>
                             {submission.name}
                         </div>
                         <div className="text-muted-foreground text-xs truncate">{submission.description}</div>

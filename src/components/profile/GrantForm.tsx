@@ -206,7 +206,7 @@ const GrantForm = ({ onSuccess }: GrantFormProps) => {
 
         <div className="flex items-center gap-3 pt-2">
           
-          <Button type="submit" disabled={isSubmitting} className="bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white">
+          <Button type="submit" disabled={isSubmitting} className="bg-[#3366FF] hover:bg-[#2952CC] disabled:opacity-50 text-white">
             {isSubmitting ? "Submitting..." : "Submit "}
           </Button>
           <span className="text-sm text-muted-foreground">*Note: You will be able to edit the grant after it is created.</span>

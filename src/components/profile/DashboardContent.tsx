@@ -206,15 +206,15 @@ const DashboardContent = ({ activeSection, profile, dashboardData, handleRoleAct
                     <h4 className="font-semibold mb-3">Contributions</h4>
                     <div className="grid grid-cols-3 gap-4 text-center">
                       <div>
-                        <div className="text-2xl font-bold text-green-500">{dashboardData.contributions.weekly}</div>
+                        <div className="text-2xl font-bold text-[#3366FF]">{dashboardData.contributions.weekly}</div>
                         <div className="text-xs text-muted-foreground">Weekly</div>
                       </div>
                       <div>
-                        <div className="text-2xl font-bold text-blue-500">{dashboardData.contributions.monthly}</div>
+                        <div className="text-2xl font-bold text-[#2952CC]">{dashboardData.contributions.monthly}</div>
                         <div className="text-xs text-muted-foreground">Monthly</div>
                       </div>
                       <div>
-                        <div className="text-2xl font-bold text-purple-500">{dashboardData.contributions.allTime}</div>
+                        <div className="text-2xl font-bold text-[#101B44]">{dashboardData.contributions.allTime}</div>
                         <div className="text-xs text-muted-foreground">All-time</div>
                       </div>
                     </div>
@@ -237,7 +237,7 @@ const DashboardContent = ({ activeSection, profile, dashboardData, handleRoleAct
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">Total Payouts Received:</span>
-                    <span className="text-xl font-bold text-green-500">${dashboardData.paymentHistory.totalPayouts}</span>
+                    <span className="text-xl font-bold text-[#3366FF]">${dashboardData.paymentHistory.totalPayouts}</span>
                   </div>
                   <div>
                     <h4 className="font-semibold mb-3">Completed Bounties</h4>
@@ -248,7 +248,7 @@ const DashboardContent = ({ activeSection, profile, dashboardData, handleRoleAct
                             <div className="font-medium">{bounty.name || bounty.title}</div>
                             <div className="text-sm text-muted-foreground">{bounty.completed_at || bounty.date}</div>
                           </div>
-                          <div className="text-green-500 font-semibold">${bounty.amount}</div>
+                          <div className="text-[#3366FF] font-semibold">${bounty.amount}</div>
                         </div>
                       ))}
                     </div>
@@ -290,15 +290,15 @@ const DashboardContent = ({ activeSection, profile, dashboardData, handleRoleAct
                             <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
                               <span>Budget: {bounty.budget_currency} {bounty.budget_amount}</span>
                               <span>Status: <span className={`font-medium ${
-                                bounty.status === 'active' ? 'text-green-500' : 
-                                bounty.status === 'completed' ? 'text-blue-500' : 
+                                bounty.status === 'active' ? 'text-[#3366FF]' : 
+                                bounty.status === 'completed' ? 'text-[#2952CC]' : 
                                 'text-gray-500'
                               }`}>{bounty.status}</span></span>
                               <span>Created: {new Date(bounty.created_at).toLocaleDateString()}</span>
                             </div>
                           </div>
                           <div className="text-right">
-                            <div className="text-green-500 font-semibold text-lg">
+                            <div className="text-[#3366FF] font-semibold text-lg">
                               {bounty.budget_currency} {bounty.budget_amount}
                             </div>
                           </div>
@@ -381,7 +381,7 @@ const DashboardContent = ({ activeSection, profile, dashboardData, handleRoleAct
                               <span>Amount: {grant.currency} {grant.amount}</span>
                               <span>Status: <span className={`font-medium ${
                                 grant.status === 'submitted' ? 'text-yellow-500' : 
-                                grant.status === 'approved' ? 'text-green-500' : 
+                                grant.status === 'approved' ? 'text-[#3366FF]' : 
                                 grant.status === 'rejected' ? 'text-red-500' :
                                 'text-gray-500'
                               }`}>{grant.status}</span></span>
@@ -389,7 +389,7 @@ const DashboardContent = ({ activeSection, profile, dashboardData, handleRoleAct
                             </div>
                           </div>
                           <div className="text-right">
-                            <div className="text-green-500 font-semibold text-lg">
+                            <div className="text-[#3366FF] font-semibold text-lg">
                               {grant.currency} {grant.amount}
                             </div>
                           </div>
@@ -496,7 +496,7 @@ const DashboardContent = ({ activeSection, profile, dashboardData, handleRoleAct
                       <div className="flex gap-2">
                         <Button 
                           size="sm" 
-                          className="bg-green-600 hover:bg-green-700"
+                          className="bg-[#3366FF] hover:bg-[#2952CC] text-white"
                           onClick={() => handleRoleAction(request.id, 'approve')}
                         >
                           <UserCheck className="w-4 h-4 mr-1" />
@@ -586,7 +586,7 @@ const DashboardContent = ({ activeSection, profile, dashboardData, handleRoleAct
                             </Badge>
                             {submission.status === 'approved' && submission.amount && submission.currency ? (
                               <div className="text-right">
-                                <div className="text-green-500 font-bold text-lg">
+                                <div className="text-[#3366FF] font-bold text-lg">
                                   {submission.currency} {submission.amount.toLocaleString()}
                                 </div>
                                 <div className="text-xs text-muted-foreground">Amount Won</div>

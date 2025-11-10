@@ -206,7 +206,7 @@ const SubmissionManagement = ({ userId }: { userId: string }) => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'approved': return 'bg-green-100 text-green-800';
+      case 'approved': return 'bg-[#ECF3FF] text-[#101B44]';
       case 'rejected': return 'bg-red-100 text-red-800';
       default: return 'bg-yellow-100 text-yellow-800';
     }
@@ -256,7 +256,7 @@ const SubmissionManagement = ({ userId }: { userId: string }) => {
                   placeholder="Search by project, opportunity, or user..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-2/3 pl-10 pr-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="w-2/3 pl-10 pr-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-[#3366FF]"
                 />
               </div>
               <div className="flex gap-2">
@@ -266,7 +266,7 @@ const SubmissionManagement = ({ userId }: { userId: string }) => {
                     variant={filter === status ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => setFilter(status)}
-                    className={filter === status ? 'bg-green-600 text-white' : ''}
+                    className={filter === status ? 'bg-[#3366FF] text-white' : ''}
                   >
                     <Filter className="w-4 h-4 mr-1" />
                     {status.charAt(0).toUpperCase() + status.slice(1)}
@@ -439,7 +439,7 @@ const SubmissionManagement = ({ userId }: { userId: string }) => {
                               <>
                                 <Button
                                   size="sm"
-                                  className="bg-green-600 hover:bg-green-700"
+                                  className="bg-[#3366FF] hover:bg-[#2952CC] text-white"
                                   onClick={() => handleSelectWinner(submission.id, submission.type)}
                                   disabled={selectingWinner === submission.id}
                                 >
@@ -467,7 +467,7 @@ const SubmissionManagement = ({ userId }: { userId: string }) => {
                               </>
                             )}
                             {submission.status === 'approved' && (
-                              <div className="flex items-center gap-2 text-green-600">
+                              <div className="flex items-center gap-2 text-[#3366FF]">
                                 <Trophy className="w-4 h-4" />
                                 <span className="font-medium">Winner Selected</span>
                               </div>

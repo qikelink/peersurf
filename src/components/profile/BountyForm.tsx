@@ -249,7 +249,7 @@ const BountyForm = ({ onSuccess }: BountyFormProps) => {
             <Button 
               type="submit" 
               disabled={isSubmitting}
-              className="bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white"
+              className="bg-[#3366FF] hover:bg-[#2952CC] disabled:opacity-50 text-white"
             >
               {isSubmitting ? "Creating..." : "Submit Bounty"}
             </Button>

@@ -289,7 +289,7 @@ const OpportunityDetailPage = () => {
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2">
                 <h1 className="text-xl sm:text-2xl font-bold truncate">{opportunity.title}</h1>
-                {opportunity?.status === "Active" && <CheckCircle className="w-5 h-5 text-green-400" />}
+                {opportunity?.status === "Active" && <CheckCircle className="w-5 h-5 text-[#3366FF]" />}
               </div>
               <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
                 {opportunity.type && (
@@ -301,10 +301,10 @@ const OpportunityDetailPage = () => {
                   </span>
                 )}
                 {opportunity.reward && (
-                  <span className="text-green-400">{opportunity.reward}</span>
+                  <span className="text-[#3366FF]">{opportunity.reward}</span>
                 )}
                 {opportunity.max_amount && (
-                  <span className="flex items-center gap-1 text-green-400"><DollarSign className="w-4 h-4" />{opportunity.max_amount}</span>
+                  <span className="flex items-center gap-1 text-[#3366FF]"><DollarSign className="w-4 h-4" />{opportunity.max_amount}</span>
                 )}
               </div>
             </div>
@@ -327,7 +327,7 @@ const OpportunityDetailPage = () => {
                 {isExpanded ? (opportunity as any).fullDescription : opportunity.description}
                 <button
                   onClick={() => setIsExpanded(!isExpanded)}
-                  className="ml-2 text-green-400 hover:text-green-300 text-sm font-medium"
+                  className="ml-2 text-[#3366FF] hover:text-[#2952CC] text-sm font-medium"
                 >
                   {isExpanded ? "Read Less" : "Read More"}
                 </button>
@@ -368,7 +368,7 @@ const OpportunityDetailPage = () => {
               </h2>
               {!user && (
                 <div className="mb-4 text-sm text-muted-foreground">
-                  You need to be logged in to submit. <button className="text-green-400" onClick={() => navigate("/auth?mode=login")}>Login</button>
+                  You need to be logged in to submit. <button className="text-[#3366FF] hover:text-[#2952CC]" onClick={() => navigate("/auth?mode=login")}>Login</button>
                 </div>
               )}
               
@@ -376,10 +376,10 @@ const OpportunityDetailPage = () => {
                 <div className="space-y-4">
                   <div className="bg-muted p-4 rounded-lg">
                     <div className="flex items-center gap-2 mb-2">
-                      <CheckCircle className="w-5 h-5 text-green-500" />
+                      <CheckCircle className="w-5 h-5 text-[#3366FF]" />
                       <span className="font-medium">Submission Status: </span>
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        userSubmissionStatus === 'approved' ? 'bg-green-100 text-green-800' :
+                        userSubmissionStatus === 'approved' ? 'bg-[#ECF3FF] text-[#101B44]' :
                         userSubmissionStatus === 'rejected' ? 'bg-red-100 text-red-800' :
                         'bg-yellow-100 text-yellow-800'
                       }`}>
@@ -434,9 +434,9 @@ const OpportunityDetailPage = () => {
                     />
                   </div>
                   {error && <div className="text-destructive text-sm">{error}</div>}
-                  {successMsg && <div className="text-green-400 text-sm">{successMsg}</div>}
+                  {successMsg && <div className="text-[#3366FF] text-sm">{successMsg}</div>}
                   <div className="flex justify-end">
-                    <Button onClick={handleSubmit} className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white" disabled={submitLoading}>
+                    <Button onClick={handleSubmit} className="bg-gradient-to-r from-[#3366FF] to-[#2952CC] hover:from-[#2952CC] hover:to-[#1F3FA3] text-white" disabled={submitLoading}>
                       {submitLoading ? "Submitting..." : `Submit ${opportunity?.type === "Grant" ? "Application" : "Submission"}`}
                     </Button>
                   </div>
@@ -451,7 +451,7 @@ const OpportunityDetailPage = () => {
                 <div className="flex items-start gap-3 mb-4">
                   <Avatar className="w-8 h-8">
                     <AvatarImage src={(user as any)?.user_metadata?.avatar_url || (user as any)?.user_metadata?.picture || ""} />
-                    <AvatarFallback className="bg-green-700 text-white">
+                    <AvatarFallback className="bg-[#3366FF] text-white">
                       {(user?.email || "U").slice(0,2).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
@@ -463,7 +463,7 @@ const OpportunityDetailPage = () => {
                       placeholder="Share feedback, ask questions, or drop your submission link"
                     />
                     <div className="flex justify-end mt-2">
-                      <Button onClick={handlePostComment} disabled={posting || !commentText.trim()} className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600">
+                      <Button onClick={handlePostComment} disabled={posting || !commentText.trim()} className="bg-gradient-to-r from-[#3366FF] to-[#2952CC] hover:from-[#2952CC] hover:to-[#1F3FA3] text-white">
                         {posting ? "Posting..." : "Post"}
                       </Button>
                     </div>
@@ -502,15 +502,15 @@ const OpportunityDetailPage = () => {
                   <div className="space-y-3">
                     {related.map((r) => (
                       <Link key={String(r.id)} to={`/opportunity/${r.id}`} state={{ opportunity: r }} className="block">
-                        <div className="p-3 rounded-lg bg-muted/60 border border-border hover:border-green-600 transition-colors">
+                        <div className="p-3 rounded-lg bg-muted/60 border border-border hover:border-[#3366FF] transition-colors">
                           <div className="flex items-center justify-between gap-3">
                             <div className="min-w-0">
                               <div className="text-sm text-foreground truncate">{r.title}</div>
                               <div className="text-xs text-muted-foreground truncate">{r.type}{r.category ? ` • ${r.category}` : ""}</div>
                             </div>
-                            {r.reward && <div className="text-xs text-green-400 whitespace-nowrap">{r.reward}</div>}
+                            {r.reward && <div className="text-xs text-[#3366FF] whitespace-nowrap">{r.reward}</div>}
                             {!r.reward && r.max_amount && (
-                              <div className="text-xs text-green-400 whitespace-nowrap">{r.max_amount}</div>
+                              <div className="text-xs text-[#3366FF] whitespace-nowrap">{r.max_amount}</div>
                             )}
                           </div>
                         </div>
@@ -528,7 +528,7 @@ const OpportunityDetailPage = () => {
               <div className="text-sm text-muted-foreground space-y-2">
                 <div className="flex items-center justify-between">
                   <span>Status</span>
-                  <span className={opportunity.status === "Active" ? "text-green-400" : "text-muted-foreground"}>{opportunity.status}</span>
+                  <span className={opportunity.status === "Active" ? "text-[#3366FF]" : "text-muted-foreground"}>{opportunity.status}</span>
                 </div>
                 {opportunity.category && (
                   <div className="flex items-center justify-between">
@@ -571,7 +571,7 @@ const OpportunityDetailPage = () => {
                       {defaults.map((p, i) => (
                         <li key={i} className="flex items-center justify-between">
                           <span className="text-muted-foreground">{p.label}</span>
-                          <span className="text-green-400">{p.amount}</span>
+                          <span className="text-[#3366FF]">{p.amount}</span>
                         </li>
                       ))}
                     </ul>
@@ -584,7 +584,7 @@ const OpportunityDetailPage = () => {
               <h3 className="font-semibold mb-2">Contact organizers</h3>
               <div className="text-sm text-muted-foreground mb-4">Have questions or need clarification? Reach out to the organizers.</div>
               <Button
-                className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 flex items-center gap-2 justify-center text-white"
+                className="w-full bg-gradient-to-r from-[#3366FF] to-[#2952CC] hover:from-[#2952CC] hover:to-[#1F3FA3] flex items-center gap-2 justify-center text-white"
                 onClick={() => {
                   const email = (opportunity as any)?.contact_email || "support@peersurf.xyz";
                   const subject = encodeURIComponent(`Opportunity Inquiry: ${opportunity.title}`);
@@ -605,15 +605,15 @@ const OpportunityDetailPage = () => {
                   <div className="space-y-3">
                     {related.map((r) => (
                       <Link key={String(r.id)} to={`/opportunity/${r.id}`} state={{ opportunity: r }} className="block">
-                        <div className="p-3 rounded-lg bg-muted/60 border border-border hover:border-green-600 transition-colors">
+                        <div className="p-3 rounded-lg bg-muted/60 border border-border hover:border-[#3366FF] transition-colors">
                           <div className="flex items-center justify-between gap-3">
                             <div className="min-w-0">
                               <div className="text-sm text-foreground truncate">{r.title}</div>
                               <div className="text-xs text-muted-foreground truncate">{r.type}{r.category ? ` • ${r.category}` : ""}</div>
                             </div>
-                            {r.reward && <div className="text-xs text-green-400 whitespace-nowrap">{r.reward}</div>}
+                            {r.reward && <div className="text-xs text-[#3366FF] whitespace-nowrap">{r.reward}</div>}
                             {!r.reward && r.max_amount && (
-                              <div className="text-xs text-green-400 whitespace-nowrap">{r.max_amount}</div>
+                              <div className="text-xs text-[#3366FF] whitespace-nowrap">{r.max_amount}</div>
                             )}
                           </div>
                         </div>

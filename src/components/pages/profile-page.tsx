@@ -591,39 +591,41 @@ const ProfilePage = () => {
           <div className="font-semibold text-sm truncate max-w-[200px]">{profile?.full_name || profile?.username || 'Profile'}</div>
         </div>
 
-        <div className="flex pt-14 md:pt-16 lg:pt-0">
-          {/* Mobile Overlay */}
-          {sidebarOpen && (
+        {/* Container matching nav width */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-4">
+          <div className="flex pt-14 md:pt-16 lg:pt-0">
+            {/* Mobile Overlay */}
+            {sidebarOpen && (
+              <div
+                className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+                onClick={() => setSidebarOpen(false)}
+              />
+            )}
+
+            {/* Sidebar */}
             <div
-              className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-              onClick={() => setSidebarOpen(false)}
-            />
-          )}
+              className={`fixed lg:static inset-y-0 left-0 z-50 lg:z-auto transform transition-transform duration-300 ease-in-out ${
+                sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+              }`}
+            >
+              <Sidebar
+                profile={profile}
+                activeSection={activeSection}
+                setActiveSection={(section) => {
+                  setActiveSection(section);
+                  setSidebarOpen(false); // Close sidebar on mobile when section changes
+                }}
+                requestedRole={requestedRole}
+                handleRoleRequest={handleRoleRequest}
+                navigate={navigate}
+                signOut={signOut}
+                onClose={() => setSidebarOpen(false)}
+              />
+            </div>
 
-          {/* Sidebar */}
-          <div
-            className={`fixed lg:static inset-y-0 left-0 z-50 lg:z-auto transform transition-transform duration-300 ease-in-out ${
-              sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-            }`}
-          >
-            <Sidebar
-              profile={profile}
-              activeSection={activeSection}
-              setActiveSection={(section) => {
-                setActiveSection(section);
-                setSidebarOpen(false); // Close sidebar on mobile when section changes
-              }}
-              requestedRole={requestedRole}
-              handleRoleRequest={handleRoleRequest}
-              navigate={navigate}
-              signOut={signOut}
-              onClose={() => setSidebarOpen(false)}
-            />
-          </div>
-
-          {/* Main Content */}
-          <div className="flex-1 w-full lg:w-auto min-w-0">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-8">
+            {/* Main Content */}
+            <div className="flex-1 w-full lg:w-auto min-w-0">
+              <div className="px-0 lg:px-6 py-4 lg:py-6 lg:pt-6">
               {error && (
                 <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
                   <p className="text-red-400 text-sm">{error}</p>
@@ -640,8 +642,8 @@ const ProfilePage = () => {
               )}
               
               {successMessage && (
-                <div className="mb-6 p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
-                  <p className="text-green-400 text-sm">{successMessage}</p>
+                <div className="mb-6 p-4 bg-[#3366FF]/10 border border-[#3366FF]/20 rounded-lg">
+                  <p className="text-[#3366FF] text-sm">{successMessage}</p>
                 </div>
               )}
               {/* Profile Editor */}
@@ -683,6 +685,7 @@ const ProfilePage = () => {
                   userId={user?.id}
                 />
               )}
+              </div>
             </div>
           </div>
         </div>

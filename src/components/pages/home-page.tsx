@@ -163,7 +163,7 @@ const HomePage = () => {
     return message.split(' ').map((word, index) => {
       if (word.startsWith('@')) {
         return (
-          <span key={index} className="text-blue-400">
+          <span key={index} className="text-[#3366FF]">
             {word}{' '}
           </span>
         );
@@ -261,13 +261,13 @@ const HomePage = () => {
             ].map((metric, index) => (
               <div
                 key={index}
-                className="bg-[#f0f9f7] dark:bg-green-900/10 rounded-xl p-8 md:p-10 text-center shadow-lg hover:shadow-xl transition-shadow relative"
+                className="bg-[#ECF3FF] dark:bg-[#101B44]/20 rounded-xl p-8 md:p-10 text-center shadow-lg hover:shadow-xl transition-shadow relative"
               >
                 {/* Real-time indicator dot */}
                 <div className="absolute top-3 right-3 flex items-center justify-center">
                   <div className="relative">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-ping absolute inset-0 opacity-75"></div>
+                    <div className="w-2 h-2 bg-[#3366FF] rounded-full animate-pulse"></div>
+                    <div className="w-2 h-2 bg-[#3366FF] rounded-full animate-ping absolute inset-0 opacity-75"></div>
                   </div>
                 </div>
                 <div className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-gray-100 mb-4">
@@ -296,7 +296,7 @@ const HomePage = () => {
 
       {/* Efficient and Integrated Ecosystem Services Section */}
       <section className="py-16 px-4 sm:px-6 lg:px-12 overflow-x-hidden" data-aos="fade-up">
-        <div className="max-w-7xl mx-auto bg-green-50 dark:bg-green-900/20 rounded-2xl p-12 shadow-lg border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100">
+        <div className="max-w-7xl mx-auto bg-[#ECF3FF] dark:bg-[#101B44]/30 rounded-2xl p-12 shadow-lg border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 ">Streamlined Ecosystem Coordination</h2>
             <p className="text-lg max-w-2xl mx-auto">
@@ -337,7 +337,7 @@ const HomePage = () => {
                 description: "Seasonal leaderboards that reset to encourage new contributors"
               }
             ].map((service, index) => (
-              <div key={index} className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700 hover:border-green-300 dark:hover:border-green-600 transition-colors shadow-sm backdrop-blur-sm cursor-pointer">
+              <div key={index} className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700 hover:border-[#3366FF]/50 dark:hover:border-[#3366FF] transition-colors shadow-sm backdrop-blur-sm cursor-pointer">
                   <div className="flex items-center justify-between mb-4">
                   <div className="text-2xl">{service.icon}</div>
                   <ArrowUpRight className="w-5 h-5 text-gray-900 dark:text-gray-100" />
@@ -352,7 +352,7 @@ const HomePage = () => {
 
       {/* Key Benefits Section */}
       <section className="py-16 px-4 sm:px-6 lg:px-12 bg-background overflow-x-hidden" data-aos="fade-up">
-        <div className="max-w-7xl mx-auto p-12 rounded-2xl border border-green-200 dark:border-green-900/20">
+        <div className="max-w-7xl mx-auto p-12 rounded-2xl border border-[#3366FF]/30 dark:border-[#101B44]/40">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Column - GIF */}
             <div className="order-2 lg:order-1">
@@ -386,7 +386,7 @@ const HomePage = () => {
                   }
                 ].map((benefit, index) => (
                   <div key={index} className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center mt-1">
+                    <div className="flex-shrink-0 w-6 h-6 bg-[#3366FF] rounded-full flex items-center justify-center mt-1">
                       <div className="w-2 h-2 bg-white rounded-full"></div>
                     </div>
                     <div>
@@ -404,7 +404,7 @@ const HomePage = () => {
       
       {/* Testimonials Section */}
       <section className="py-16 pb-20 px-4 sm:px-6 lg:px-12 overflow-x-hidden" data-aos="fade-up">
-        <div className="max-w-7xl mx-auto rounded-2xl py-12 shadow-lg text-gray-900 dark:text-gray-100 bg-[#00796B] dark:bg-green-800">
+        <div className="max-w-7xl mx-auto rounded-2xl py-12 shadow-lg text-gray-900 dark:text-gray-100 bg-[#101B44] dark:bg-[#101B44]">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">What the Community Says</h2>
             <p className="text-lg text-white/90 max-w-2xl mx-auto">
@@ -557,12 +557,12 @@ const HomePage = () => {
 
       {/* From Idea to Impact Section */}
       <section className="py-16 px-4 sm:px-6 lg:px-12 overflow-x-hidden" data-aos="fade-up">
-        <div className="max-w-7xl mx-auto text-center bg-green-50 dark:bg-green-900/20 rounded-2xl py-12 shadow-lg">
+        <div className="max-w-7xl mx-auto text-center bg-[#ECF3FF] dark:bg-[#101B44]/30 rounded-2xl py-12 shadow-lg">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900 dark:text-gray-100">From Idea to Impact in Days</h2>
           <p className="text-lg text-gray-700 dark:text-gray-300 max-w-2xl mx-auto mb-8">
             Accelerate your contribution to the Livepeer ecosystem. Find opportunities, build reputation, and get paid for your work. Start your journey today!
           </p>
-          <Button className="bg-[#00796B]  dark:bg-green-600 dark:hover:bg-green-700 text-white px-8 py-6">
+          <Button className="bg-[#3366FF] hover:bg-[#3366FF]/90 dark:bg-[#3366FF] dark:hover:bg-[#3366FF]/80 text-white px-8 py-6">
             Start Contributing
           </Button>
         </div>

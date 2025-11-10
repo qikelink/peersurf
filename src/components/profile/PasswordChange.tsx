@@ -179,8 +179,8 @@ const PasswordChange = () => {
 
           {/* Success Message */}
           {success && (
-            <div className={`p-3 rounded-xl ${isDark ? 'bg-green-500/10 border-green-700' : 'bg-green-50 border-green-200'} border`}>
-              <p className={`text-sm ${isDark ? 'text-green-400' : 'text-green-600'}`}>
+            <div className={`p-3 rounded-xl ${isDark ? 'bg-[#3366FF]/10 border-[#3366FF]/50' : 'bg-[#ECF3FF] border-[#3366FF]/30'} border`}>
+              <p className={`text-sm ${isDark ? 'text-[#3366FF]' : 'text-[#101B44]'}`}>
                 {success}
               </p>
             </div>
@@ -190,7 +190,7 @@ const PasswordChange = () => {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full font-semibold  text-white bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600"
+            className="w-full font-semibold  text-white bg-gradient-to-r from-[#3366FF] to-[#2952CC] hover:from-[#2952CC] hover:to-[#1F3FA3]"
           >
             {loading ? "Updating..." : "Update Password"}
           </Button>

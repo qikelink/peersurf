@@ -60,8 +60,8 @@ const ProfileEditor = ({
   return (
     <>
       {isProfileIncomplete && (
-        <div className="bg-green-200 dark:bg-green-900/30 border border-green-300 dark:border-green-700 rounded-lg p-4 mb-6">
-          <p className="text-green-800 dark:text-green-200 text-sm font-medium">
+        <div className="bg-[#ECF3FF] dark:bg-[#101B44]/30 border border-[#3366FF]/30 dark:border-[#3366FF]/50 rounded-lg p-4 mb-6">
+          <p className="text-[#101B44] dark:text-[#ECF3FF] text-sm font-medium">
             ⚠️ Please complete your profile to use the platform. Add your full name, username, bio, and profile image.
           </p>
         </div>
@@ -97,7 +97,7 @@ const ProfileEditor = ({
                   alt="Profile"
                   referrerPolicy="no-referrer"
                 />
-                <AvatarFallback className="bg-green-600 text-white text-lg">
+                <AvatarFallback className="bg-[#3366FF] text-white text-lg">
                   {(profile?.username || profile?.full_name || "U").slice(0, 2).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
@@ -248,21 +248,21 @@ const ProfileEditor = ({
                 <button
                   type="button"
                   onClick={() => setEditedProfile({ ...editedProfile, role: "talent" })}
-                  className={`px-3 py-2 rounded-lg border text-sm ${editedProfile.role === "talent" ? "border-green-500 bg-green-500/10 text-green-300" : "border-border bg-muted text-foreground"}`}
+                  className={`px-3 py-2 rounded-lg border text-sm ${editedProfile.role === "talent" ? "border-[#3366FF] bg-[#3366FF]/10 text-[#3366FF]" : "border-border bg-muted text-foreground"}`}
                 >
                   Talent
                 </button>
                 <button
                   type="button"
                   onClick={() => setEditedProfile({ ...editedProfile, role: "SPE" })}
-                  className={`px-3 py-2 rounded-lg border text-sm ${editedProfile.role === "SPE" ? "border-green-500 bg-green-500/10 text-green-300" : "border-border bg-muted text-foreground"}`}
+                  className={`px-3 py-2 rounded-lg border text-sm ${editedProfile.role === "SPE" ? "border-[#3366FF] bg-[#3366FF]/10 text-[#3366FF]" : "border-border bg-muted text-foreground"}`}
                 >
                   SPE
                 </button>
                 <button disabled
                   type="button"
                   onClick={() => setEditedProfile({ ...editedProfile, role: "admin" })}
-                  className={`px-3 py-2 rounded-lg border text-sm ${editedProfile.role === "admin" ? "border-green-500 bg-green-500/10 text-green-300" : "border-border bg-muted text-foreground"}`}
+                  className={`px-3 py-2 rounded-lg border text-sm ${editedProfile.role === "admin" ? "border-[#3366FF] bg-[#3366FF]/10 text-[#3366FF]" : "border-border bg-muted text-foreground"}`}
                 >
                   Admin
                 </button>
@@ -326,7 +326,7 @@ const ProfileEditor = ({
                   </p>
                 )}
                 {(editedProfile.was_referred || profile.was_referred) && (
-                  <span className="text-xs text-green-500">✓ Used</span>
+                  <span className="text-xs text-[#3366FF]">✓ Used</span>
                 )}
               </div>
             )}
@@ -336,7 +336,7 @@ const ProfileEditor = ({
             <div className="flex gap-3 pt-4">
               <Button 
                 onClick={handleSave} 
-                className="bg-green-600 hover:bg-green-700"
+                className="bg-[#3366FF] hover:bg-[#2952CC] text-white"
                 disabled={isUploading}
               >
                 <Save className="w-4 h-4 mr-2" />

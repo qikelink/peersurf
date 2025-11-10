@@ -222,7 +222,7 @@ Please respond naturally and helpfully to the user's query.`;
         }`}
         size="icon"
         style={!isOpen ? {
-          background: 'linear-gradient(135deg, #006400 0%, #00EB88 100%)',
+          background: 'linear-gradient(135deg, #3366FF 0%, #ECF3FF 100%)',
           color: 'white'
         } : {}}
       >
@@ -235,7 +235,7 @@ Please respond naturally and helpfully to the user's query.`;
           isMinimized ? 'h-12' : 'h-80 sm:h-96'
         }`}>
           {/* Header */}
-          <div className={`flex items-center justify-between p-3 border-b ${isDark ? 'border-gray-800' : 'border-gray-300'} bg-gradient-to-r from-green-600 to-green-800 text-white rounded-t-2xl flex-shrink-0`}>
+          <div className={`flex items-center justify-between p-3 border-b ${isDark ? 'border-gray-800' : 'border-gray-300'} bg-gradient-to-r from-[#3366FF] to-[#101B44] text-white rounded-t-2xl flex-shrink-0`}>
             <div className="flex items-center gap-2">
               <MessageCircle className="w-5 h-5" />
               <span className="font-semibold">Smart Assistant</span>
@@ -265,7 +265,7 @@ Please respond naturally and helpfully to the user's query.`;
                     <div
                       className={`max-w-[80%] rounded-xl px-3 py-2 ${
                         message.isUser
-                          ? 'bg-gradient-to-r from-green-600 to-green-800 text-white'
+                          ? 'bg-gradient-to-r from-[#3366FF] to-[#101B44] text-white'
                           : isDark 
                             ? 'bg-gray-800/50 backdrop-blur-sm text-white border border-gray-700'
                             : 'bg-white backdrop-blur-sm text-gray-900 border border-gray-300'
@@ -273,7 +273,7 @@ Please respond naturally and helpfully to the user's query.`;
                     >
                       <p className="text-sm whitespace-pre-wrap">{message.text}</p>
                       <p className={`text-xs mt-1 ${
-                        message.isUser ? 'text-green-100' : isDark ? 'text-gray-400' : 'text-gray-500'
+                        message.isUser ? 'text-[#ECF3FF]' : isDark ? 'text-gray-400' : 'text-gray-500'
                       }`}>
                         {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </p>
@@ -285,9 +285,9 @@ Please respond naturally and helpfully to the user's query.`;
                   <div className="flex justify-start">
                     <div className={`${isDark ? 'bg-gray-800/50 text-white border-gray-700' : 'bg-white text-gray-900 border-gray-300'} backdrop-blur-sm border rounded-xl px-3 py-2`}>
                       <div className="flex space-x-1">
-                        <div className="w-2 h-2 bg-green-400 rounded-full animate-bounce"></div>
-                        <div className="w-2 h-2 bg-green-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                        <div className="w-2 h-2 bg-green-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                        <div className="w-2 h-2 bg-[#3366FF] rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-[#3366FF] rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                        <div className="w-2 h-2 bg-[#3366FF] rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                       </div>
                     </div>
                   </div>
@@ -307,14 +307,14 @@ Please respond naturally and helpfully to the user's query.`;
                     className={`flex-1 text-sm min-w-0 ${isDark 
                       ? 'bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-400' 
                       : 'bg-white border-gray-300 text-gray-900 placeholder:text-gray-500'
-                    } focus:border-green-500 focus:ring-green-500/20`}
+                    } focus:border-[#3366FF] focus:ring-[#3366FF]/20`}
                     disabled={isTyping}
                   />
                   <Button
                     onClick={handleSendMessage}
                     disabled={!inputValue.trim() || isTyping}
                     size="sm"
-                    className="px-2 sm:px-3 flex-shrink-0 bg-gradient-to-r from-green-600 to-green-800 hover:from-green-700 hover:to-green-900 text-white border-0"
+                    className="px-2 sm:px-3 flex-shrink-0 bg-gradient-to-r from-[#3366FF] to-[#101B44] hover:from-[#2952CC] hover:to-[#1F3FA3] text-white border-0"
                   >
                     <Send className="w-4 h-4" />
                   </Button>

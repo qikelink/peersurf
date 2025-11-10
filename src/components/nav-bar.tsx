@@ -21,19 +21,19 @@ const Navbar = () => {
   const getActiveStyles = (isActiveLink: boolean) => {
     if (isActiveLink) {
       return isDark 
-        ? "text-white font-semibold" 
-        : "text-primary font-semibold";
+        ? "text-[#3366FF] font-semibold" 
+        : "text-[#3366FF] font-semibold";
     }
-    return "text-muted-foreground hover:text-primary";
+    return "text-muted-foreground hover:text-[#3366FF] transition-colors";
   };
 
   const getMobileActiveStyles = (isActiveLink: boolean) => {
     if (isActiveLink) {
       return isDark 
-        ? "text-white font-semibold bg-gradient-to-r from-green-600/20 to-green-700/20 border border-green-500/30" 
-        : "text-primary font-semibold bg-gradient-to-r from-green-50 to-green-100 border border-green-200";
+        ? "text-white font-semibold bg-gradient-to-r from-[#3366FF]/20 to-[#101B44]/20 border border-[#3366FF]/30" 
+        : "text-[#3366FF] font-semibold bg-gradient-to-r from-[#ECF3FF] to-[#ECF3FF]/80 border border-[#3366FF]/30";
     }
-    return "text-muted-foreground hover:text-primary hover:bg-muted/50";
+    return "text-muted-foreground hover:text-[#3366FF] hover:bg-[#ECF3FF]/50 dark:hover:bg-[#3366FF]/10 transition-all";
   };
 
   const handleSignOut = async () => {
@@ -87,7 +87,7 @@ const Navbar = () => {
           <div className="hidden md:flex items-center gap-4">
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg text-muted-foreground hover:text-primary transition-colors hover:bg-muted"
+              className="p-2 rounded-lg text-muted-foreground hover:text-[#3366FF] transition-colors hover:bg-[#ECF3FF]/50 dark:hover:bg-[#3366FF]/10"
               title={isDark ? "Switch to light mode" : "Switch to dark mode"}
             >
               {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
@@ -107,7 +107,7 @@ const Navbar = () => {
                       alt="User avatar"
                       referrerPolicy="no-referrer"
                     />
-                    <AvatarFallback className="bg-green-700 text-white">
+                    <AvatarFallback className="bg-[#3366FF] text-white">
                       {(profile?.username || user?.user_metadata?.full_name || user?.email || "U").slice(0, 2).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
@@ -117,7 +117,7 @@ const Navbar = () => {
                 {userMenuOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-card border border-border rounded-xl shadow-lg py-2 z-50">
                     <button
-                      className="w-full text-left px-4 py-2 text-foreground hover:bg-muted"
+                      className="w-full text-left px-4 py-2 text-foreground hover:text-[#3366FF] hover:bg-[#ECF3FF]/50 dark:hover:bg-[#3366FF]/10 transition-colors"
                       onClick={() => {
                         setUserMenuOpen(false);
                         navigate("/profile");
@@ -126,7 +126,7 @@ const Navbar = () => {
                       Profile
                     </button>
                     <button
-                      className="w-full text-left px-4 py-2 text-foreground hover:bg-muted"
+                      className="w-full text-left px-4 py-2 text-foreground hover:text-[#3366FF] hover:bg-[#ECF3FF]/50 dark:hover:bg-[#3366FF]/10 transition-colors"
                       onClick={() => {
                         setUserMenuOpen(false);
                         navigate("/notifications");
@@ -147,7 +147,7 @@ const Navbar = () => {
             ) : (
               <Button 
                 onClick={() => navigate("/auth")}
-                className="bg-[#00796B] hover:bg-green-600 text-white px-4 py-2 rounded-lg"
+                className="bg-[#3366FF] hover:bg-[#2952CC] text-white px-4 py-2 rounded-lg"
               >
                 Launch App
               </Button>
@@ -158,7 +158,7 @@ const Navbar = () => {
           <div className="md:hidden relative z-50">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 text-muted-foreground hover:text-primary transition-colors rounded-lg hover:bg-muted/50"
+              className="p-2 text-muted-foreground hover:text-[#3366FF] transition-colors rounded-lg hover:bg-[#ECF3FF]/50 dark:hover:bg-[#3366FF]/10"
               aria-label="Toggle mobile menu"
             >
               {mobileMenuOpen ? (
@@ -217,7 +217,7 @@ const Navbar = () => {
                 toggleTheme();
                 setMobileMenuOpen(false);
               }}
-              className="block w-full text-left px-4 py-3 text-muted-foreground hover:text-primary hover:bg-muted/50 rounded-xl transition-all duration-200"
+              className="block w-full text-left px-4 py-3 text-muted-foreground hover:text-[#3366FF] hover:bg-[#ECF3FF]/50 dark:hover:bg-[#3366FF]/10 rounded-xl transition-all duration-200"
             >
               <span className="font-medium">{isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}</span>
             </button>
@@ -227,14 +227,14 @@ const Navbar = () => {
               <div className="space-y-2">
                 <Link
                   to="/profile"
-                  className="block px-4 py-3 text-muted-foreground hover:text-primary hover:bg-muted/50 rounded-xl transition-all duration-200"
+                  className="block px-4 py-3 text-muted-foreground hover:text-[#3366FF] hover:bg-[#ECF3FF]/50 dark:hover:bg-[#3366FF]/10 rounded-xl transition-all duration-200"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <span className="font-medium">Profile</span>
                 </Link>
                 <Link
                   to="/notifications"
-                  className="block px-4 py-3 text-muted-foreground hover:text-primary hover:bg-muted/50 rounded-xl transition-all duration-200"
+                  className="block px-4 py-3 text-muted-foreground hover:text-[#3366FF] hover:bg-[#ECF3FF]/50 dark:hover:bg-[#3366FF]/10 rounded-xl transition-all duration-200"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <span className="font-medium">Notifications</span>
@@ -255,7 +255,7 @@ const Navbar = () => {
                   setMobileMenuOpen(false);
                   navigate("/auth");
                 }}
-                className="block w-full px-4 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white rounded-xl text-center font-medium transition-all duration-200 shadow-lg"
+                className="block w-full px-4 py-3 bg-gradient-to-r from-[#3366FF] to-[#2952CC] hover:from-[#2952CC] hover:to-[#1F3FA3] text-white rounded-xl text-center font-medium transition-all duration-200 shadow-lg"
               >
                 Launch App
               </button>

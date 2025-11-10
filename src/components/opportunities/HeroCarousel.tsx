@@ -50,20 +50,29 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ user, profile, sponsorCards
                 >
                   <div className={`h-full bg-gradient-to-br ${card.gradient} p-6 sm:p-8 relative overflow-hidden`}>
                     {index === 0 && (
-                      <div className="absolute inset-0 flex items-center justify-end pr-8">
+                      <div className="absolute inset-0 flex items-center justify-end pr-0">
                         <img 
                           src="/erased_01.png" 
                           alt="Team collaboration" 
-                          className="w-1/2 h-full object-contain opacity-20 hover:opacity-30 transition-opacity duration-500"
+                          className="h-full object-contain opacity-100"
                         />
                       </div>
                     )}
                     {index === 1 && (
-                      <div className="absolute inset-0 flex items-center justify-end pr-8">
+                      <div className="absolute inset-0 flex items-center justify-end pr-0">
                         <img 
                           src="/erased_02.png" 
                           alt="Project launch" 
-                          className="w-1/2 h-full object-contain opacity-20 hover:opacity-30 transition-opacity duration-500"
+                          className="h-full object-contain opacity-100"
+                        />
+                      </div>
+                    )}
+                    {index === 2 && (
+                      <div className="absolute inset-0 flex items-center justify-end pr-0">
+                        <img 
+                          src="/trophy_gg.png" 
+                          alt="Trophy achievement" 
+                          className="h-full object-contain opacity-100"
                         />
                       </div>
                     )}

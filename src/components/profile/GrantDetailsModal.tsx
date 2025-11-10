@@ -43,7 +43,7 @@ const GrantDetailsModal = ({ isOpen, onClose, grant }: GrantDetailsModalProps) =
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <span className="">Budget:</span>
-                <span className="text-green-600 ">
+                <span className="text-[#3366FF] ">
                   {grant.currency} {grant.amount}
                 </span>
               </div>

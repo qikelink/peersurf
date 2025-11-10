@@ -251,22 +251,22 @@ const TalentPage = () => {
       <Navbar />
 
       {/* Hero Section - Left-aligned info with right-aligned actions */}
-      <section className="relative w-full py-6 md:py-8 bg-gradient-to-br from-green-600/5 to-blue-600/5" style={{
+      <section className="relative w-full py-6 md:py-8 bg-gradient-to-br from-[#3366FF]/5 to-[#ECF3FF]/5" style={{
         backgroundImage: 'url(/trophy_gg.png)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat'
       }}>
         {/* Overlay to maintain coloring and dim background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-green-600/5 to-blue-600/5 backdrop-blur-md"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-[#3366FF]/5 to-[#ECF3FF]/5 backdrop-blur-md"></div>
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
           {/* Countdown timer - Top right */}
           <div className="flex justify-end mb-4">
             <div className="inline-flex flex-wrap items-center gap-2">
-              <Calendar className="w-4 h-4 text-green-500" />
+              <Calendar className="w-4 h-4 text-[#3366FF]" />
               <span className="text-xs md:text-sm text-muted-foreground">Leaderboard resets in:</span>
-              <span className="text-xs md:text-sm font-bold text-green-500 bg-background/80 backdrop-blur-sm rounded-lg border border-border px-2 md:px-3 py-1 md:py-1.5">{seasonStats.daysUntilReset} days</span>
+              <span className="text-xs md:text-sm font-bold text-[#3366FF] bg-background/80 backdrop-blur-sm rounded-lg border border-border px-2 md:px-3 py-1 md:py-1.5">{seasonStats.daysUntilReset} days</span>
             </div>
           </div>
 
@@ -287,7 +287,7 @@ const TalentPage = () => {
                     <div className="flex items-center gap-4 md:gap-6">
                       {/* Circular avatar/logo */}
                       <div className="relative">
-                        <div className="w-18 h-18 md:w-20 md:h-20 bg-gradient-to-br from-green-500 to-blue-500 rounded-lg flex items-center justify-center shadow-lg">
+                        <div className="w-18 h-18 md:w-20 md:h-20 bg-gradient-to-br from-[#3366FF] to-[#101B44] rounded-lg flex items-center justify-center shadow-lg">
                           <img src="trophy.png" alt="Livepeer Logo" className="w-12 h-12" />
                         </div>
                       </div>
@@ -333,12 +333,12 @@ const TalentPage = () => {
 
             {/* Right-aligned action buttons */}
             <div className="flex sm:flex-row gap-3">
-              <Button variant="outline" className="border-green-500 text-green-500 hover:bg-green-500 hover:text-white">
+              <Button variant="outline" className="border-[#3366FF] text-[#3366FF] hover:bg-[#3366FF] hover:text-white">
                 <Bookmark className="w-4 h-4 " />
               </Button>
               <Button 
                 onClick={() => setShowReferralModal(true)}
-                className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white"
+                className="bg-gradient-to-r from-[#3366FF] to-[#2952CC] hover:from-[#2952CC] hover:to-[#1F3FA3] text-white"
               >
                 <Users className="w-4 h-4 mr-2" />
                 Invite Talent
@@ -361,7 +361,7 @@ const TalentPage = () => {
             {profile?.referral_code ? (
               <>
                 <div className="flex items-center gap-2">
-                  <div className="flex-1 p-4 bg-muted rounded-lg border-2 border-dashed border-green-500">
+                  <div className="flex-1 p-4 bg-muted rounded-lg border-2 border-dashed border-[#3366FF]">
                     <div className="text-sm text-muted-foreground mb-1">Your Referral Code</div>
                     <div className="text-2xl font-bold text-foreground font-mono">
                       {profile.referral_code}
@@ -374,7 +374,7 @@ const TalentPage = () => {
                     className="h-12 w-12"
                   >
                     {copied ? (
-                      <Check className="w-5 h-5 text-green-500" />
+                      <Check className="w-5 h-5 text-[#3366FF]" />
                     ) : (
                       <Copy className="w-5 h-5" />
                     )}
@@ -383,7 +383,7 @@ const TalentPage = () => {
                 <div className="text-sm text-muted-foreground">
                   <p className="mb-2">Share this code with others:</p>
                   <ul className="list-disc list-inside space-y-1 ml-2">
-                    <li>You earn <strong className="text-green-500">10 points</strong> for each successful referral</li>
+                    <li>You earn <strong className="text-[#3366FF]">10 points</strong> for each successful referral</li>
                     <li>They must use your code when signing up</li>
                     <li>Your points are updated automatically</li>
                   </ul>
@@ -391,7 +391,7 @@ const TalentPage = () => {
                 <div className="pt-2 border-t">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Your Current Points:</span>
-                    <span className="font-bold text-green-500">{profile.points || 0} pts</span>
+                    <span className="font-bold text-[#3366FF]">{profile.points || 0} pts</span>
                   </div>
                 </div>
               </>
@@ -435,7 +435,7 @@ const TalentPage = () => {
 
             {/* Filter Select */}
             <Select value={filterBy} onValueChange={setFilterBy}>
-              <SelectTrigger className="w-[140px] border-green-500 text-green-500">
+              <SelectTrigger className="w-[140px] border-[#3366FF] text-[#3366FF]">
                 <SelectValue placeholder="Filter by" />
               </SelectTrigger>
               <SelectContent>
@@ -490,7 +490,7 @@ const TalentPage = () => {
                             <div className="relative">
                               <Avatar className="w-12 h-12">
                                 <AvatarImage src={profile.avatar_url || undefined} />
-                                <AvatarFallback className="bg-gradient-to-br from-green-500 to-blue-500 text-white text-sm">
+                                <AvatarFallback className="bg-gradient-to-br from-[#3366FF] to-[#101B44] text-white text-sm">
                                   {profile.full_name?.split(' ').map(n => n[0]).join('') || 
                                    profile.username?.charAt(0).toUpperCase() || 
                                    'U'}
@@ -519,15 +519,15 @@ const TalentPage = () => {
                         <div className="space-y-1 w-full">
                           <div className="flex justify-between items-center">
                             <span className="text-xs text-muted-foreground">Username</span>
-                            <span className="text-xs font-semibold text-green-500">@{profile.username || 'N/A'}</span>
+                            <span className="text-xs font-semibold text-[#3366FF]">@{profile.username || 'N/A'}</span>
                           </div>
                           <div className="flex justify-between items-center">
                             <span className="text-xs text-muted-foreground">Points</span>
-                            <span className="text-xs font-semibold text-green-500">{profile.points || 0}</span>
+                            <span className="text-xs font-semibold text-[#3366FF]">{profile.points || 0}</span>
                           </div>
                           <div className="flex justify-between items-center">
                             <span className="text-xs text-muted-foreground">Joined</span>
-                            <span className="text-xs font-semibold text-green-500">
+                            <span className="text-xs font-semibold text-[#3366FF]">
                               {profile.created_at 
                                 ? new Date(profile.created_at).toLocaleDateString()
                                 : '-'}
@@ -604,7 +604,7 @@ const TalentPage = () => {
                             <div className="flex items-center gap-2 sm:gap-3">
                               <Avatar className="w-6 h-6 sm:w-8 sm:h-8">
                                 <AvatarImage src={profile.avatar_url || undefined} />
-                                <AvatarFallback className="bg-gradient-to-br from-green-500 to-blue-500 text-white text-xs">
+                                <AvatarFallback className="bg-gradient-to-br from-[#3366FF] to-[#101B44] text-white text-xs">
                                   {profile.full_name?.split(' ').map((n: string) => n[0]).join('') || 
                                    profile.username?.charAt(0).toUpperCase() || 
                                    'U'}
@@ -628,7 +628,7 @@ const TalentPage = () => {
                             </div>
                           </td>
                           <td className="px-2 sm:px-4 py-2 sm:py-3">
-                            <div className="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-xs font-medium bg-gradient-to-r from-green-500 to-green-600 text-white">
+                            <div className="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-xs font-medium bg-gradient-to-r from-[#3366FF] to-[#2952CC] text-white">
                               <Star className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                               {profile.points || 0} pts
                             </div>
@@ -659,7 +659,7 @@ const TalentPage = () => {
                       size="sm"
                       onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                       disabled={currentPage === 1}
-                      className="h-8 w-8 p-0"
+                      className="h-8 w-8 p-0 border-[#3366FF] text-[#3366FF] hover:bg-[#3366FF] hover:text-white disabled:opacity-50"
                     >
                       <ChevronLeft className="w-4 h-4" />
                     </Button>
@@ -670,7 +670,11 @@ const TalentPage = () => {
                           variant={currentPage === page ? "default" : "outline"}
                           size="sm"
                           onClick={() => setCurrentPage(page)}
-                          className="h-8 w-8 p-0 text-xs sm:text-sm"
+                          className={`h-8 w-8 p-0 text-xs sm:text-sm ${
+                            currentPage === page
+                              ? "bg-gradient-to-r from-[#3366FF] to-[#2952CC] text-white hover:from-[#2952CC] hover:to-[#1F3FA3]"
+                              : "border-[#3366FF] text-[#3366FF] hover:bg-[#3366FF] hover:text-white"
+                          }`}
                         >
                           {page}
                         </Button>
@@ -681,7 +685,7 @@ const TalentPage = () => {
                       size="sm"
                       onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                       disabled={currentPage === totalPages}
-                      className="h-8 w-8 p-0"
+                      className="h-8 w-8 p-0 border-[#3366FF] text-[#3366FF] hover:bg-[#3366FF] hover:text-white disabled:opacity-50"
                     >
                       <ChevronRight className="w-4 h-4" />
                     </Button>
@@ -723,7 +727,7 @@ const TalentPage = () => {
                 <div className="relative">
                   <Avatar className="w-12 h-12">
                     <AvatarImage src={talent.avatar} />
-                    <AvatarFallback className="bg-gradient-to-br from-green-500 to-blue-500 text-white text-sm">
+                    <AvatarFallback className="bg-gradient-to-br from-[#3366FF] to-[#101B44] text-white text-sm">
                       {talent.name.split(' ').map(n => n[0]).join('')}
                     </AvatarFallback>
                   </Avatar>
@@ -748,7 +752,7 @@ const TalentPage = () => {
             <div className="space-y-1 w-full">
               <div className="flex justify-between items-center">
                 <span className="text-xs text-muted-foreground">Earnings</span>
-                <span className="text-xs font-semibold text-green-500">-</span>
+                <span className="text-xs font-semibold text-[#3366FF]">-</span>
                 </div>
               <div className="flex justify-between items-center">
                 <span className="text-xs text-muted-foreground">Projects</span>
@@ -756,7 +760,7 @@ const TalentPage = () => {
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-xs text-muted-foreground">Success</span>
-                <span className="text-xs font-semibold text-green-500">-</span>
+                <span className="text-xs font-semibold text-[#3366FF]">-</span>
               </div>
             </div>
           </div>
@@ -827,7 +831,7 @@ const TalentPage = () => {
                         <div className="flex items-center gap-2 sm:gap-3">
                           <Avatar className="w-6 h-6 sm:w-8 sm:h-8">
                           <AvatarImage src={talent.avatar} />
-                            <AvatarFallback className="bg-gradient-to-br from-green-500 to-blue-500 text-white text-xs">
+                            <AvatarFallback className="bg-gradient-to-br from-[#3366FF] to-[#101B44] text-white text-xs">
                             {talent.name.split(' ').map((n: string) => n[0]).join('')}
                           </AvatarFallback>
                         </Avatar>
@@ -838,13 +842,13 @@ const TalentPage = () => {
                         </div>
                       </td>
                       <td className="px-2 sm:px-4 py-2 sm:py-3">
-                        <div className="font-bold text-xs sm:text-sm text-green-500">-</div>
+                        <div className="font-bold text-xs sm:text-sm text-[#3366FF]">-</div>
                       </td>
                       <td className="px-2 sm:px-4 py-2 sm:py-3">
                         <div className="font-semibold text-xs sm:text-sm">-</div>
                       </td>
                       <td className="px-2 sm:px-4 py-2 sm:py-3">
-                        <div className="font-semibold text-xs sm:text-sm text-green-500">-</div>
+                        <div className="font-semibold text-xs sm:text-sm text-[#3366FF]">-</div>
                       </td>
                       <td className="px-2 sm:px-4 py-2 sm:py-3">
                         <div className={`inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-xs font-medium bg-gradient-to-r ${talent.tierColor} text-white`}>
@@ -871,7 +875,7 @@ const TalentPage = () => {
                   size="sm"
                   onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                   disabled={currentPage === 1}
-                  className="h-8 w-8 p-0"
+                  className="h-8 w-8 p-0 border-[#3366FF] text-[#3366FF] hover:bg-[#3366FF] hover:text-white disabled:opacity-50"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </Button>
@@ -882,7 +886,11 @@ const TalentPage = () => {
                       variant={currentPage === page ? "default" : "outline"}
                       size="sm"
                       onClick={() => setCurrentPage(page)}
-                      className="h-8 w-8 p-0 text-xs sm:text-sm"
+                      className={`h-8 w-8 p-0 text-xs sm:text-sm ${
+                        currentPage === page
+                          ? "bg-gradient-to-r from-[#3366FF] to-[#2952CC] text-white hover:from-[#2952CC] hover:to-[#1F3FA3]"
+                          : "border-[#3366FF] text-[#3366FF] hover:bg-[#3366FF] hover:text-white"
+                      }`}
                     >
                       {page}
                     </Button>
@@ -893,7 +901,7 @@ const TalentPage = () => {
                   size="sm"
                   onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                   disabled={currentPage === totalPages}
-                  className="h-8 w-8 p-0"
+                  className="h-8 w-8 p-0 border-[#3366FF] text-[#3366FF] hover:bg-[#3366FF] hover:text-white disabled:opacity-50"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </Button>
@@ -904,13 +912,13 @@ const TalentPage = () => {
 
         {/* Call to Action - Mobile Responsive */}
         <div className="mt-4 md:mt-6 text-center" >
-          <Card className="p-3 md:p-4 bg-gradient-to-r from-green-600/10 to-blue-600/10 border-green-500/20">
+          <Card className="p-3 md:p-4 bg-gradient-to-r from-[#3366FF]/10 to-[#ECF3FF]/10 border-[#3366FF]/20">
             <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3" >Ready to Join the Competition?</h3>
             <p className="text-xs md:text-sm text-muted-foreground mb-3 md:mb-4 max-w-2xl mx-auto" >
               Start contributing to the Livepeer ecosystem and compete for the top spot in Season {seasonStats.seasonNumber}.
             </p>
             <div className="flex flex-col sm:flex-row gap-2 md:gap-3 justify-center" >
-              <Button className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white px-4 md:px-6 py-1.5 md:py-2 text-xs md:text-sm">
+              <Button className="bg-gradient-to-r from-[#3366FF] to-[#2952CC] hover:from-[#2952CC] hover:to-[#1F3FA3] text-white px-4 md:px-6 py-1.5 md:py-2 text-xs md:text-sm">
                 Browse Opportunities
               </Button>
               <Button variant="outline" className="px-4 md:px-6 py-1.5 md:py-2 text-xs md:text-sm">

@@ -50,7 +50,7 @@ const Sidebar = ({
   };
 
   return (
-    <div className="w-64 bg-card border-r border-border min-h-screen p-4 overflow-y-auto shadow-lg lg:shadow-none">
+    <div className="w-64 bg-card border-r border-border min-h-[calc(100vh-4rem)] lg:min-h-screen p-4 overflow-y-auto shadow-lg lg:shadow-none">
       {/* Mobile Close Button */}
       {onClose && (
         <div className="lg:hidden flex justify-end mb-4">
@@ -69,7 +69,7 @@ const Sidebar = ({
         <div className="flex items-center gap-3 mb-4">
           <Avatar className="w-10 h-10">
             <AvatarImage src={profile?.avatar_url || ""} />
-            <AvatarFallback className="bg-green-600 text-white">
+            <AvatarFallback className="bg-[#3366FF] text-white">
               {profile?.username?.slice(0, 2)?.toUpperCase() || "U"}
             </AvatarFallback>
           </Avatar>
@@ -102,7 +102,7 @@ const Sidebar = ({
               }}
               className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
                 activeSection === item.id
-                  ? "bg-green-600 text-white"
+                  ? "bg-[#3366FF] text-white"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted"
               }`}
             >
@@ -125,7 +125,7 @@ const Sidebar = ({
               }}
               className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
                 activeSection === "talent-progress"
-                  ? "bg-green-600 text-white"
+                  ? "bg-[#3366FF] text-white"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted"
               }`}
             >
@@ -151,7 +151,7 @@ const Sidebar = ({
                 }}
                 className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
                   activeSection === item.id
-                    ? "bg-green-600 text-white"
+                    ? "bg-[#3366FF] text-white"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted"
                 }`}
               >
@@ -178,7 +178,7 @@ const Sidebar = ({
                 }}
                 className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
                   activeSection === item.id
-                    ? "bg-green-600 text-white"
+                    ? "bg-[#3366FF] text-white"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted"
                 }`}
               >
@@ -214,7 +214,7 @@ const Sidebar = ({
             </Button>
           </div>
           {requestedRole && (
-            <div className="mt-3 p-2 bg-green-500/10 border border-green-500/20 rounded text-xs text-green-400">
+            <div className="mt-3 p-2 bg-[#3366FF]/10 border border-[#3366FF]/20 rounded text-xs text-[#3366FF]">
               Your role has been updated to {requestedRole} successfully!
             </div>
           )}
@@ -225,7 +225,7 @@ const Sidebar = ({
         <Button
           variant={activeSection === "password" ? "default" : "outline"}
           size="sm"
-          className={`w-full justify-start ${activeSection === "password" ? "bg-green-600 text-white" : ""}`}
+          className={`w-full justify-start ${activeSection === "password" ? "bg-[#3366FF] text-white" : ""}`}
           onClick={() => {
             setActiveSection("password");
             if (onClose) onClose(); // Close sidebar on mobile

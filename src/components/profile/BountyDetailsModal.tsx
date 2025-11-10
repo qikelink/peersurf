@@ -45,7 +45,7 @@ const BountyDetailsModal = ({ isOpen, onClose, bounty }: BountyDetailsModalProps
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <span className="">Budget:</span>
-                <span className="text-green-600 ">
+                <span className="text-[#3366FF] ">
                   {bounty.budget_currency} {bounty.budget_amount}
                 </span>
               </div>

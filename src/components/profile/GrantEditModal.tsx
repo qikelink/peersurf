@@ -276,7 +276,7 @@ const GrantEditModal = ({ isOpen, onClose, grant, onSuccess }: GrantEditModalPro
             <Button 
               type="submit" 
               disabled={isSubmitting}
-              className="bg-green-600 hover:bg-green-700 disabled:opacity-50"
+              className="bg-[#3366FF] hover:bg-[#2952CC] disabled:opacity-50 text-white"
             >
               {isSubmitting ? "Updating..." : "Update Grant"}
             </Button>
