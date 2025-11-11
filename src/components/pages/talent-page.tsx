@@ -288,7 +288,7 @@ const TalentPage = () => {
                       {/* Circular avatar/logo */}
                       <div className="relative">
                         <div className="w-18 h-18 md:w-20 md:h-20 bg-gradient-to-br from-[#3366FF] to-[#101B44] rounded-lg flex items-center justify-center shadow-lg">
-                          <img src="trophy.png" alt="Livepeer Logo" className="w-12 h-12" />
+                          <img src="trophy.png" alt="Blockchain Logo" className="w-12 h-12" />
                         </div>
                       </div>
                       
@@ -298,7 +298,7 @@ const TalentPage = () => {
                           Season Leaderboard
                         </h1>
                         <p className="text-sm md:text-base text-muted-foreground max-w-md">
-                          The Livepeer ecosystem talent competition. Find top contributors and compete for rewards.
+                          The Blockchain ecosystem talent competition. Find top contributors and compete for rewards.
                         </p>
                       </div>
                     </div>
@@ -310,7 +310,7 @@ const TalentPage = () => {
                       {/* Circular avatar/logo */}
                       <div className="relative">
                         <div className="w-18 h-18 md:w-20 md:h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center shadow-lg">
-                        <img src="trophy.png" alt="Livepeer Logo" className="w-12 h-12" />
+                        <img src="trophy.png" alt="Blockchain Logo" className="w-12 h-12" />
 
                         </div>
                       </div>
@@ -915,7 +915,7 @@ const TalentPage = () => {
           <Card className="p-3 md:p-4 bg-gradient-to-r from-[#3366FF]/10 to-[#ECF3FF]/10 border-[#3366FF]/20">
             <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3" >Ready to Join the Competition?</h3>
             <p className="text-xs md:text-sm text-muted-foreground mb-3 md:mb-4 max-w-2xl mx-auto" >
-              Start contributing to the Livepeer ecosystem and compete for the top spot in Season {seasonStats.seasonNumber}.
+              Start contributing to the Blockchain ecosystem and compete for the top spot in Season {seasonStats.seasonNumber}.
             </p>
             <div className="flex flex-col sm:flex-row gap-2 md:gap-3 justify-center" >
               <Button className="bg-gradient-to-r from-[#3366FF] to-[#2952CC] hover:from-[#2952CC] hover:to-[#1F3FA3] text-white px-4 md:px-6 py-1.5 md:py-2 text-xs md:text-sm">

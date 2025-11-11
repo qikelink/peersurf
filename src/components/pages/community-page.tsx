@@ -30,12 +30,12 @@ import {
 const CommunityPage = () => {
   // Swiper navigation refs
   const roadmapSwiperRef = useRef<any>(null);
-  // Livepeer social media handles and links
+  // Blockchain social media handles and links
   const socialPlatforms = [
     {
       name: "Twitter",
-      handle: "@Livepeer",
-      url: "https://twitter.com/Livepeer",
+      handle: "@Blockchain",
+      url: "https://twitter.com/Blockchain",
       icon: Twitter,
       color: "text-blue-400",
       bgColor: "bg-blue-500/10",
@@ -45,8 +45,8 @@ const CommunityPage = () => {
     },
     {
       name: "Discord",
-      handle: "Livepeer Community",
-      url: "https://discord.gg/livepeer",
+      handle: "Blockchain Community",
+      url: "https://discord.gg/blockchain",
       icon: MessageCircle,
       color: "text-indigo-400",
       bgColor: "bg-indigo-500/10",
@@ -56,8 +56,8 @@ const CommunityPage = () => {
     },
     {
       name: "GitHub",
-      handle: "livepeer",
-      url: "https://github.com/livepeer",
+      handle: "blockchain",
+      url: "https://github.com/blockchain",
       icon: Github,
       color: "text-gray-300",
       bgColor: "bg-gray-500/10",
@@ -67,8 +67,8 @@ const CommunityPage = () => {
     },
     {
       name: "YouTube",
-      handle: "Livepeer",
-      url: "https://youtube.com/@livepeer",
+      handle: "Blockchain",
+      url: "https://youtube.com/@blockchain",
       icon: Youtube,
       color: "text-red-400",
       bgColor: "bg-red-500/10",
@@ -78,8 +78,8 @@ const CommunityPage = () => {
     },
     {
       name: "LinkedIn",
-      handle: "Livepeer",
-      url: "https://linkedin.com/company/livepeer",
+      handle: "Blockchain",
+      url: "https://linkedin.com/company/blockchain",
       icon: Linkedin,
       color: "text-blue-300",
       bgColor: "bg-blue-600/10",
@@ -89,8 +89,8 @@ const CommunityPage = () => {
     },
     {
       name: "Documentation",
-      handle: "docs.livepeer.org",
-      url: "https://docs.livepeer.org",
+      handle: "docs.blockchain.org",
+      url: "https://docs.blockchain.org",
       icon: BookOpen,
       color: "text-[#3366FF]",
       bgColor: "bg-[#3366FF]/10",
@@ -104,7 +104,7 @@ const CommunityPage = () => {
   const communityEvents = [
     {
       id: 1,
-      title: "Livepeer Community Call",
+      title: "Blockchain Community Call",
       date: "Every Monday & Wed",
       time: "8pm and 6pm UTC+1",
       type: "Community Call",
@@ -114,11 +114,11 @@ const CommunityPage = () => {
     },
     {
       id: 2,
-      title: "Developer Workshop: Building with Livepeer",
+      title: "Developer Workshop: Building with Blockchain",
       date: "Dec 15, 2024",
       time: "3:00 PM EST",
       type: "Workshop",
-      description: "Hands-on workshop for developers new to Livepeer",
+      description: "Hands-on workshop for developers new to Blockchain",
       platform: "YouTube Live",
       status: "Upcoming"
     },
@@ -140,7 +140,7 @@ const CommunityPage = () => {
     {
       id: 1,
       title: "Community Spotlight: Video NFT Platform Launch",
-      description: "Featured project built by community member using Livepeer infrastructure",
+      description: "Featured project built by community member using Blockchain infrastructure",
       platform: "Discord",
       engagement: "500+ reactions",
       date: "5 days ago"
@@ -169,7 +169,7 @@ const CommunityPage = () => {
           <div className="flex items-center justify-center gap-3 mb-6">
             <Heart className="w-8 h-8 text-red-400 animate-pulse" />
             <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-[#3366FF] to-[#ECF3FF] bg-clip-text text-transparent">
-              PeerSurf - Livepeer
+              PeerSurf - Blockchain
             </h1>
             <Heart className="w-8 h-8 text-red-400 animate-pulse" />
           </div>
@@ -259,7 +259,7 @@ const CommunityPage = () => {
                   phaseSubtitle: "Launch & Validation",
                   objectives: [
                     "Ship the foundation: Launch MVP with core discovery, profiles, and applications live",
-                    "Validate with fireSide: Demo to Livepeer leadership, secure \"highest impact\" recognition",
+                    "Validate with fireSide: Demo to Blockchain leadership, secure \"highest impact\" recognition",
                     "Gather intel: Collect feedback from early SPEs and contributors to guide next moves"
                   ],
                   color: "from-[#3366FF] to-[#2952CC]",
@@ -306,7 +306,7 @@ const CommunityPage = () => {
                   objectives: [
                     "Become default infrastructure: Reach 80%+ SPE adoption as primary talent tool",
                     "Ship analytics dashboards: Give SPEs and talents data-driven insights on performance",
-                    "Integrate into official docs: Get featured in Livepeer's core documentation"
+                    "Integrate into official docs: Get featured in Blockchain's core documentation"
                   ],
                   color: "from-[#0A1533] to-[#1F3FA3]"
                 },
@@ -337,7 +337,7 @@ const CommunityPage = () => {
                   phaseTitle: "DOMINANCE",
                   phaseSubtitle: "Ecosystem Leadership",
                   objectives: [
-                    "Dominate the ecosystem: Process 80%+ of all Livepeer opportunities through PeerSurf",
+                    "Dominate the ecosystem: Process 80%+ of all Blockchain opportunities through PeerSurf",
                     "Launch public API: Enable third-party integrations and ecosystem extensions",
                     "Scale marketing: Partner with Web3 influencers, sponsor major events, launch YouTube series"
                   ],
@@ -359,7 +359,7 @@ const CommunityPage = () => {
                   phaseTitle: "IRREPLACEABLE",
                   phaseSubtitle: "Standard Infrastructure",
                   objectives: [
-                    "Become irreplaceable: Every active Livepeer SPE uses PeerSurf as standard infrastructure",
+                    "Become irreplaceable: Every active Blockchain SPE uses PeerSurf as standard infrastructure",
                     "Explore multi-chain: Research expansion to 3+ adjacent ecosystems",
                     "Ship AI innovation: Deploy predictive analytics and automated skill gap identification"
                   ],
@@ -446,7 +446,7 @@ const CommunityPage = () => {
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Connect With Us</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Follow Livepeer across all platforms to stay updated and engage with our community
+            Follow Blockchain across all platforms to stay updated and engage with our community
           </p>
         </div>
         
@@ -588,7 +588,7 @@ const CommunityPage = () => {
               <Button 
                 size="lg"
                 className="bg-gradient-to-r from-[#3366FF] to-[#2952CC] hover:from-[#2952CC] hover:to-[#1F3FA3] text-white px-8 py-3"
-                onClick={() => window.open('https://discord.gg/livepeer', '_blank')}
+                onClick={() => window.open('https://discord.gg/blockchain', '_blank')}
               >
                 Join Discord
                 <ArrowRight className="w-5 h-5 ml-2" />
@@ -597,7 +597,7 @@ const CommunityPage = () => {
                 size="lg"
                 variant="outline"
                 className="px-8 py-3"
-                onClick={() => window.open('https://docs.livepeer.org', '_blank')}
+                onClick={() => window.open('https://docs.blockchain.org', '_blank')}
               >
                 Read Documentation
                 <BookOpen className="w-5 h-5 ml-2" />

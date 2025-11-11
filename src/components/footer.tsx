@@ -13,7 +13,7 @@ const Footer = () => {
               <span className="text-xl font-bold text-white">PeerSurf</span>
             </div>
             <p className="text-white/80 text-sm max-w-md">
-              Streamlining bounty discovery, contributor reputation, and payment workflows for the Livepeer ecosystem.
+              Streamlining bounty discovery, contributor reputation, and payment workflows for the Blockchain ecosystem.
             </p>
           </div>
           
@@ -35,7 +35,7 @@ const Footer = () => {
           <div>
             <h4 className="text-white font-semibold mb-4">Ecosystem</h4>
             <ul className="space-y-2">
-              {['Livepeer Network', 'Video Infrastructure', 'Decentralized Streaming', 'Web3 Video'].map((link, index) => (
+              {['Blockchain Network', 'Video Infrastructure', 'Decentralized Streaming', 'Web3 Video'].map((link, index) => (
                 <li key={index}>
                   <a href="#" className="text-white/70 hover:text-white transition text-sm">
                     {link}

@@ -1,5 +1,5 @@
 declare module '@livepeer/sdk' {
-  export interface LivepeerConfig {
+  export interface BlockchainConfig {
     network?: string;
     provider?: string;
   }
@@ -14,8 +14,8 @@ declare module '@livepeer/sdk' {
     description?: string;
   }
 
-  export class LivepeerSDK {
-    constructor(config?: LivepeerConfig);
+  export class BlockchainSDK {
+    constructor(config?: BlockchainConfig);
     getTranscoders(): Promise<Transcoder[]>;
     getTranscoder(address: string): Promise<Transcoder | null>;
   }

@@ -20,7 +20,7 @@ const Chatbot: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: 'Hello! I\'m your Smart PeerSurf Assistant. I can help you discover funding opportunities and provide Livepeer documentation assistance. What would you like to explore today?',
+      text: 'Hello! I\'m your Smart PeerSurf Assistant. I can help you discover funding opportunities and provide Blockchain documentation assistance. What would you like to explore today?',
       isUser: false,
       timestamp: new Date()
     }
@@ -121,17 +121,17 @@ const Chatbot: React.FC = () => {
     }
 
     // Build conversation context for the AI
-    const systemPrompt = `You are the Smart PeerSurf Assistant, a helpful AI assistant for the PeerSurf platform. Your role is to help users discover funding opportunities and provide Livepeer documentation assistance.
+    const systemPrompt = `You are the Smart PeerSurf Assistant, a helpful AI assistant for the PeerSurf platform. Your role is to help users discover funding opportunities and provide Blockchain documentation assistance.
 
 **About PeerSurf:**
 - PeerSurf is a platform that connects creators and developers with funding opportunities
 - The platform features Creator Grants (up to $10,000), Developer Bounties ($500-$5,000), Community Projects ($1,000-$25,000), and Research Fellowships ($15,000+)
-- PeerSurf integrates with Livepeer, a decentralized video streaming network
-- Users can delegate to Livepeer orchestrators and earn rewards (up to 65% APY)
+- PeerSurf integrates with Blockchain, a decentralized video streaming network
+- Users can delegate to Blockchain orchestrators and earn rewards (up to 65% APY)
 
 **Your capabilities:**
 1. Help users discover and understand funding opportunities (grants, bounties, fellowships)
-2. Provide guidance on Livepeer technology, orchestrators, delegation, and API documentation
+2. Provide guidance on Blockchain technology, orchestrators, delegation, and API documentation
 3. Explain application processes and requirements
 4. Assist with account management and platform navigation
 5. Answer general questions about the platform
@@ -142,7 +142,7 @@ const Chatbot: React.FC = () => {
 - Format responses with clear structure (bullets, headers)
 - If asked about something outside your scope, politely redirect to relevant features
 - Maintain a friendly and professional tone
-- Always focus on helping users navigate PeerSurf and understand Livepeer
+- Always focus on helping users navigate PeerSurf and understand Blockchain
 
 Please respond naturally and helpfully to the user's query.`;
 
@@ -173,8 +173,8 @@ Please respond naturally and helpfully to the user's query.`;
     // Opportunity Discovery Responses
     if (input.includes('opportunity') || input.includes('funding') || input.includes('grant')) {
       return '🎯 **Funding Opportunities Available:**\n\n• **Creator Grants** - Up to $10,000 for content creators\n• **Developer Bounties** - $500-$5,000 for technical contributions\n• **Community Projects** - $1,000-$25,000 for community initiatives\n• **Research Fellowships** - $15,000+ for academic research\n\nBrowse all opportunities in the "Opportunities" section. Would you like help finding specific types of funding?';
-    } else if (input.includes('livepeer') || input.includes('orchestrator') || input.includes('delegation')) {
-      return '🔗 **Livepeer Documentation & Resources:**\n\n• **Getting Started** - Set up your Livepeer node\n• **Delegation Guide** - How to delegate to orchestrators\n• **API Documentation** - Technical implementation guides\n• **Community Forum** - Connect with other developers\n• **Tutorials** - Step-by-step video guides\n\nI can help you find specific documentation or answer technical questions about Livepeer integration.';
+    } else if (input.includes('blockchain') || input.includes('orchestrator') || input.includes('delegation')) {
+      return '🔗 **Blockchain Documentation & Resources:**\n\n• **Getting Started** - Set up your Blockchain node\n• **Delegation Guide** - How to delegate to orchestrators\n• **API Documentation** - Technical implementation guides\n• **Community Forum** - Connect with other developers\n• **Tutorials** - Step-by-step video guides\n\nI can help you find specific documentation or answer technical questions about Blockchain integration.';
     } else if (input.includes('earn') || input.includes('apy') || input.includes('rewards')) {
       return '💰 **Earning Opportunities:**\n\n• **Delegation Rewards** - Earn up to 65% APY by delegating to orchestrators\n• **Content Creation** - Monetize your video content\n• **Technical Contributions** - Earn through developer bounties\n• **Community Building** - Get rewarded for community engagement\n\nWould you like to learn more about any specific earning method?';
     } else if (input.includes('sponsor') || input.includes('sponsorship') || input.includes('create opportunity')) {
@@ -182,15 +182,15 @@ Please respond naturally and helpfully to the user's query.`;
     } else if (input.includes('profile') || input.includes('account') || input.includes('settings')) {
       return '👤 **Profile Management:**\n\n• **Update Information** - Keep your profile current\n• **Portfolio Showcase** - Display your work and achievements\n• **Application History** - Track your funding applications\n• **Notifications** - Stay updated on new opportunities\n\nManage your account in the Profile section. Make sure you\'re logged in to access these features.';
     } else if (input.includes('help') || input.includes('what can you do')) {
-      return '🤖 **I can help you with:**\n\n**🎯 Opportunity Discovery:**\n• Find relevant funding opportunities\n• Explain application requirements\n• Track application status\n\n**📚 Livepeer Documentation:**\n• Technical implementation guides\n• API documentation\n• Community resources\n\n**💡 General Assistance:**\n• Account management\n• Platform navigation\n• Feature explanations\n\nWhat specific area would you like to explore?';
+      return '🤖 **I can help you with:**\n\n**🎯 Opportunity Discovery:**\n• Find relevant funding opportunities\n• Explain application requirements\n• Track application status\n\n**📚 Blockchain Documentation:**\n• Technical implementation guides\n• API documentation\n• Community resources\n\n**💡 General Assistance:**\n• Account management\n• Platform navigation\n• Feature explanations\n\nWhat specific area would you like to explore?';
     } else if (input.includes('hello') || input.includes('hi') || input.includes('hey')) {
-      return 'Hello! 👋 I\'m your Smart PeerSurf Assistant specializing in opportunity discovery and Livepeer documentation. I can help you find funding opportunities, understand Livepeer technology, and navigate the platform. What would you like to explore today?';
+      return 'Hello! 👋 I\'m your Smart PeerSurf Assistant specializing in opportunity discovery and Blockchain documentation. I can help you find funding opportunities, understand Blockchain technology, and navigate the platform. What would you like to explore today?';
     } else if (input.includes('documentation') || input.includes('docs') || input.includes('guide')) {
-      return '📖 **Livepeer Documentation Resources:**\n\n• **Quick Start Guide** - Get up and running in minutes\n• **API Reference** - Complete technical documentation\n• **SDK Documentation** - Integration guides for developers\n• **Video Tutorials** - Step-by-step visual guides\n• **Community Examples** - Real-world implementation samples\n\nI can help you find specific documentation or explain technical concepts. What are you looking to build?';
+      return '📖 **Blockchain Documentation Resources:**\n\n• **Quick Start Guide** - Get up and running in minutes\n• **API Reference** - Complete technical documentation\n• **SDK Documentation** - Integration guides for developers\n• **Video Tutorials** - Step-by-step visual guides\n• **Community Examples** - Real-world implementation samples\n\nI can help you find specific documentation or explain technical concepts. What are you looking to build?';
     } else if (input.includes('application') || input.includes('apply') || input.includes('submit')) {
       return '📝 **Application Process:**\n\n• **Browse Opportunities** - Find funding that matches your skills\n• **Review Requirements** - Check eligibility and criteria\n• **Prepare Materials** - Gather portfolio, proposals, etc.\n• **Submit Application** - Complete the application form\n• **Track Status** - Monitor your application progress\n\nNeed help with a specific application or have questions about requirements?';
     } else {
-      return 'Thanks for your message! I\'m here to help you discover funding opportunities and provide Livepeer documentation assistance. You can ask me about:\n\n• Finding relevant opportunities\n• Understanding Livepeer technology\n• Application processes\n• Technical implementation\n• Platform features\n\nWhat would you like to explore?';
+      return 'Thanks for your message! I\'m here to help you discover funding opportunities and provide Blockchain documentation assistance. You can ask me about:\n\n• Finding relevant opportunities\n• Understanding Blockchain technology\n• Application processes\n• Technical implementation\n• Platform features\n\nWhat would you like to explore?';
     }
   };
 
@@ -303,7 +303,7 @@ Please respond naturally and helpfully to the user's query.`;
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    placeholder="Ask about opportunities or Livepeer docs..."
+                    placeholder="Ask about opportunities or Blockchain docs..."
                     className={`flex-1 text-sm min-w-0 ${isDark 
                       ? 'bg-gray-800/50 border-gray-700 text-white placeholder:text-gray-400' 
                       : 'bg-white border-gray-300 text-gray-900 placeholder:text-gray-500'

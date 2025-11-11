@@ -14,7 +14,9 @@ import {
   TrendingUp,
   User,
   Wallet,
-  BadgeCheck
+  BadgeCheck,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import HeroCarousel from "../opportunities/HeroCarousel";
 import { useEffect, useState } from "react";
@@ -40,8 +42,8 @@ const mockRFPs = [
     comments: 15,
     reward: "Up to $50k USDC",
     category: "Development",
-    description: "Restore the Livepeer Explorer to a secure, maintainable, and high-performance state while laying the groundwork for new network-wide data and governance dashboards.",
-    fullDescription: `Restore the Livepeer Explorer to a secure, maintainable, and high-performance state while laying the groundwork for new network-wide data and governance dashboards.
+    description: "Restore the Blockchain Explorer to a secure, maintainable, and high-performance state while laying the groundwork for new network-wide data and governance dashboards.",
+    fullDescription: `Restore the Blockchain Explorer to a secure, maintainable, and high-performance state while laying the groundwork for new network-wide data and governance dashboards.
 
 The Explorer is the primary entry point for orchestrators, delegators, developers, and gateways. However, since December 2023 lack of ownership has accumulated significant technical debt:
 
@@ -59,7 +61,7 @@ Success means that within four months the Explorer is:
 • Backed by a clear 6-month roadmap and dedicated maintainer team`,
     deadline: "2025-09-24",
     contact: "Rick Staa",
-    issuedBy: "Livepeer Foundation"
+    issuedBy: "Blockchain Foundation"
   },
   {
     id: 202,
@@ -89,7 +91,7 @@ Success is a single-source-of-truth documentation system that:
 • Establishes a style guide, contribution model, and ownership playbook for consistency`,
     deadline: "2025-09-24",
     contact: "Rich O'Grady",
-    issuedBy: "Livepeer Foundation"
+    issuedBy: "Blockchain Foundation"
   },
   {
     id: 203,
@@ -123,7 +125,7 @@ Timeline:
 • Completion: Friday, Dec 5, 2025`,
     deadline: "2025-10-08",
     contact: "Nick Hollins",
-    issuedBy: "Livepeer Foundation"
+    issuedBy: "Blockchain Foundation"
   }
 ];
 
@@ -143,7 +145,7 @@ const mockRecentSubmissions = [
   {
     name: "Mike Johnson",
     avatar: "https://randomuser.me/api/portraits/men/54.jpg",
-    description: "Wrote Livepeer ecosystem guide",
+    description: "Wrote Blockchain ecosystem guide",
     earned: "400 USDC"
   }
 ];
@@ -175,7 +177,7 @@ const sponsorCards = [
   {
     id: 3,
     title: "Scale Your Impact",
-    subtitle: "Build the future of decentralized media with Livepeer",
+    subtitle: "Build the future of decentralized media with Blockchain",
     description: "Partner with the leading video infrastructure for the open internet",
     icon: TrendingUp,
     gradient: "from-[#3366FF] to-[#2952CC]",
@@ -191,6 +193,8 @@ const OpportuniesPage = () => {
   const [showSidebar, setShowSidebar] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [currentCard, setCurrentCard] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
   const { user, profile } = useUser();
   const { isDark } = useTheme();
   const navigate = useNavigate();
@@ -309,6 +313,11 @@ const OpportuniesPage = () => {
 
   const categories = ["All", "Content", "Design", "Development", "Events", "Other"];
   const tabs = ["All", "Bounties", "RFPs"];
+
+  // Reset page when tab or category changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeTab, activeCategory]);
 
   // Helper function to check if a deadline date is past
   const isDeadlinePast = (deadline: string): boolean => {
@@ -435,9 +444,7 @@ const OpportuniesPage = () => {
                     </div>
                   </Card>
                 ))
-              ) : (
-                // Show opportunities based on active tab
-                (() => {
+              ) : (() => {
                   let opportunities: any[] = [];
                   
                   // Get bounties from Supabase and RFPs from hardcoded data
@@ -461,7 +468,15 @@ const OpportuniesPage = () => {
                     opportunities = opportunities.filter((opp: any) => opp.category === activeCategory);
                   }
 
-                  return opportunities.map((opportunity: any) => (
+                  // Pagination calculations
+                  const totalPages = Math.ceil(opportunities.length / itemsPerPage);
+                  const startIndex = (currentPage - 1) * itemsPerPage;
+                  const endIndex = startIndex + itemsPerPage;
+                  const paginatedOpportunities = opportunities.slice(startIndex, endIndex);
+
+                  return (
+                    <>
+                      {paginatedOpportunities.map((opportunity: any) => (
                 <Link key={opportunity.id} to={`/opportunity/${opportunity.id}`} state={{ opportunity: { ...opportunity, type: opportunity.type || "Bounty", status: opportunity.status || "Active" } }}>
                 <Card className={`group relative overflow-hidden ${isDark ? 'bg-gray-900/50 border-gray-700/50' : 'bg-card/50 border-border/50'} p-2 sm:p-4 rounded-2xl backdrop-blur-sm border transition-all duration-300 hover:border-[#3366FF]/30 hover:shadow-lg hover:shadow-[#3366FF]/5`}>
                   {/* Simple gradient overlay on hover */}
@@ -483,8 +498,8 @@ const OpportuniesPage = () => {
                           )
                         ) : opportunity.team?.toLowerCase().includes('peersurf') || opportunity.issuedBy?.toLowerCase().includes('peersurf') ? (
                           <img src="onyx.png" alt="PeerSurf" className="w-14 h-14 rounded-full" />
-                        ) : opportunity.team?.toLowerCase().includes('livepeer') || opportunity.issuedBy?.toLowerCase().includes('livepeer') ? (
-                          <img src="livepeer.webp" alt="Livepeer" className="w-14 h-14 rounded-full" />
+                        ) : opportunity.team?.toLowerCase().includes('blockchain') || opportunity.issuedBy?.toLowerCase().includes('blockchain') ? (
+                          <img src="livepeer.webp" alt="Blockchain" className="w-14 h-14 rounded-full" />
                         ) : (
                           <div className={`w-14 h-14 rounded-full flex items-center justify-center`}>
                             <span className="text-white font-bold text-sm">
@@ -543,9 +558,57 @@ const OpportuniesPage = () => {
                   </div>
                 </Card>
                 </Link>
-                  ));
+                      ))}
+                      
+                      {/* Pagination Controls */}
+                      {opportunities.length > itemsPerPage && (
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-6 px-2">
+                          <div className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left">
+                            Showing {startIndex + 1} to {Math.min(endIndex, opportunities.length)} of {opportunities.length} results
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                              disabled={currentPage === 1}
+                              className="h-8 w-8 p-0 border-[#3366FF] text-[#3366FF] hover:bg-[#3366FF] hover:text-white disabled:opacity-50"
+                            >
+                              <ChevronLeft className="w-4 h-4" />
+                            </Button>
+                            <div className="flex items-center gap-1">
+                              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                                <Button
+                                  key={page}
+                                  variant={currentPage === page ? "default" : "outline"}
+                                  size="sm"
+                                  onClick={() => setCurrentPage(page)}
+                                  className={`h-8 w-8 p-0 text-xs sm:text-sm ${
+                                    currentPage === page
+                                      ? "bg-gradient-to-r from-[#3366FF] to-[#2952CC] text-white hover:from-[#2952CC] hover:to-[#1F3FA3]"
+                                      : "border-[#3366FF] text-[#3366FF] hover:bg-[#3366FF] hover:text-white"
+                                  }`}
+                                >
+                                  {page}
+                                </Button>
+                              ))}
+                            </div>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                              disabled={currentPage === totalPages}
+                              className="h-8 w-8 p-0 border-[#3366FF] text-[#3366FF] hover:bg-[#3366FF] hover:text-white disabled:opacity-50"
+                            >
+                              <ChevronRight className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  );
                 })()
-              )}
+              }
             </div>
 
           </div>

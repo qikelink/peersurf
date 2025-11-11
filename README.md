@@ -6,11 +6,11 @@
 [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
 [![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
 
-> **A unified coordination layer for the Livepeer ecosystem** - Streamlining bounty discovery, contributor reputation, and payment workflows for Special Purpose Entities (SPEs) and contributors.
+> **A unified coordination layer for the Blockchain ecosystem** - Streamlining bounty discovery, contributor reputation, and payment workflows for Special Purpose Entities (SPEs) and contributors.
 
 ## 🚀 Overview
 
-PeerSurf addresses the critical coordination problem in the Livepeer ecosystem by providing a centralized platform that consolidates:
+PeerSurf addresses the critical coordination problem in the Blockchain ecosystem by providing a centralized platform that consolidates:
 
 - **Bounty Discovery** - Unified feed aggregating opportunities from GitHub, Discord, and forums
 - **Contributor Reputation** - On-chain attestation system with multi-signal scoring
@@ -18,7 +18,7 @@ PeerSurf addresses the critical coordination problem in the Livepeer ecosystem b
 - **Payment Processing** - SAFE multisig integration for automated payments
 - **SPE Dashboards** - Tools for opportunity posting and contributor management
 - **Seasonal Leaderboards** - Competition cycles that reset to encourage new contributors and create social awareness
-- **AI Integration** - Smart chatbot for opportunity discovery and Livepeer documentation assistance
+- **AI Integration** - Smart chatbot for opportunity discovery and Blockchain documentation assistance
 - **Persona-Based Experience** - User categorization for personalized content and targeted newsletters
 
 ## 🏗️ Architecture
@@ -124,7 +124,7 @@ src/
 
 #### Milestone 3: AI & Personalization
 - [ ] AI chatbot for opportunity discovery
-- [ ] Livepeer documentation integration
+- [ ] Blockchain documentation integration
 - [ ] User persona survey system
 - [ ] Personalized content delivery
 - [ ] Targeted newsletter customization
@@ -167,7 +167,7 @@ The application uses Supabase with the following key tables:
 - `profiles` - User profiles and reputation data
 - `opportunities` - Bounties, grants, and RFPs
 - `applications` - User applications to opportunities
-- `stakes` - Livepeer orchestrator staking data
+- `stakes` - Blockchain orchestrator staking data
 - `earnings` - Contributor earnings tracking
 
 ## 🌐 Deployment
@@ -229,7 +229,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Team
 
-**Catalyst Lab** - Building coordination infrastructure for the Livepeer ecosystem
+**Catalyst Lab** - Building coordination infrastructure for the Blockchain ecosystem
 
 - **Ibrahim** ([@devarogundade](https://github.com/devarogundade)) - Software Engineer
 - **Pratik** ([@pratikdholani](https://github.com/pratikdholani)) - Software Engineer  
@@ -253,4 +253,4 @@ Inspired by successful coordination platforms:
 
 ---
 
-**Built with ❤️ for the Livepeer ecosystem**
+**Built with ❤️ for the Blockchain ecosystem**

@@ -300,7 +300,7 @@ const HomePage = () => {
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 ">Streamlined Ecosystem Coordination</h2>
             <p className="text-lg max-w-2xl mx-auto">
-              Unify bounty discovery, contributor reputation, and payment workflows across the Livepeer ecosystem.
+              Unify bounty discovery, contributor reputation, and payment workflows across Blockchain.
             </p>
           </div>
           
@@ -359,7 +359,7 @@ const HomePage = () => {
               <div className="flex justify-center">
                 <img 
                   src="https://res.cloudinary.com/dgbreoalg/image/upload/v1761478393/G25-NGjW8AAz_H1_rc1jdx.jpg"
-                  alt="Livepeer Ecosystem Animation"
+                  alt="Blockchain Ecosystem Animation"
                   className="max-w-full h-auto rounded-lg shadow-lg"
                 />
               </div>
@@ -367,7 +367,7 @@ const HomePage = () => {
             
             {/* Right Column - Text Content */}
             <div className="order-1 lg:order-2">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">Powering the Livepeer Ecosystem By</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">Powering the Blockchain Ecosystem By</h2>
               <p className=" text-muted-foreground mb-8">Our platform accelerates contributor onboarding, streamlines coordination, and drives ecosystem growth.</p>
               
               <div className="space-y-6">
@@ -382,7 +382,7 @@ const HomePage = () => {
                   },
                   {
                     title: "AI-Powered Matching",
-                    description: "Smart chatbot for opportunity discovery and personalized Livepeer documentation assistance"
+                    description: "Smart chatbot for opportunity discovery and personalized documentation assistance"
                   }
                 ].map((benefit, index) => (
                   <div key={index} className="flex items-start gap-4">
@@ -560,7 +560,7 @@ const HomePage = () => {
         <div className="max-w-7xl mx-auto text-center bg-[#ECF3FF] dark:bg-[#101B44]/30 rounded-2xl py-12 shadow-lg">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900 dark:text-gray-100">From Idea to Impact in Days</h2>
           <p className="text-lg text-gray-700 dark:text-gray-300 max-w-2xl mx-auto mb-8">
-            Accelerate your contribution to the Livepeer ecosystem. Find opportunities, build reputation, and get paid for your work. Start your journey today!
+            Accelerate your contribution to the Blockchain ecosystem. Find opportunities, build reputation, and get paid for your work. Start your journey today!
           </p>
           <Button className="bg-[#3366FF] hover:bg-[#3366FF]/90 dark:bg-[#3366FF] dark:hover:bg-[#3366FF]/80 text-white px-8 py-6">
             Start Contributing

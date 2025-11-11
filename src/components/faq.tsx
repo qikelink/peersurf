@@ -6,11 +6,11 @@ const FAQ = () => {
   const faqs = [
     {
       question: "What is PeerSurf?",
-      answer: "PeerSurf is a platform that helps developers, builders, and creators discover opportunities in the Livepeer ecosystem. We connect you with orchestrators, delegation opportunities, and rewards in the decentralized video network."
+      answer: "PeerSurf is a platform that helps developers, builders, and creators discover opportunities in the Blockchain ecosystem. We connect you with orchestrators, delegation opportunities, and rewards in the decentralized video network."
     },
     {
-      question: "What is Livepeer delegation?",
-      answer: "Livepeer delegation lets you earn rewards by staking LPT tokens with orchestrators who secure the decentralized video network. PeerSurf makes this accessible and helps you discover the best opportunities.",
+      question: "What is Blockchain delegation?",
+      answer: "Blockchain delegation lets you earn rewards by staking tokens with orchestrators who secure the decentralized video network. PeerSurf makes this accessible and helps you discover the best opportunities.",
     },
     {
       question: "How do I get started with PeerSurf?",
@@ -22,7 +22,7 @@ const FAQ = () => {
     },
     {
       question: "What opportunities can I discover on PeerSurf?",
-      answer: "PeerSurf helps you discover orchestrators, delegation opportunities, rewards programs, and building opportunities within the Livepeer ecosystem. Whether you're a developer, creator, or investor, there are opportunities for everyone.",
+      answer: "PeerSurf helps you discover orchestrators, delegation opportunities, rewards programs, and building opportunities within the Blockchain ecosystem. Whether you're a developer, creator, or investor, there are opportunities for everyone.",
     },
     {
       question: "Is PeerSurf secure?",

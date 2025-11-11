@@ -23,7 +23,7 @@ const UseCasesSection = () => {
     },
     {
       title: "Build",
-      description: "Grow your Livepeer portfolio and track performance",
+      description: "Grow your Blockchain portfolio and track performance",
       icon: <Rocket className="w-8 h-8" />,
       gradient: "from-purple-600 to-purple-800",
       action: "Build Portfolio",

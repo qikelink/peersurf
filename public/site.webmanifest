@@ -1,7 +1,7 @@
 {
   "name": "PeerSurf",
   "short_name": "PeerSurf",
-  "description": "Discover opportunities on the Livepeer ecosystem",
+  "description": "Discover opportunities on the Blockchain ecosystem",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",
