@@ -404,8 +404,8 @@ const AuthPage = () => {
           {isResettingPassword ? (
             // Password Reset Form (when user clicks email link)
             passwordResetSuccess ? (
-              <div className={`p-4 rounded-xl ${isDark ? 'bg-green-500/10 border-green-700' : 'bg-green-50 border-green-200'} border`}>
-                <p className={`text-sm ${isDark ? 'text-green-400' : 'text-green-600'}`}>
+              <div className={`p-4 rounded-xl ${isDark ? 'bg-[#3366FF]/10 border-[#3366FF]/50' : 'bg-[#ECF3FF] border-[#3366FF]/30'} border`}>
+                <p className={`text-sm ${isDark ? 'text-[#3366FF]' : 'text-[#101B44]'}`}>
                   Password reset successfully! Redirecting to sign in...
                 </p>
               </div>
@@ -473,7 +473,7 @@ const AuthPage = () => {
 
                 <Button
                   type="submit"
-                  className="w-full font-semibold bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600"
+                  className="w-full font-semibold bg-gradient-to-r from-[#3366FF] to-[#2952CC] hover:from-[#2952CC] hover:to-[#1F3FA3] text-white"
                   disabled={loading}
                 >
                   {loading ? "Resetting..." : "Reset Password"}
@@ -491,14 +491,14 @@ const AuthPage = () => {
                   <button
                     type="button"
                     onClick={() => setRole("talent")}
-                    className={`p-3 rounded-xl border text-sm ${role === "talent" ? "border-green-500 bg-green-500/10 text-green-300" : "border-border bg-card text-foreground"}`}
+                    className={`p-3 rounded-xl border text-sm ${role === "talent" ? "border-[#3366FF] bg-[#3366FF]/10 text-[#3366FF]" : "border-border bg-card text-foreground"}`}
                   >
                     Talent
                   </button>
                   <button
                     type="button"
                     onClick={() => setRole("SPE")}
-                    className={`p-3 rounded-xl border text-sm ${role === "SPE" ? "border-green-500 bg-green-500/10 text-green-300" : "border-border bg-card text-foreground"}`}
+                    className={`p-3 rounded-xl border text-sm ${role === "SPE" ? "border-[#3366FF] bg-[#3366FF]/10 text-[#3366FF]" : "border-border bg-card text-foreground"}`}
                   >
                     SPE
                   </button>
@@ -548,7 +548,7 @@ const AuthPage = () => {
                       setError(null);
                       setResetEmailSent(false);
                     }}
-                    className={`text-sm ${isDark ? 'text-gray-400 hover:text-green-400' : 'text-muted-foreground hover:text-primary'} transition-colors`}
+                    className={`text-sm ${isDark ? 'text-gray-400 hover:text-[#3366FF]' : 'text-muted-foreground hover:text-[#3366FF]'} transition-colors`}
                   >
                     Forgot password?
                   </button>
@@ -565,7 +565,7 @@ const AuthPage = () => {
                 onClick={
                   handleSubmit as (e: MouseEvent<HTMLButtonElement>) => void
                 }
-                className="w-full font-semibold bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600"
+                className="w-full font-semibold bg-gradient-to-r from-[#3366FF] to-[#2952CC] hover:from-[#2952CC] hover:to-[#1F3FA3] text-white"
                 disabled={loading}
                 type="submit"
               >
@@ -602,7 +602,7 @@ const AuthPage = () => {
                   )}
                   <Button
                     onClick={handleForgotPassword}
-                    className="w-full font-semibold bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600"
+                    className="w-full font-semibold bg-gradient-to-r from-[#3366FF] to-[#2952CC] hover:from-[#2952CC] hover:to-[#1F3FA3] text-white"
                     disabled={loading}
                     type="button"
                   >
@@ -621,8 +621,8 @@ const AuthPage = () => {
                   </button>
                 </>
               ) : (
-                <div className={`p-4 rounded-xl ${isDark ? 'bg-green-500/10 border-green-700' : 'bg-green-50 border-green-200'} border`}>
-                  <p className={`text-sm ${isDark ? 'text-green-400' : 'text-green-600'}`}>
+                <div className={`p-4 rounded-xl ${isDark ? 'bg-[#3366FF]/10 border-[#3366FF]/50' : 'bg-[#ECF3FF] border-[#3366FF]/30'} border`}>
+                  <p className={`text-sm ${isDark ? 'text-[#3366FF]' : 'text-[#101B44]'}`}>
                     Password reset email sent! Please check your inbox and follow the instructions to reset your password.
                   </p>
                   <button
@@ -666,11 +666,11 @@ const AuthPage = () => {
         <div className="text-center mt-8 pb-8">
           <p className={`text-xs ${isDark ? 'text-gray-500' : 'text-muted-foreground'}`}>
             By continuing, you agree to our{" "}
-            <a href="/privacy" className={`underline hover:no-underline ${isDark ? 'text-gray-400 hover:text-green-400' : 'text-muted-foreground hover:text-primary'}`}>
+            <a href="/privacy" className={`underline hover:no-underline ${isDark ? 'text-gray-400 hover:text-[#3366FF]' : 'text-muted-foreground hover:text-[#3366FF]'}`}>
               Terms of Service
             </a>{" "}
             and{" "}
-            <a href="/privacy" className={`underline hover:no-underline ${isDark ? 'text-gray-400 hover:text-green-400' : 'text-muted-foreground hover:text-primary'}`}>
+            <a href="/privacy" className={`underline hover:no-underline ${isDark ? 'text-gray-400 hover:text-[#3366FF]' : 'text-muted-foreground hover:text-[#3366FF]'}`}>
               Privacy Policy
             </a>
           </p>
