@@ -34,8 +34,8 @@ const CommunityPage = () => {
   const socialPlatforms = [
     {
       name: "Twitter",
-      handle: "@Blockchain",
-      url: "https://twitter.com/Blockchain",
+      handle: "@peersurf",
+      url: "https://x.com/peersurf",
       icon: Twitter,
       color: "text-blue-400",
       bgColor: "bg-blue-500/10",
@@ -45,8 +45,8 @@ const CommunityPage = () => {
     },
     {
       name: "Discord",
-      handle: "Blockchain Community",
-      url: "https://discord.gg/blockchain",
+      handle: "peersurf",
+      url: "#",
       icon: MessageCircle,
       color: "text-indigo-400",
       bgColor: "bg-indigo-500/10",
@@ -56,8 +56,8 @@ const CommunityPage = () => {
     },
     {
       name: "GitHub",
-      handle: "blockchain",
-      url: "https://github.com/blockchain",
+      handle: "peersurf",
+      url: "#",
       icon: Github,
       color: "text-gray-300",
       bgColor: "bg-gray-500/10",
@@ -67,8 +67,8 @@ const CommunityPage = () => {
     },
     {
       name: "YouTube",
-      handle: "Blockchain",
-      url: "https://youtube.com/@blockchain",
+      handle: "peersurf",
+      url: "https://www.youtube.com/@peersurf",
       icon: Youtube,
       color: "text-red-400",
       bgColor: "bg-red-500/10",
@@ -78,8 +78,8 @@ const CommunityPage = () => {
     },
     {
       name: "LinkedIn",
-      handle: "Blockchain",
-      url: "https://linkedin.com/company/blockchain",
+      handle: "peersurf",
+      url: "#",
       icon: Linkedin,
       color: "text-blue-300",
       bgColor: "bg-blue-600/10",
@@ -89,8 +89,8 @@ const CommunityPage = () => {
     },
     {
       name: "Documentation",
-      handle: "docs.blockchain.org",
-      url: "https://docs.blockchain.org",
+      handle: "peersurf.xyz",
+      url: "#",
       icon: BookOpen,
       color: "text-[#3366FF]",
       bgColor: "bg-[#3366FF]/10",
