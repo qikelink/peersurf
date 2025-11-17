@@ -29,6 +29,8 @@ import { getUserProfile } from "../../lib/auth";
 import { listSubmissionsForOpportunity } from "../../lib/submissions";
 import Navbar from "../nav-bar";
 import { Skeleton } from "../ui/skeleton";
+import { supabase } from "../../lib/supabase";
+import { Gift } from "lucide-react";
 
 // Mock data for opportunities (keeping only RFPs)
 const mockRFPs = [
@@ -203,6 +205,42 @@ const OpportuniesPage = () => {
   const [dynBounties, setDynBounties] = useState<any[]>([]);
   const [dynGrants, setDynGrants] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  
+  // Referral reminder banner state
+  const [showReferralBanner, setShowReferralBanner] = useState<boolean>(false);
+  // Check if user has entered a referral code
+  useEffect(() => {
+    const checkReferralStatus = async () => {
+      if (!user?.id) {
+        setShowReferralBanner(false);
+        return;
+      }
+
+      try {
+        // Check if user has been dismissed the banner
+        const dismissedKey = `referral_banner_dismissed_${user.id}`;
+        const isDismissed = localStorage.getItem(dismissedKey) === 'true';
+        
+        // Check if user has entered a referral code
+        const { data: referral } = await supabase
+          .from('referrals')
+          .select('id')
+          .eq('referred_id', user.id)
+          .maybeSingle();
+
+        const hasReferral = !!referral;
+        
+        // Show banner if user hasn't entered referral code and hasn't dismissed it
+        setShowReferralBanner(!hasReferral && !isDismissed);
+      } catch (error) {
+        console.error('Error checking referral status:', error);
+        setShowReferralBanner(false);
+      }
+    };
+
+    checkReferralStatus();
+  }, [user?.id]);
+
   useEffect(() => {
     const fetchOpportunities = async () => {
       try {
@@ -353,6 +391,47 @@ const OpportuniesPage = () => {
       <div className="flex flex-col lg:flex-row max-w-7xl mx-auto">
         {/* Main Content */}
         <div className="flex-1 p-4 sm:p-6">
+          {/* Referral Code Reminder Banner */}
+          {showReferralBanner && user && (
+            <div className={`mb-4 relative overflow-hidden rounded-xl border ${isDark ? 'bg-gradient-to-r from-[#3366FF]/10 to-[#2952CC]/10 border-[#3366FF]/30' : 'bg-gradient-to-r from-[#3366FF]/5 to-[#2952CC]/5 border-[#3366FF]/20'} backdrop-blur-sm animate-in slide-in-from-top-2 duration-300`}>
+              <div className="absolute inset-0 bg-gradient-to-r from-[#3366FF]/0 to-[#2952CC]/0 opacity-50"></div>
+              <div className="relative p-3 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div className="flex items-start gap-3 flex-1">
+                  <div className="w-8 h-8 bg-gradient-to-r from-[#3366FF] to-[#2952CC] rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg shadow-[#3366FF]/25">
+                    <Gift className="w-4 h-4 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className={`font-bold ${isDark ? 'text-white' : 'text-foreground'} text-sm mb-0.5`}>
+                      Add Your Referral Code
+                    </h3>
+                    <p className="text-muted-foreground text-xs">
+                      Enter a referral code to earn <span className="font-semibold text-[#3366FF]">10 points</span> and unlock rewards!
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <Button
+                    onClick={() => navigate('/profile')}
+                    className="bg-gradient-to-r from-[#3366FF] to-[#2952CC] hover:from-[#2952CC] hover:to-[#1F3FA3] text-white font-semibold text-sm px-3 py-1.5 rounded-lg transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-[#3366FF]/25 whitespace-nowrap"
+                  >
+                    Add Code
+                  </Button>
+                  <button
+                    onClick={() => {
+                      const dismissedKey = `referral_banner_dismissed_${user.id}`;
+                      localStorage.setItem(dismissedKey, 'true');
+                      setShowReferralBanner(false);
+                    }}
+                    className={`p-1.5 ${isDark ? 'text-gray-300 hover:text-white' : 'text-muted-foreground hover:text-foreground'} transition-colors rounded-lg hover:bg-muted/50`}
+                    aria-label="Dismiss banner"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Hero Section */}
           <HeroCarousel
             user={user}

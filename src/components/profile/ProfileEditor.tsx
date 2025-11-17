@@ -239,7 +239,7 @@ const ProfileEditor = ({
             <p className="text-xs text-muted-foreground mb-3">
               {isEditing && (
                 <>
-                  <span className="font-semibold">Talent</span> can only apply for bounties. <span className="font-semibold">SPE</span> can post and manage bounties. <span className="font-semibold">Admin</span> conducts and oversees all platform affairs.
+                  <span className="font-semibold">Talent</span> can only apply for bounties. <span className="font-semibold">Sponsor</span> can post and manage bounties. <span className="font-semibold">Admin</span> conducts and oversees all platform affairs.
                 </>
               )}
             </p>
@@ -257,7 +257,7 @@ const ProfileEditor = ({
                   onClick={() => setEditedProfile({ ...editedProfile, role: "SPE" })}
                   className={`px-3 py-2 rounded-lg border text-sm ${editedProfile.role === "SPE" ? "border-[#3366FF] bg-[#3366FF]/10 text-[#3366FF]" : "border-border bg-muted text-foreground"}`}
                 >
-                  SPE
+                  Sponsor
                 </button>
                 <button disabled
                   type="button"
