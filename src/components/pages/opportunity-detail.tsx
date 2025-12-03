@@ -35,10 +35,25 @@ const OpportunityDetailPage = () => {
   const [posting, setPosting] = useState<boolean>(false);
   const [timeLeft, setTimeLeft] = useState<string>("");
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const [isDeadlinePast, setIsDeadlinePast] = useState<boolean>(false);
 
   const isSupabaseConfigured = useMemo(() => {
     return Boolean(import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY);
   }, []);
+
+  // Helper function to check if deadline has passed
+  const checkDeadlinePast = (deadline: string | undefined): boolean => {
+    if (!deadline) return false;
+    try {
+      const deadlineDate = new Date(deadline);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      deadlineDate.setHours(0, 0, 0, 0);
+      return deadlineDate < today;
+    } catch (error) {
+      return false;
+    }
+  };
 
   useEffect(() => {
     const fetch = async () => {
@@ -127,6 +142,7 @@ const OpportunityDetailPage = () => {
     const deadlineStr = (opportunity as any)?.deadline as string | undefined;
     if (!deadlineStr) {
       setTimeLeft("");
+      setIsDeadlinePast(false);
       return;
     }
     const deadline = new Date(deadlineStr).getTime();
@@ -135,8 +151,10 @@ const OpportunityDetailPage = () => {
       const diff = deadline - now;
       if (diff <= 0) {
         setTimeLeft("Ended");
+        setIsDeadlinePast(true);
         return;
       }
+      setIsDeadlinePast(false);
       const minutes = Math.floor(diff / (1000 * 60)) % 60;
       const hours = Math.floor(diff / (1000 * 60 * 60)) % 24;
       const days = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -185,6 +203,13 @@ const OpportunityDetailPage = () => {
       return;
     }
     if (!id || !opportunity) return;
+    
+    // Check if deadline has passed
+    const deadlineStr = (opportunity as any)?.deadline as string | undefined;
+    if (deadlineStr && checkDeadlinePast(deadlineStr)) {
+      setError("This opportunity has expired. Submissions are no longer accepted.");
+      return;
+    }
     
     // Check if user has already submitted
     if (userHasSubmitted) {
@@ -396,12 +421,24 @@ const OpportunityDetailPage = () => {
                 </div>
               ) : (
                 <div className="space-y-4">
+                  {isDeadlinePast && (
+                    <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Clock className="w-5 h-5 text-red-600 dark:text-red-400" />
+                        <span className="font-semibold text-red-800 dark:text-red-300">This opportunity has expired</span>
+                      </div>
+                      <p className="text-sm text-red-700 dark:text-red-400">
+                        The deadline for this {opportunity?.type === "Grant" ? "grant" : "bounty"} has passed. Submissions are no longer being accepted.
+                      </p>
+                    </div>
+                  )}
                   <div>
                     <label className="block text-sm text-foreground mb-2">Project Name *</label>
                     <input
                       value={projectName}
                       onChange={(e) => setProjectName(e.target.value)}
-                      className="w-full bg-background text-foreground border border-border rounded-lg p-3 focus:ring-2 focus:ring-ring focus:border-transparent"
+                      disabled={isDeadlinePast}
+                      className="w-full bg-background text-foreground border border-border rounded-lg p-3 focus:ring-2 focus:ring-ring focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
                       placeholder={opportunity?.type === "Grant" ? "Enter your project name" : "Enter your project name"}
                     />
                   </div>
@@ -412,7 +449,8 @@ const OpportunityDetailPage = () => {
                     <textarea
                       value={proposal}
                       onChange={(e) => setProposal(e.target.value)}
-                      className="w-full bg-background text-foreground border border-border rounded-lg p-3 min-h-[120px] focus:ring-2 focus:ring-ring focus:border-transparent"
+                      disabled={isDeadlinePast}
+                      className="w-full bg-background text-foreground border border-border rounded-lg p-3 min-h-[120px] focus:ring-2 focus:ring-ring focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
                       placeholder={
                         opportunity?.type === "Grant" 
                           ? "Describe your project goals, timeline, and expected outcomes. Include team information and milestones."
@@ -425,7 +463,8 @@ const OpportunityDetailPage = () => {
                     <input
                       value={links}
                       onChange={(e) => setLinks(e.target.value)}
-                      className="w-full bg-background text-foreground border border-border rounded-lg p-3 focus:ring-2 focus:ring-ring focus:border-transparent"
+                      disabled={isDeadlinePast}
+                      className="w-full bg-background text-foreground border border-border rounded-lg p-3 focus:ring-2 focus:ring-ring focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
                       placeholder={
                         opportunity?.type === "Grant" 
                           ? "GitHub, portfolio, demo links, team profiles (comma separated)"
@@ -436,7 +475,11 @@ const OpportunityDetailPage = () => {
                   {error && <div className="text-destructive text-sm">{error}</div>}
                   {successMsg && <div className="text-[#3366FF] text-sm">{successMsg}</div>}
                   <div className="flex justify-end">
-                    <Button onClick={handleSubmit} className="bg-gradient-to-r from-[#3366FF] to-[#2952CC] hover:from-[#2952CC] hover:to-[#1F3FA3] text-white" disabled={submitLoading}>
+                    <Button 
+                      onClick={handleSubmit} 
+                      className="bg-gradient-to-r from-[#3366FF] to-[#2952CC] hover:from-[#2952CC] hover:to-[#1F3FA3] text-white disabled:opacity-50 disabled:cursor-not-allowed" 
+                      disabled={submitLoading || isDeadlinePast}
+                    >
                       {submitLoading ? "Submitting..." : `Submit ${opportunity?.type === "Grant" ? "Application" : "Submission"}`}
                     </Button>
                   </div>
